@@ -34,6 +34,9 @@ const credit = S.share.card_credit
     <button class="pill" type="button" data-share-native>{S.share.to_instagram}</button>
     <button class="pill" type="button" data-share-copy data-copy-label={S.share.copy_text} data-copied-label={S.share.copied}>{S.share.copy_text}</button>
   </div>
+  <div class="share-preview" data-share-preview hidden>
+    <img data-share-preview-image alt={S.share.title} />
+  </div>
   <div class="share-card-stage" aria-hidden="true">
     <div class="share-card" data-skin={phase.id} data-share-card>
       <Motif name={phase.motif_key} size={110} />
@@ -62,6 +65,8 @@ const credit = S.share.card_credit
     const downloadButton = tool.querySelector<HTMLButtonElement>("[data-share-download]");
     const nativeButton = tool.querySelector<HTMLButtonElement>("[data-share-native]");
     const copyButton = tool.querySelector<HTMLButtonElement>("[data-share-copy]");
+    const preview = tool.querySelector<HTMLElement>("[data-share-preview]");
+    const previewImage = tool.querySelector<HTMLImageElement>("[data-share-preview-image]");
     let latestUrl = "";
 
     const selectedLines = () => {
@@ -83,24 +88,34 @@ const credit = S.share.card_credit
         canvasWidth: 1080,
         canvasHeight: 1350
       });
+      if (preview && previewImage) {
+        previewImage.src = latestUrl;
+        preview.hidden = false;
+      }
       return latestUrl;
     };
 
-    checks.forEach((check) => check.addEventListener("change", renderLines));
-    generateButton?.addEventListener("click", makeImage);
-    downloadButton?.addEventListener("click", async () => {
+    const downloadImage = async () => {
       const url = latestUrl || await makeImage();
+      if (!url) return;
       const link = document.createElement("a");
       link.href = url;
       link.download = "kobiyal-share-card.png";
       link.click();
-    });
+    };
+
+    checks.forEach((check) => check.addEventListener("change", renderLines));
+    generateButton?.addEventListener("click", makeImage);
+    downloadButton?.addEventListener("click", downloadImage);
     nativeButton?.addEventListener("click", async () => {
       const url = latestUrl || await makeImage();
+      if (!url) return;
       const blob = await (await fetch(url)).blob();
       const file = new File([blob], "kobiyal-share-card.png", { type: "image/png" });
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file] });
+      } else {
+        await downloadImage();
       }
     });
     copyButton?.addEventListener("click", async () => {

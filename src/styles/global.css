@@ -769,6 +769,22 @@ svg {
   pointer-events: none;
 }
 
+.share-preview {
+  width: min(100%, 20rem);
+  aspect-ratio: 4 / 5;
+  border: var(--hairline) solid var(--phase-hairline);
+  border-radius: var(--radius-card);
+  background: var(--phase-raised);
+  overflow: hidden;
+}
+
+.share-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .share-card {
   width: 1080px;
   height: 1350px;
@@ -791,6 +807,7 @@ svg {
   font-size: 58px;
   font-weight: 500;
   line-height: 1.75;
+  white-space: pre-line;
 }
 
 .share-card__credit {
