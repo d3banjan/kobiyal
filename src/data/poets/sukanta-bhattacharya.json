@@ -1,0 +1,25 @@
+{
+  "id": "sukanta-bhattacharya",
+  "name_bn": "সুকান্ত ভট্টাচার্য",
+  "name_en": "sukanta-bhattacharya",
+  "born": 1926,
+  "died": 1947,
+  "pd_status": "public-domain-india-since-2008",
+  "bio_bn": "ক্ষুধা, সংগ্রাম, যৌবন ও সামাজিক ন্যায়বোধের তীব্র উচ্চারণে স্মরণীয় কবি।",
+  "phases": [
+    {
+      "id": "sukanta-charpatra",
+      "label_bn": "ছাড়পত্র — ক্ষুধা ও উচ্চারণ",
+      "label_en": "charpatra",
+      "year_range": "১৯৪৮",
+      "collections_bn": ["ছাড়পত্র (১৯৪৮)"],
+      "palette": { "bg": "#EFE6D6", "ink": "#281E1A", "accent": "#B04428" },
+      "motif_bn": "জ্বলন্ত ক্ষুধা, কঠোর গদ্য, রুটির চাঁদ",
+      "motif_key": "flame",
+      "note_bn": "এটি প্রাথমিক সংকলনভিত্তিক পাঠ; সম্পূর্ণ জীবনপর্ব নয়।",
+      "chronological": true,
+      "periodisation_source": "Seed collection grouping only; not a full Sukanta periodisation.",
+      "rationale": "Warm paper ground with ember accent for hunger, heat, and the hard public voice of the collection."
+    }
+  ]
+}

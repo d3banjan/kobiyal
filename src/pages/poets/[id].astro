@@ -1,0 +1,70 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../components/Layout.astro";
+import Motif from "../../components/Motif.astro";
+import PhaseTimeline from "../../components/PhaseTimeline.astro";
+import { allPhases, poemCountForPhase, poemsForPoet } from "../../lib/content";
+import { S, bn, withBase } from "../../lib/i18n";
+
+export async function getStaticPaths() {
+  const poets = await getCollection("poets");
+  const poems = (await getCollection("poems")).map((entry) => entry.data);
+
+  return poets.map((poet) => ({
+    params: { id: poet.data.id },
+    props: {
+      poet: poet.data,
+      poems: poemsForPoet(poems, poet.data.id)
+    }
+  }));
+}
+
+const { poet, poems } = Astro.props;
+const phases = allPhases(poet);
+const timelinePhases = phases.map((phase) => ({
+  ...phase,
+  count: poemCountForPhase(poems, poet.id, phase.id)
+}));
+---
+
+<Layout title={poet.name_bn} active="poets" description={poet.bio_bn}>
+  <section class="hero-block wrap narrow">
+    <h1 class="display-title">{poet.name_bn}</h1>
+    <p class="eyebrow">{S.poet.born_label} {bn(poet.born)} · {S.poet.died_label} {bn(poet.died)}</p>
+    <p>{poet.bio_bn}</p>
+  </section>
+
+  <section class="poet-layout wrap">
+    <aside class="timeline-sticky">
+      <h2 class="section-heading">{S.poet.phases_heading}</h2>
+      <p class="period-note">{S.poet.phases_disclaimer}</p>
+      <PhaseTimeline phases={timelinePhases} />
+    </aside>
+
+    <div class="phase-stack">
+      {phases.map((phase) => {
+        const phasePoems = poems.filter((poem) => poem.phase_id === phase.id);
+        return (
+          <section class="phase-panel" id={phase.id} data-skin={phase.id} data-phase-section>
+            <div class="phase-panel__head">
+              <Motif name={phase.motif_key} size={42} />
+              <h2>{phase.label_bn}</h2>
+              <p class="phase-note">{phase.year_range} · {phase.collections_bn.join(" · ")}</p>
+              <p class="hue-note"><strong>{S.phase.why_this_hue}</strong> · {phase.motif_bn}</p>
+              <p class="phase-note">{phase.note_bn}</p>
+              {!phase.chronological && <p class="phase-note">{S.poet.strand_note}</p>}
+            </div>
+            <div class="poem-list">
+              {phasePoems.map((poem) => (
+                <a class="poem-row" href={withBase(`poems/${poem.id}/`)}>
+                  <strong>{poem.title_bn}</strong>
+                  <span>{S.poet.read_poems}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,29 @@
+---
+import { S, withBase } from "../lib/i18n";
+
+interface Props {
+  active?: "home" | "poets" | "themes" | "about";
+}
+
+const { active = "home" } = Astro.props;
+const items = [
+  { key: "home", label: S.nav.home, href: withBase("") },
+  { key: "poets", label: S.nav.poets, href: withBase("#poets") },
+  { key: "themes", label: S.nav.themes, href: withBase("tags/") },
+  { key: "about", label: S.nav.about, href: withBase("about/") }
+];
+---
+
+<header class="site-header">
+  <div class="site-header__inner wrap">
+    <a class="wordmark" href={withBase("")} aria-label={S.aria.home_link}>
+      <span>{S.site.name}</span>
+      <small>{S.site.handle}</small>
+    </a>
+    <nav class="site-nav" aria-label={S.nav.menu}>
+      {items.map((item) => (
+        <a href={item.href} aria-current={active === item.key ? "page" : undefined}>{item.label}</a>
+      ))}
+    </nav>
+  </div>
+</header>

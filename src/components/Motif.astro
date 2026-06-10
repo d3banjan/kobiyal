@@ -1,0 +1,59 @@
+---
+interface Props {
+  name?: "feather" | "page" | "bird" | "stars" | "river" | "boat" | "flame";
+  size?: number;
+  tone?: "phase" | "shell";
+}
+
+const { name = "feather", size = 48, tone = "phase" } = Astro.props;
+const className = tone === "shell" ? "motif motif--shell" : "motif";
+---
+
+<svg class={className} viewBox="0 0 48 48" width={size} height={size} aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  {name === "feather" && (
+    <g>
+      <path d="M24 6 C16 14 13 26 14 40"></path>
+      <path d="M14 40 C22 38 30 30 32 18 C28 16 26 10 24 6 Z"></path>
+      <path d="M17 32 L26 26 M16 24 L25 17 M18 16 L24 12"></path>
+    </g>
+  )}
+  {name === "page" && (
+    <g>
+      <rect x="10" y="6" width="26" height="34" rx="1"></rect>
+      <path d="M16 15 H30 M16 21 H30 M16 27 H26"></path>
+    </g>
+  )}
+  {name === "bird" && (
+    <g>
+      <path d="M14 18 C18 14 21 14 24 17 C27 14 30 14 34 18"></path>
+      <path d="M6 34 H42"></path>
+    </g>
+  )}
+  {name === "stars" && (
+    <g>
+      <path d="M24 12 V22 M19 17 H29"></path>
+      <path d="M11 30 V36 M8 33 H14"></path>
+      <path d="M36 28 V34 M33 31 H39"></path>
+    </g>
+  )}
+  {name === "river" && (
+    <g>
+      <path d="M6 30 C12 26 16 34 22 30 C28 26 32 34 42 28"></path>
+      <circle cx="33" cy="15" r="2.5"></circle>
+    </g>
+  )}
+  {name === "boat" && (
+    <g>
+      <path d="M8 31 H40 L34 38 H15 Z"></path>
+      <path d="M24 10 V31"></path>
+      <path d="M24 12 C31 17 34 22 35 29 H24 Z"></path>
+      <path d="M8 39 C14 36 18 41 24 38 C30 35 34 41 42 37"></path>
+    </g>
+  )}
+  {name === "flame" && (
+    <g>
+      <path d="M24 40 C15 36 14 27 19 21 C21 18 21 14 20 10 C27 14 35 22 34 31 C33 37 29 40 24 40 Z"></path>
+      <path d="M24 35 C20 32 20 28 23 24 C25 27 29 30 24 35 Z"></path>
+    </g>
+  )}
+</svg>

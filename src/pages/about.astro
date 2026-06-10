@@ -1,0 +1,14 @@
+---
+import Layout from "../components/Layout.astro";
+import { S } from "../lib/i18n";
+---
+
+<Layout title={S.about.heading} active="about" description={S.about.body}>
+  <section class="about-copy wrap">
+    <h1 class="display-title">{S.about.heading}</h1>
+    <p>{S.about.body}</p>
+    <p class="period-note">{S.about.pd_note}</p>
+    <p class="period-note">{S.about.text_note}</p>
+    <p class="period-note">{S.about.periodisation_note}</p>
+  </section>
+</Layout>

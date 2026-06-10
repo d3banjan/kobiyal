@@ -1,0 +1,25 @@
+{
+  "id": "rabindranath-tagore",
+  "name_bn": "রবীন্দ্রনাথ ঠাকুর",
+  "name_en": "rabindranath-tagore",
+  "born": 1861,
+  "died": 1941,
+  "pd_status": "public-domain-india-since-2002",
+  "bio_bn": "কবি, সুরকার, কথাশিল্পী ও চিন্তক; বাংলা ভাষার আধুনিক সাহিত্যিক রূপ নির্মাণে তাঁর ভূমিকা গভীর।",
+  "phases": [
+    {
+      "id": "tagore-sonar-tori",
+      "label_bn": "সোনার তরী — নদী ও যাত্রা",
+      "label_en": "sonar-tori",
+      "year_range": "১৮৯৪",
+      "collections_bn": ["সোনার তরী (১৮৯৪)"],
+      "palette": { "bg": "#E7E0C8", "ink": "#2B2B28", "accent": "#9A7B22" },
+      "motif_bn": "বর্ষার নদী, তরী, সোনার ধান",
+      "motif_key": "boat",
+      "note_bn": "এটি প্রাথমিক সংকলনভিত্তিক পাঠ; সম্পূর্ণ জীবনপর্ব নয়।",
+      "chronological": true,
+      "periodisation_source": "Seed collection grouping only; not a full Tagore periodisation.",
+      "rationale": "Warm river-silt ground and harvest-gold accent for boat, monsoon water, and cut paddy imagery."
+    }
+  ]
+}

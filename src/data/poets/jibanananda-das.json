@@ -1,0 +1,83 @@
+{
+  "id": "jibanananda-das",
+  "name_bn": "জীবনানন্দ দাশ",
+  "name_en": "jibanananda-das",
+  "born": 1899,
+  "died": 1954,
+  "pd_status": "public-domain-india-since-2015",
+  "bio_bn": "বাংলা কবিতার অন্যতম প্রধান আধুনিক কণ্ঠস্বর; বুদ্ধদেব বসুর ভাষায় ‘নির্জনতম কবি’। ধূসরতা, সন্ধ্যা আর বাংলার রূপ তাঁর কবিতার কেন্দ্রে।",
+  "phases": [
+    {
+      "id": "jhara-palak",
+      "label_bn": "ঝরা পালক — ধার-করা স্বর",
+      "label_en": "jhara-palak",
+      "year_range": "১৯২৭",
+      "collections_bn": ["ঝরা পালক (১৯২৭)"],
+      "palette": { "bg": "#F2E7DE", "ink": "#4A2A26", "accent": "#BC7A5E" },
+      "motif_bn": "ঝরে-পড়া একটি পালক; অস্তরাগ",
+      "motif_key": "feather",
+      "note_bn": "অস্তরাগের রং — তখনও কণ্ঠস্বর ধার-করা, অলংকারে ভারী।",
+      "chronological": true,
+      "periodisation_source": "Editorial lens structured on Jibanananda's published collections; informed by Clinton B. Seely, A Poet Apart (1990), and standard Bhumendra Guha / Abdul Mannan Syed chronologies.",
+      "rationale": "Faded rose-cream ground with maroon-brown ink and terracotta accent: sunset-glow, feathers, and decorative sensuousness of an apprentice voice."
+    },
+    {
+      "id": "dhusar-pandulipi",
+      "label_bn": "ধূসর পাণ্ডুলিপি — নিজস্ব কণ্ঠস্বর",
+      "label_en": "dhusar-pandulipi",
+      "year_range": "১৯৩৬",
+      "collections_bn": ["ধূসর পাণ্ডুলিপি (১৯৩৬)"],
+      "palette": { "bg": "#D7D4CB", "ink": "#2C2C29", "accent": "#8A7A55" },
+      "motif_bn": "ধুলোমাখা ধূসর পাণ্ডুলিপির পাতা",
+      "motif_key": "page",
+      "note_bn": "ছাই আর ধুলোর ধূসর — এইখানে কবি পেলেন নিজের কণ্ঠ।",
+      "chronological": true,
+      "periodisation_source": "Editorial lens structured on Jibanananda's published collections; informed by Clinton B. Seely, A Poet Apart (1990), and standard Bhumendra Guha / Abdul Mannan Syed chronologies.",
+      "rationale": "Ash-grey paper ground, charcoal ink, faded-ochre accent. The collection literally names grey/ashen sediment and weariness."
+    },
+    {
+      "id": "banalata-sen",
+      "label_bn": "বনলতা সেন — সন্ধ্যা ও অনন্ত",
+      "label_en": "banalata-sen",
+      "year_range": "১৯৪২",
+      "collections_bn": ["বনলতা সেন (১৯৪২)"],
+      "palette": { "bg": "#283642", "ink": "#E7E1D5", "accent": "#C98A45" },
+      "motif_bn": "সন্ধ্যায় ঘরে-ফেরা পাখি; অন্ধকার",
+      "motif_key": "bird",
+      "note_bn": "সন্ধ্যা আর অন্ধকার — ঘরে-ফেরা পাখির ডানায় হাজার বছরের ক্লান্তি।",
+      "chronological": true,
+      "periodisation_source": "Editorial lens structured on Jibanananda's published collections; informed by Clinton B. Seely, A Poet Apart (1990), and standard Bhumendra Guha / Abdul Mannan Syed chronologies.",
+      "rationale": "Deep twilight indigo-slate ground, dusk-cream ink, and last-amber accent for the evening homing-bird atmosphere."
+    },
+    {
+      "id": "mahaprithibi-timir",
+      "label_bn": "মহাপৃথিবী ও সাতটি তারার তিমির — অন্ধকারের বিস্তার",
+      "label_en": "mahaprithibi-timir",
+      "year_range": "১৯৪৪–১৯৪৮",
+      "collections_bn": ["মহাপৃথিবী (১৯৪৪)", "সাতটি তারার তিমির (১৯৪৮)"],
+      "palette": { "bg": "#14181F", "ink": "#CDD3DA", "accent": "#6E8694" },
+      "motif_bn": "তারার ফাঁকে তিমির; বিস্তীর্ণ রাত",
+      "motif_key": "stars",
+      "note_bn": "তারার তিমির — যুদ্ধ, মৃত্যু আর মহাপৃথিবীর কালো বিস্তার।",
+      "chronological": true,
+      "periodisation_source": "Editorial lens structured on Jibanananda's published collections; informed by Clinton B. Seely, A Poet Apart (1990), and standard Bhumendra Guha / Abdul Mannan Syed chronologies.",
+      "rationale": "Near-black blue ground, cold-starlight ink, steel-silver accent for war, famine years, death, and vast darkness."
+    }
+  ],
+  "strands": [
+    {
+      "id": "rupasi-bangla",
+      "label_bn": "রূপসী বাংলা — সমান্তরাল সবুজ",
+      "label_en": "rupasi-bangla",
+      "year_range": "রচনা ~১৯৩২–৩৪ · প্রকাশ ১৯৫৭ (মরণোত্তর)",
+      "collections_bn": ["রূপসী বাংলা (রচনা ~১৯৩২–৩৪; প্রকাশ ১৯৫৭)"],
+      "palette": { "bg": "#DCE5D2", "ink": "#243018", "accent": "#2E7D8A" },
+      "motif_bn": "ধানসিঁড়ি নদী, মাছরাঙা, সবুজ বাংলা",
+      "motif_key": "river",
+      "note_bn": "ধূসর পর্বের পাশেই লেখা — অথচ একেবারে উল্টো সবুজ সুর। তাই এটি ধারাবাহিক পর্ব নয়, একটি সমান্তরাল স্রোত।",
+      "chronological": false,
+      "periodisation_source": "Editorial lens structured on Jibanananda's published collections; flagged as a non-chronological parallel strand.",
+      "rationale": "Verdant paddy-green ground, deep-forest ink, kingfisher-teal accent for lush pastoral Bengal written alongside the grey period."
+    }
+  ]
+}

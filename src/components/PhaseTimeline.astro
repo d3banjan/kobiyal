@@ -1,0 +1,62 @@
+---
+import type { Phase } from "../lib/content";
+import { bn, S } from "../lib/i18n";
+
+interface TimelinePhase extends Phase {
+  count: number;
+}
+
+interface Props {
+  phases: TimelinePhase[];
+  activeId?: string;
+}
+
+const { phases, activeId = phases[0]?.id } = Astro.props;
+---
+
+<div class="phase-timeline" data-phase-timeline>
+  <ol>
+    {phases.map((phase) => {
+      const isActive = phase.id === activeId;
+      const count = S.poet.poem_count.replace("{count}", bn(phase.count));
+      return (
+        <li data-skin={phase.id} data-parallel={phase.chronological ? "false" : "true"}>
+          <a class:list={["phase-link", { "is-active": isActive }]} data-phase-link={phase.id} href={`#${phase.id}`} aria-label={S.aria.phase_segment.replace("{phase}", phase.label_bn)}>
+            <span class="phase-marker" aria-hidden="true"></span>
+            <span>
+              {!phase.chronological && <span class="strand-badge">{S.poet.strand_label}</span>}
+              <strong>{phase.label_bn}</strong>
+              <small>{count}</small>
+            </span>
+          </a>
+        </li>
+      );
+    })}
+  </ol>
+</div>
+
+<script>
+  const timeline = document.querySelector<HTMLElement>("[data-phase-timeline]");
+  const phaseLinks = Array.from(document.querySelectorAll<HTMLElement>("[data-phase-link]"));
+  const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-phase-section]"));
+
+  if (timeline && "IntersectionObserver" in window) {
+    const setActive = (id: string) => {
+      phaseLinks.forEach((link) => {
+        link.classList.toggle("is-active", link.getAttribute("data-phase-link") === id);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target?.id) setActive(visible.target.id);
+      },
+      { rootMargin: "-30% 0px -55% 0px", threshold: [0.2, 0.45, 0.7] }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>

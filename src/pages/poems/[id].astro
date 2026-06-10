@@ -1,0 +1,61 @@
+---
+import { getCollection } from "astro:content";
+import AttributionBlock from "../../components/AttributionBlock.astro";
+import Layout from "../../components/Layout.astro";
+import Motif from "../../components/Motif.astro";
+import ShareTool from "../../components/ShareTool.astro";
+import ThemeChip from "../../components/ThemeChip.astro";
+import { findPhase, splitStanzas } from "../../lib/content";
+import { S, withBase } from "../../lib/i18n";
+
+export async function getStaticPaths() {
+  const poems = await getCollection("poems");
+  const poets = (await getCollection("poets")).map((entry) => entry.data);
+
+  return poems.map((poem) => {
+    const poet = poets.find((item) => item.id === poem.data.poet_id);
+    if (!poet) throw new Error(`Missing poet for ${poem.data.id}`);
+    const phase = findPhase(poet, poem.data.phase_id);
+    return {
+      params: { id: poem.data.id },
+      props: { poem: poem.data, poet, phase }
+    };
+  });
+}
+
+const { poem, poet, phase } = Astro.props;
+const stanzas = splitStanzas(poem.body_bn);
+---
+
+<Layout title={poem.title_bn} active="poets" description={`${poet.name_bn} · ${poem.source_edition}`}>
+  <article class="poem-reading" data-skin={phase.id}>
+    <div class="wrap">
+      <a class="back-link" href={withBase(`poets/${poet.id}/`)}>← {S.poem.back_to_poet}</a>
+      <Motif name={phase.motif_key} size={40} />
+      <div class="verse">
+        <h1>{poem.title_bn}</h1>
+        {!poem.verified && <span class="verify-badge">{S.poem.unverified_note}</span>}
+        <div class="stanzas">
+          {stanzas.map((stanza) => (
+            <p>
+              {stanza.map((line, index) => (
+                <>
+                  {line}
+                  {index < stanza.length - 1 && <br />}
+                </>
+              ))}
+            </p>
+          ))}
+        </div>
+      </div>
+      <AttributionBlock poet={poet} poem={poem} />
+      <section class="share-tool" style="border-top: 0; padding-top: var(--space-4);">
+        <h2 class="section-heading" style="border-color: var(--phase-hairline); color: var(--phase-ink-muted);">{S.poem.related_themes}</h2>
+        <div class="chip-list">
+          {poem.tags.map((tag) => <ThemeChip id={tag} label={tag} tone="phase" />)}
+        </div>
+      </section>
+      <ShareTool poet={poet} poem={poem} phase={phase} />
+    </div>
+  </article>
+</Layout>

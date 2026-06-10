@@ -1,0 +1,54 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../components/Layout.astro";
+import ThemeChip from "../../components/ThemeChip.astro";
+import { S, bn, interpolate, withBase } from "../../lib/i18n";
+
+export async function getStaticPaths() {
+  const tags = await getCollection("tags");
+  const poems = (await getCollection("poems")).map((entry) => entry.data);
+  const poets = (await getCollection("poets")).map((entry) => entry.data);
+
+  return tags.map((tag) => ({
+    params: { id: tag.data.id },
+    props: {
+      tag: tag.data,
+      poems: poems.filter((poem) => poem.tags.includes(tag.data.id)),
+      poets,
+      allTags: tags.map((entry) => entry.data)
+    }
+  }));
+}
+
+const { tag, poems, poets, allTags } = Astro.props;
+const poetById = new Map(poets.map((poet) => [poet.id, poet]));
+---
+
+<Layout title={tag.label_bn} active="themes">
+  <section class="hero-block wrap narrow">
+    <h1 class="display-title">{interpolate(S.theme.heading, { tag: tag.label_bn })}</h1>
+    <p class="eyebrow">{interpolate(S.theme.poem_count, { count: poems.length })}</p>
+  </section>
+
+  <section class="section wrap narrow">
+    <div class="tag-result-list">
+      {poems.length === 0 && <p class="eyebrow">{S.util.no_results}</p>}
+      {poems.map((poem) => {
+        const poet = poetById.get(poem.poet_id);
+        return (
+          <a class="tag-result" href={withBase(`poems/${poem.id}/`)}>
+            <strong>{poem.title_bn}</strong>
+            <small>{poet?.name_bn} · {poem.source_edition} · {poem.source_year ? bn(poem.source_year) : ""}</small>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="section wrap narrow">
+    <h2 class="section-heading">{S.theme.all_themes}</h2>
+    <div class="chip-list">
+      {allTags.map((item) => <ThemeChip id={item.id} label={item.label_bn} />)}
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,17 @@
+---
+import { withBase } from "../lib/i18n";
+
+interface Props {
+  id: string;
+  label: string;
+  count?: string;
+  tone?: "shell" | "phase";
+}
+
+const { id, label, count, tone = "shell" } = Astro.props;
+---
+
+<a class="chip" data-tone={tone === "phase" ? "phase" : undefined} href={withBase(`tags/${encodeURIComponent(id)}/`)}>
+  <span>{label}</span>
+  {count && <span>{count}</span>}
+</a>

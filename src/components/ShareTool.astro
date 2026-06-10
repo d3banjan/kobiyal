@@ -1,0 +1,114 @@
+---
+import type { Phase, Poem, Poet } from "../lib/content";
+import { firstLines } from "../lib/content";
+import { S } from "../lib/i18n";
+import Motif from "./Motif.astro";
+
+interface Props {
+  poet: Poet;
+  poem: Poem;
+  phase: Phase;
+}
+
+const { poet, poem, phase } = Astro.props;
+const candidateLines = firstLines(poem.body_bn, 8);
+const credit = S.share.card_credit
+  .replace("{poet}", poet.name_bn)
+  .replace("{collection}", poem.source_edition);
+---
+
+<section class="share-tool" data-share-tool>
+  <h2 class="section-heading">{S.share.title}</h2>
+  <p class="phase-note">{S.share.select_lines}</p>
+  <div class="line-picker">
+    {candidateLines.map((line, index) => (
+      <label>
+        <input type="checkbox" value={line} checked={index < 2} />
+        <span>{line}</span>
+      </label>
+    ))}
+  </div>
+  <div class="button-row">
+    <button class="pill" type="button" data-share-generate>{S.share.generate}</button>
+    <button class="pill" type="button" data-share-download>{S.share.download}</button>
+    <button class="pill" type="button" data-share-native>{S.share.to_instagram}</button>
+    <button class="pill" type="button" data-share-copy data-copy-label={S.share.copy_text} data-copied-label={S.share.copied}>{S.share.copy_text}</button>
+  </div>
+  <div class="share-card-stage" aria-hidden="true">
+    <div class="share-card" data-skin={phase.id} data-share-card>
+      <Motif name={phase.motif_key} size={110} />
+      <div class="share-card__lines">
+        <p class="share-card__verse" data-share-card-lines>{candidateLines.slice(0, 2).join("\n")}</p>
+        <p class="share-card__credit">{credit}</p>
+      </div>
+      <div class="share-card__footer">
+        <span class="share-card__wordmark">{S.share.card_footer}</span>
+        <span class="share-card__handle">{S.site.handle}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { toPng } from "html-to-image";
+
+  const tool = document.querySelector("[data-share-tool]");
+
+  if (tool) {
+    const card = tool.querySelector<HTMLElement>("[data-share-card]");
+    const cardLines = tool.querySelector<HTMLElement>("[data-share-card-lines]");
+    const checks = Array.from(tool.querySelectorAll<HTMLInputElement>("input[type='checkbox']"));
+    const generateButton = tool.querySelector<HTMLButtonElement>("[data-share-generate]");
+    const downloadButton = tool.querySelector<HTMLButtonElement>("[data-share-download]");
+    const nativeButton = tool.querySelector<HTMLButtonElement>("[data-share-native]");
+    const copyButton = tool.querySelector<HTMLButtonElement>("[data-share-copy]");
+    let latestUrl = "";
+
+    const selectedLines = () => {
+      const lines = checks.filter((check) => check.checked).map((check) => check.value);
+      return lines.length > 0 ? lines : checks.slice(0, 2).map((check) => check.value);
+    };
+
+    const renderLines = () => {
+      if (cardLines) cardLines.textContent = selectedLines().join("\n");
+    };
+
+    const makeImage = async () => {
+      if (!card) return "";
+      renderLines();
+      await document.fonts.ready;
+      latestUrl = await toPng(card, {
+        cacheBust: true,
+        pixelRatio: 1,
+        canvasWidth: 1080,
+        canvasHeight: 1350
+      });
+      return latestUrl;
+    };
+
+    checks.forEach((check) => check.addEventListener("change", renderLines));
+    generateButton?.addEventListener("click", makeImage);
+    downloadButton?.addEventListener("click", async () => {
+      const url = latestUrl || await makeImage();
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "kobiyal-share-card.png";
+      link.click();
+    });
+    nativeButton?.addEventListener("click", async () => {
+      const url = latestUrl || await makeImage();
+      const blob = await (await fetch(url)).blob();
+      const file = new File([blob], "kobiyal-share-card.png", { type: "image/png" });
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file] });
+      }
+    });
+    copyButton?.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(selectedLines().join("\n"));
+      copyButton.textContent = copyButton.getAttribute("data-copied-label");
+      window.setTimeout(() => {
+        copyButton.textContent = copyButton.getAttribute("data-copy-label");
+      }, 1600);
+    });
+  }
+</script>

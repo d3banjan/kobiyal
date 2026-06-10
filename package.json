@@ -1,0 +1,21 @@
+{
+  "name": "kobiyal",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "ingest": "node scripts/ingest-poems.mjs"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@fontsource/hind-siliguri": "^5.2.7",
+    "@fontsource/noto-serif-bengali": "^5.2.10",
+    "astro": "^5.10.0",
+    "html-to-image": "^1.11.13",
+    "typescript": "^5.8.3"
+  }
+}

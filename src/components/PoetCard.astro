@@ -1,0 +1,25 @@
+---
+import type { Poet, Phase } from "../lib/content";
+import { allPhases } from "../lib/content";
+import { bn, S, withBase } from "../lib/i18n";
+
+interface Props {
+  poet: Poet;
+  poemCount: number;
+}
+
+const { poet, poemCount } = Astro.props;
+const phases: Phase[] = allPhases(poet);
+const aria = S.aria.poet_link.replace("{poet}", poet.name_bn);
+---
+
+<a class="poet-card" href={withBase(`poets/${poet.id}/`)} aria-label={aria}>
+  <div class="phase-dots" aria-hidden="true">
+    {phases.map((phase) => <span class="phase-dot" data-skin={phase.id}></span>)}
+  </div>
+  <div>
+    <h2>{poet.name_bn}</h2>
+    <p class="meta-text">{S.poet.born_label} {bn(poet.born)} · {S.poet.died_label} {bn(poet.died)}</p>
+  </div>
+  <p class="meta-text">{S.poet.poem_count.replace("{count}", bn(poemCount))}</p>
+</a>

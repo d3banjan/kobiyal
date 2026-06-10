@@ -1,0 +1,112 @@
+{
+  "_conventions": {
+    "language": "All values are reader-facing Bengali. Keys and placeholders stay English (code).",
+    "placeholders": "{count}, {poet}, {tag}, {collection}, {year} are interpolated at render.",
+    "numerals": "Render ALL digits in Bengali numerals (০১২৩৪৫৬৭৮৯). Provide a toBengaliDigits() helper; never show Western digits to readers.",
+    "loanwords": "Native verbs are preferred over শেয়ার/ডাউনলোড/কপি for the brand's tone. Swap if user-testing prefers the loanwords.",
+    "proper_nouns": "Brand/platform names (ইনস্টাগ্রাম, kobiyal handle) are intentionally left as-is."
+  },
+
+  "site": {
+    "name": "কবিয়াল",
+    "tagline": "বাংলা কবিতার একটি নিভৃত পাঠঘর",
+    "handle": "@kobiyal"
+  },
+
+  "nav": {
+    "home": "প্রথম পাতা",
+    "poets": "কবিরা",
+    "themes": "বিষয়",
+    "about": "আমাদের কথা",
+    "search": "অনুসন্ধান",
+    "menu": "মেনু"
+  },
+
+  "home": {
+    "hero_line": "বাংলা কবিতা, পড়ার মতো করে সাজানো।",
+    "browse_poets": "কবি বেছে নিন",
+    "browse_themes": "বিষয় ধরে ঘুরুন",
+    "section_poets": "কবিরা",
+    "section_themes": "বিষয়"
+  },
+
+  "poet": {
+    "born_label": "জন্ম",
+    "died_label": "মৃত্যু",
+    "phases_heading": "সৃষ্টিজীবনের পর্ব",
+    "phases_disclaimer": "এই পর্ব-বিভাজন একটি পাঠ — কোনো ধ্রুব সত্য নয়।",
+    "periodisation_source_label": "পর্ব-বিন্যাস",
+    "read_poems": "কবিতা পড়ুন",
+    "poem_count": "{count}টি কবিতা",
+    "explore_phase": "এই পর্বে ঢুকুন",
+    "strand_label": "সমান্তরাল ধারা",
+    "strand_note": "এই রচনা ধারাবাহিক পর্বের অংশ নয় — একই সময়ে লেখা, অথচ সুর আলাদা।"
+  },
+
+  "phase": {
+    "poems_in_phase": "এই পর্বের কবিতা",
+    "collections_label": "কাব্যগ্রন্থ",
+    "why_this_hue": "রঙের কথা"
+  },
+
+  "poem": {
+    "poet_label": "কবি",
+    "collection_label": "কাব্যগ্রন্থ",
+    "year_label": "প্রকাশ",
+    "source_label": "সূত্র",
+    "source_unknown": "সূত্র অজানা",
+    "back_to_poet": "কবির পাতায় ফিরুন",
+    "related_themes": "প্রসঙ্গ",
+    "share": "ছড়িয়ে দিন",
+    "unverified_note": "পাঠ যাচাই চলছে"
+  },
+
+  "share": {
+    "title": "ছড়িয়ে দিন",
+    "select_lines": "যে পঙ্‌ক্তিগুলো ভাগ করতে চান, বেছে নিন",
+    "generate": "ছবি বানান",
+    "download": "ছবি নামিয়ে নিন",
+    "to_instagram": "ইনস্টাগ্রামে দিন",
+    "copy_text": "লেখা টুকে নিন",
+    "copied": "টোকা হয়েছে",
+    "card_footer": "কবিয়াল",
+    "card_credit": "{poet} · {collection}"
+  },
+
+  "theme": {
+    "heading": "‘{tag}’ — এই বিষয়ের কবিতা",
+    "poem_count": "{count}টি কবিতা",
+    "all_themes": "সব বিষয়"
+  },
+
+  "about": {
+    "heading": "আমাদের কথা",
+    "body": "কবিয়াল বাংলা কবিতার একটি মুক্ত, অবাণিজ্যিক পাঠ-প্রকল্প। এখানে শুধু মুক্ত-স্বত্ব (পাবলিক ডোমেইন) কবিদের রচনা — যত্ন করে, পড়ার মতো করে সাজানো। কবিতা পড়া আর ভাগ করে নেওয়া যেন সুন্দর একটা অভিজ্ঞতা হয়, সেটাই চাওয়া।",
+    "pd_note": "এই সংকলনের সমস্ত রচনা মুক্ত-স্বত্ব। স্বত্বাধীন কবিদের লেখা এখানে রাখা হয় না।",
+    "text_note": "পাঠ মুদ্রিত গ্রন্থের সঙ্গে মিলিয়ে যাচাইয়ের কাজ চলমান। ভুল চোখে পড়লে জানাবেন।",
+    "periodisation_note": "কবিদের সৃষ্টিজীবনকে যে পর্বে ভাগ করা হয়েছে, তা একটি সম্পাদকীয় পাঠ — আলোচনার জন্য, চূড়ান্ত রায় নয়।",
+    "credits_label": "কৃতজ্ঞতা"
+  },
+
+  "footer": {
+    "rights": "সমস্ত রচনা মুক্ত-স্বত্ব · অবাণিজ্যিক পাঠ-প্রকল্প",
+    "made": "বাংলা কবিতার জন্য তৈরি"
+  },
+
+  "util": {
+    "loading": "একটু দাঁড়ান…",
+    "no_results": "কিছু পাওয়া গেল না।",
+    "error": "কিছু একটা গন্ডগোল হয়েছে।",
+    "back": "ফিরে যান",
+    "close": "বন্ধ করুন"
+  },
+
+  "aria": {
+    "open_menu": "মেনু খুলুন",
+    "close_menu": "মেনু বন্ধ করুন",
+    "share_poem": "এই কবিতা ছড়িয়ে দিন",
+    "poet_link": "{poet}-এর পাতা",
+    "phase_segment": "{phase} পর্ব",
+    "home_link": "প্রথম পাতায় যান"
+  }
+}

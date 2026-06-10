@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../components/Layout.astro";
+import PoetCard from "../components/PoetCard.astro";
+import ThemeChip from "../components/ThemeChip.astro";
+import { S, bn } from "../lib/i18n";
+
+const poets = (await getCollection("poets")).map((entry) => entry.data);
+const poems = (await getCollection("poems")).map((entry) => entry.data);
+const tags = (await getCollection("tags")).map((entry) => entry.data);
+---
+
+<Layout active="home">
+  <section class="hero-block wrap">
+    <h1 class="hero-title">{S.home.hero_line}</h1>
+    <p class="eyebrow">{S.site.tagline}</p>
+    <div class="button-row">
+      <a class="pill pill--dark" href="#poets">{S.home.browse_poets}</a>
+      <a class="pill" href="tags/">{S.home.browse_themes}</a>
+    </div>
+  </section>
+
+  <section id="poets" class="section wrap">
+    <h2 class="section-heading">{S.home.section_poets}</h2>
+    <div class="poet-grid">
+      {poets.map((poet) => (
+        <PoetCard poet={poet} poemCount={poems.filter((poem) => poem.poet_id === poet.id).length} />
+      ))}
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <h2 class="section-heading">{S.home.section_themes}</h2>
+    <div class="chip-list">
+      {tags.map((tag) => {
+        const count = poems.filter((poem) => poem.tags.includes(tag.id)).length;
+        return <ThemeChip id={tag.id} label={tag.label_bn} count={bn(count)} />;
+      })}
+    </div>
+  </section>
+</Layout>

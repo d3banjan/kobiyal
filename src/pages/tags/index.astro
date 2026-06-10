@@ -1,0 +1,24 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../components/Layout.astro";
+import ThemeChip from "../../components/ThemeChip.astro";
+import { S, bn } from "../../lib/i18n";
+
+const tags = (await getCollection("tags")).map((entry) => entry.data);
+const poems = (await getCollection("poems")).map((entry) => entry.data);
+---
+
+<Layout title={S.nav.themes} active="themes">
+  <section class="hero-block wrap narrow">
+    <h1 class="display-title">{S.theme.all_themes}</h1>
+    <p class="eyebrow">{S.home.browse_themes}</p>
+  </section>
+  <section class="section wrap narrow">
+    <div class="chip-list">
+      {tags.map((tag) => {
+        const count = poems.filter((poem) => poem.tags.includes(tag.id)).length;
+        return <ThemeChip id={tag.id} label={tag.label_bn} count={bn(count)} />;
+      })}
+    </div>
+  </section>
+</Layout>

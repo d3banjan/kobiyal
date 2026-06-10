@@ -1,0 +1,29 @@
+---
+import type { Poem, Poet } from "../lib/content";
+import { bn, S } from "../lib/i18n";
+
+interface Props {
+  poet: Poet;
+  poem: Poem;
+}
+
+const { poet, poem } = Astro.props;
+const source = poem.source_name_bn ?? S.poem.source_unknown;
+---
+
+<aside class="attribution" aria-label={S.poem.source_label}>
+  <dl>
+    <dt>{S.poem.poet_label}</dt>
+    <dd>{poet.name_bn}</dd>
+    <dt>{S.poem.collection_label}</dt>
+    <dd>{poem.source_edition}</dd>
+    {poem.source_year && (
+      <>
+        <dt>{S.poem.year_label}</dt>
+        <dd>{bn(poem.source_year)}</dd>
+      </>
+    )}
+    <dt>{S.poem.source_label}</dt>
+    <dd>{source}</dd>
+  </dl>
+</aside>
