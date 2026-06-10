@@ -126,6 +126,7 @@ html {
   color: var(--shell-ink);
   background: var(--shell-bg);
   font-family: var(--font-ui);
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
@@ -136,7 +137,15 @@ body {
   color: var(--shell-ink);
   font-size: var(--text-ui);
   line-height: var(--leading-ui);
+  overflow-x: hidden;
   text-rendering: optimizeLegibility;
+}
+
+@supports (overflow-x: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
 }
 
 body,
@@ -765,8 +774,12 @@ svg {
 .share-card-stage {
   position: fixed;
   top: 0;
-  left: -200vw;
+  left: 0;
+  width: 1080px;
+  height: 1350px;
+  overflow: hidden;
   pointer-events: none;
+  transform: translateX(calc(-100% - 2rem));
 }
 
 .share-preview {
