@@ -3,7 +3,7 @@
     "language": "All values are reader-facing Bengali. Keys and placeholders stay English (code).",
     "placeholders": "{count}, {poet}, {tag}, {collection}, {year} are interpolated at render.",
     "numerals": "Render ALL digits in Bengali numerals (০১২৩৪৫৬৭৮৯). Provide a toBengaliDigits() helper; never show Western digits to readers.",
-    "loanwords": "Native verbs are preferred over শেয়ার/ডাউনলোড/কপি for the brand's tone. Swap if user-testing prefers the loanwords.",
+    "loanwords": "Native verbs are preferred over share/download/copy for the brand's tone. Swap if user-testing prefers the loanwords.",
     "proper_nouns": "Brand/platform names (ইনস্টাগ্রাম, kobiyal handle) are intentionally left as-is."
   },
 
@@ -23,7 +23,7 @@
   },
 
   "home": {
-    "hero_line": "বাংলা কবিতা, পড়ার মতো করে সাজানো।",
+    "hero_line": "বাংলা কবিতা, সুন্দরভাবে পড়ার জন্য সাজানো।",
     "browse_poets": "কবি বেছে নিন",
     "browse_themes": "বিষয় ধরে ঘুরুন",
     "section_poets": "কবিরা",
@@ -33,14 +33,14 @@
   "poet": {
     "born_label": "জন্ম",
     "died_label": "মৃত্যু",
-    "phases_heading": "সৃষ্টিজীবনের পর্ব",
-    "phases_disclaimer": "এই পর্ব-বিভাজন একটি পাঠ — কোনো ধ্রুব সত্য নয়।",
+    "phases_heading": "লেখালিখির বিভিন্ন পর্ব",
+    "phases_disclaimer": "এই পর্ব-বিভাগ স্রেফ আমাদের একটি ব্যাখ্যা — কোনো ধ্রুব সত্য নয়।",
     "periodisation_source_label": "পর্ব-বিন্যাস",
-    "read_poems": "কবিতা পড়ুন",
+    "read_poems": "কবিতা পড়ুন",
     "poem_count": "{count}টি কবিতা",
-    "explore_phase": "এই পর্বে ঢুকুন",
+    "explore_phase": "এই পর্বের কবিতা দেখুন",
     "strand_label": "সমান্তরাল ধারা",
-    "strand_note": "এই রচনা ধারাবাহিক পর্বের অংশ নয় — একই সময়ে লেখা, অথচ সুর আলাদা।"
+    "strand_note": "এই লেখাগুলো ধারাবাহিক কোনো পর্বের অংশ নয় — একই সময়ে লেখা হলেও এগুলোর সুর সম্পূর্ণ আলাদা।"
   },
 
   "phase": {
@@ -57,22 +57,22 @@
     "source_unknown": "সূত্র অজানা",
     "back_to_poet": "কবির পাতায় ফিরুন",
     "related_themes": "প্রসঙ্গ",
-    "share": "ছড়িয়ে দিন",
+    "share": "শেয়ার করুন",
     "unverified_note": "পাঠ যাচাই চলছে"
   },
 
   "share": {
-    "title": "ছড়িয়ে দিন",
-    "select_lines": "যে পঙ্‌ক্তিগুলো ভাগ করতে চান, বেছে নিন",
-    "generate": "ছবি বানান",
-    "download": "ছবি নামিয়ে নিন",
-    "to_instagram": "ইনস্টাগ্রামে দিন",
-    "copy_text": "লেখা টুকে নিন",
-    "copied": "টোকা হয়েছে",
-    "generated": "ছবি তৈরি হয়েছে",
-    "saved": "ছবি নামানো হয়েছে",
-    "native_ready": "ছবি ছড়ানোর জন্য প্রস্তুত",
-    "instagram_fallback": "ছবি নামানো হয়েছে — ইনস্টাগ্রামে নিজে দিন",
+    "title": "শেয়ার করুন",
+    "select_lines": "যে লাইনগুলো শেয়ার করতে চান, বেছে নিন",
+    "generate": "শেয়ার কার্ড বানান",
+    "download": "ডাউনলোড করুন",
+    "to_instagram": "ইনস্টাগ্রামে শেয়ার করুন",
+    "copy_text": "লেখা কপি করুন",
+    "copied": "কপি করা হয়েছে",
+    "generated": "শেয়ার কার্ড তৈরি হয়েছে",
+    "saved": "ডাউনলোড হয়েছে",
+    "native_ready": "শেয়ার করার জন্য প্রস্তুত",
+    "instagram_fallback": "ডাউনলোড হয়েছে — এবার ইনস্টাগ্রামে শেয়ার করুন",
     "card_footer": "কবিয়াল",
     "card_credit": "{poet} · {collection}"
   },
@@ -85,10 +85,10 @@
 
   "about": {
     "heading": "আমাদের কথা",
-    "body": "কবিয়াল বাংলা কবিতার একটি মুক্ত, অবাণিজ্যিক পাঠ-প্রকল্প। এখানে শুধু মুক্ত-স্বত্ব (পাবলিক ডোমেইন) কবিদের রচনা — যত্ন করে, পড়ার মতো করে সাজানো। কবিতা পড়া আর ভাগ করে নেওয়া যেন সুন্দর একটা অভিজ্ঞতা হয়, সেটাই চাওয়া।",
-    "pd_note": "এই সংকলনের সমস্ত রচনা মুক্ত-স্বত্ব। স্বত্বাধীন কবিদের লেখা এখানে রাখা হয় না।",
-    "text_note": "পাঠ মুদ্রিত গ্রন্থের সঙ্গে মিলিয়ে যাচাইয়ের কাজ চলমান। ভুল চোখে পড়লে জানাবেন।",
-    "periodisation_note": "কবিদের সৃষ্টিজীবনকে যে পর্বে ভাগ করা হয়েছে, তা একটি সম্পাদকীয় পাঠ — আলোচনার জন্য, চূড়ান্ত রায় নয়।",
+    "body": "কবিয়াল বাংলা কবিতা পড়ার একটি সম্পূর্ণ মুক্ত ও অবাণিজ্যিক জায়গা। কপিরাইট-মুক্ত বা পাবলিক ডোমেইনের কবিদের চমৎকার সব কবিতা আমরা এখানে খুব সুন্দর করে সাজিয়ে রেখেছি। আমাদের উদ্দেশ্য—কবিতা পড়ার ও তা সবার সাথে শেয়ার করার অভিজ্ঞতাকে আরও সহজ ও চমৎকার করে তোলা।",
+    "pd_note": "এই সাইটের সমস্ত কবিতাই কপিরাইট-মুক্ত। স্বত্ব বা কপিরাইট আছে এমন কোনো কবির লেখা এখানে রাখা হয় না।",
+    "text_note": "মূল বইয়ের সাথে মিলিয়ে আমরা কবিতাগুলোর বানান ও টেক্সট যাচাই করার কাজ করছি। কোনো ভুল চোখে পড়লে দয়া করে আমাদের জানাবেন।",
+    "periodisation_note": "কবিদের সৃষ্টিজীবনকে এখানে যেভাবে বিভিন্ন পর্বে ভাগ করা হয়েছে, তা সম্পূর্ণ আমাদের নিজস্ব সম্পাদনা। এটি চূড়ান্ত কোনো সিদ্ধান্ত নয়, বরং আলোচনার একটি মাধ্যম মাত্র।",
     "credits_label": "কৃতজ্ঞতা"
   },
 
@@ -98,7 +98,7 @@
   },
 
   "util": {
-    "loading": "একটু দাঁড়ান…",
+    "loading": "একটু অপেক্ষা করুন…",
     "no_results": "কিছু পাওয়া গেল না।",
     "error": "কিছু একটা গন্ডগোল হয়েছে।",
     "back": "ফিরে যান",
@@ -108,7 +108,7 @@
   "aria": {
     "open_menu": "মেনু খুলুন",
     "close_menu": "মেনু বন্ধ করুন",
-    "share_poem": "এই কবিতা ছড়িয়ে দিন",
+    "share_poem": "এই কবিতাটি শেয়ার করুন",
     "poet_link": "{poet}-এর পাতা",
     "phase_segment": "{phase} পর্ব",
     "home_link": "প্রথম পাতায় যান"
