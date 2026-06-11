@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import Layout from "../components/Layout.astro";
 import PoetCard from "../components/PoetCard.astro";
 import ThemeChip from "../components/ThemeChip.astro";
-import { S, bn } from "../lib/i18n";
+import { S, bn, withBase } from "../lib/i18n";
 
 const poets = (await getCollection("poets")).map((entry) => entry.data);
 const poems = (await getCollection("poems")).map((entry) => entry.data);
@@ -16,7 +16,7 @@ const tags = (await getCollection("tags")).map((entry) => entry.data);
     <p class="eyebrow">{S.site.tagline}</p>
     <div class="button-row">
       <a class="pill pill--dark" href="#poets">{S.home.browse_poets}</a>
-      <a class="pill" href="tags/">{S.home.browse_themes}</a>
+      <a class="pill" href={withBase("tags/")}>{S.home.browse_themes}</a>
     </div>
   </section>
 

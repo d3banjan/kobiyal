@@ -9,9 +9,10 @@
 :root {
   --shell-bg: #fafaf8;
   --shell-ink: #2b2b28;
-  --shell-ink-muted: #73736b;
+  --shell-ink-muted: #62625c;
   --shell-hairline: #e8e8e4;
   --shell-motif: rgba(43, 43, 40, 0.16);
+  --focus-ring: #5f6530;
 
   --phase-bg: var(--shell-bg);
   --phase-ink: var(--shell-ink);
@@ -65,8 +66,13 @@
     --text-title: 2rem;
     --text-phase: 1.5rem;
     --text-verse: 1.5625rem;
+    --measure-verse: 36rem;
     --gutter: 4rem;
   }
+}
+
+[data-skin] {
+  --focus-ring: var(--phase-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -160,6 +166,13 @@ a {
   text-underline-offset: 0.18em;
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
 button,
 input {
   font: inherit;
@@ -209,6 +222,14 @@ svg {
   min-height: 4rem;
 }
 
+.site-header__inner {
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  min-height: auto;
+  padding-block: var(--space-2);
+}
+
 .wordmark {
   display: inline-flex;
   align-items: baseline;
@@ -230,8 +251,10 @@ svg {
 .site-nav {
   display: flex;
   gap: var(--space-1);
-  overflow-x: auto;
+  flex-wrap: wrap;
+  overflow: visible;
   scrollbar-width: none;
+  width: 100%;
 }
 
 .site-nav::-webkit-scrollbar {
@@ -239,9 +262,12 @@ svg {
 }
 
 .site-nav a {
+  align-items: center;
   border-radius: var(--radius-chip);
   color: var(--shell-ink-muted);
-  padding: var(--space-1) var(--space-3);
+  display: inline-flex;
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
   text-decoration: none;
   white-space: nowrap;
 }
@@ -266,6 +292,17 @@ svg {
 }
 
 @media (min-width: 760px) {
+  .site-header__inner {
+    align-items: center;
+    flex-wrap: nowrap;
+    min-height: 4rem;
+    padding-block: 0;
+  }
+
+  .site-nav {
+    width: auto;
+  }
+
   .site-footer__inner {
     align-items: center;
     flex-direction: row;
@@ -328,7 +365,7 @@ svg {
 
 .pill,
 .text-button {
-  min-height: 2.25rem;
+  min-height: 2.75rem;
   border: var(--hairline) solid var(--shell-hairline);
   border-radius: var(--radius-chip);
   background: transparent;
@@ -338,7 +375,7 @@ svg {
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-4);
+  padding: var(--space-2) var(--space-4);
   text-decoration: none;
   transition:
     border-color var(--dur-quick) ease,
@@ -363,7 +400,7 @@ svg {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 2rem;
+  min-height: 2.75rem;
   padding: 0 var(--space-3);
   text-decoration: none;
   white-space: nowrap;
@@ -671,6 +708,10 @@ svg {
   padding-block: var(--space-6) var(--space-8);
 }
 
+.poem-reading .wrap {
+  max-width: 54rem;
+}
+
 .back-link {
   color: var(--phase-ink-muted);
   display: inline-flex;
@@ -711,6 +752,7 @@ svg {
   font-size: var(--text-verse);
   font-weight: 400;
   line-height: var(--leading-verse);
+  overflow-wrap: break-word;
   text-wrap: pretty;
 }
 
@@ -748,6 +790,23 @@ svg {
   margin-top: var(--space-6);
   max-width: var(--measure-verse);
   padding-top: var(--space-5);
+}
+
+.share-tool .pill {
+  border-color: var(--phase-hairline);
+  color: var(--phase-ink);
+}
+
+.share-tool .pill:hover {
+  border-color: var(--phase-ink);
+  background: var(--phase-accent-soft);
+}
+
+.share-status {
+  min-height: 1.5em;
+  color: var(--phase-ink-muted);
+  font-size: var(--text-caption);
+  margin: 0;
 }
 
 .line-picker {

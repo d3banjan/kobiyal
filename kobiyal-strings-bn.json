@@ -69,6 +69,10 @@
     "to_instagram": "ইনস্টাগ্রামে দিন",
     "copy_text": "লেখা টুকে নিন",
     "copied": "টোকা হয়েছে",
+    "generated": "ছবি তৈরি হয়েছে",
+    "saved": "ছবি নামানো হয়েছে",
+    "native_ready": "ছবি ছড়ানোর জন্য প্রস্তুত",
+    "instagram_fallback": "ছবি নামানো হয়েছে — ইনস্টাগ্রামে নিজে দিন",
     "card_footer": "কবিয়াল",
     "card_credit": "{poet} · {collection}"
   },

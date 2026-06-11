@@ -15,9 +15,18 @@ const candidateLines = firstLines(poem.body_bn, 8);
 const credit = S.share.card_credit
   .replace("{poet}", poet.name_bn)
   .replace("{collection}", poem.source_edition);
+const copyCredit = `${poem.title_bn}\n${poet.name_bn} · ${poem.source_edition}`;
 ---
 
-<section class="share-tool" data-share-tool>
+<section
+  class="share-tool"
+  data-share-tool
+  data-copy-credit={copyCredit}
+  data-generated-label={S.share.generated}
+  data-saved-label={S.share.saved}
+  data-native-ready-label={S.share.native_ready}
+  data-instagram-fallback-label={S.share.instagram_fallback}
+>
   <h2 class="section-heading">{S.share.title}</h2>
   <p class="phase-note">{S.share.select_lines}</p>
   <div class="line-picker">
@@ -34,6 +43,7 @@ const credit = S.share.card_credit
     <button class="pill" type="button" data-share-native>{S.share.to_instagram}</button>
     <button class="pill" type="button" data-share-copy data-copy-label={S.share.copy_text} data-copied-label={S.share.copied}>{S.share.copy_text}</button>
   </div>
+  <p class="share-status" data-share-status role="status" aria-live="polite"></p>
   <div class="share-preview" data-share-preview hidden>
     <img data-share-preview-image alt={S.share.title} />
   </div>
@@ -67,7 +77,17 @@ const credit = S.share.card_credit
     const copyButton = tool.querySelector<HTMLButtonElement>("[data-share-copy]");
     const preview = tool.querySelector<HTMLElement>("[data-share-preview]");
     const previewImage = tool.querySelector<HTMLImageElement>("[data-share-preview-image]");
+    const status = tool.querySelector<HTMLElement>("[data-share-status]");
+    const copyCredit = tool.getAttribute("data-copy-credit") || "";
+    const generatedLabel = tool.getAttribute("data-generated-label") || "";
+    const savedLabel = tool.getAttribute("data-saved-label") || "";
+    const nativeReadyLabel = tool.getAttribute("data-native-ready-label") || "";
+    const instagramFallbackLabel = tool.getAttribute("data-instagram-fallback-label") || "";
     let latestUrl = "";
+
+    const setStatus = (message: string) => {
+      if (status) status.textContent = message;
+    };
 
     const selectedLines = () => {
       const lines = checks.filter((check) => check.checked).map((check) => check.value);
@@ -92,6 +112,7 @@ const credit = S.share.card_credit
         previewImage.src = latestUrl;
         preview.hidden = false;
       }
+      setStatus(generatedLabel);
       return latestUrl;
     };
 
@@ -102,6 +123,7 @@ const credit = S.share.card_credit
       link.href = url;
       link.download = "kobiyal-share-card.png";
       link.click();
+      setStatus(savedLabel);
     };
 
     checks.forEach((check) => check.addEventListener("change", renderLines));
@@ -114,13 +136,17 @@ const credit = S.share.card_credit
       const file = new File([blob], "kobiyal-share-card.png", { type: "image/png" });
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file] });
+        setStatus(nativeReadyLabel);
       } else {
         await downloadImage();
+        setStatus(instagramFallbackLabel);
       }
     });
     copyButton?.addEventListener("click", async () => {
-      await navigator.clipboard.writeText(selectedLines().join("\n"));
+      const payload = [selectedLines().join("\n"), copyCredit].filter(Boolean).join("\n\n");
+      await navigator.clipboard.writeText(payload);
       copyButton.textContent = copyButton.getAttribute("data-copied-label");
+      setStatus(copyButton.getAttribute("data-copied-label") || "");
       window.setTimeout(() => {
         copyButton.textContent = copyButton.getAttribute("data-copy-label");
       }, 1600);
