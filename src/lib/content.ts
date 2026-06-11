@@ -17,8 +17,13 @@ export function findPhase(poet: Poet, phaseId: string): Phase {
   return phase;
 }
 
+function comparePoems(a: Poem, b: Poem): number {
+  return (a.sort_order ?? Number.MAX_SAFE_INTEGER) - (b.sort_order ?? Number.MAX_SAFE_INTEGER)
+    || a.title_bn.localeCompare(b.title_bn, "bn");
+}
+
 export function poemsForPoet(poems: Poem[], poetId: string): Poem[] {
-  return poems.filter((poem) => poem.poet_id === poetId);
+  return poems.filter((poem) => poem.poet_id === poetId).sort(comparePoems);
 }
 
 export function poemCountForPhase(poems: Poem[], poetId: string, phaseId: string): number {

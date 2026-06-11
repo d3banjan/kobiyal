@@ -50,6 +50,7 @@ const poems = defineCollection({
     source_year: z.number().nullable(),
     source_name_bn: z.string().optional(),
     source_url: z.string().url().optional(),
+    sort_order: z.number().optional(),
     verified: z.boolean(),
   }),
 });

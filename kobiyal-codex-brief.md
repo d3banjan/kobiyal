@@ -74,6 +74,12 @@ Tag   { id, label_bn, label_en /*dev only*/ }
    "Reference data" section below. Then add Tagore + one more poet for breadth once
    the engine works.
 
+## Deferred metadata sprint
+The broad Jibanananda corpus import is allowed to prioritize design, reading feel,
+and route coverage first. A later dedicated metadata sprint is needed to consolidate
+collection names, publication/composition years, phase assignment, duplicate title
+handling, and proofing status across the imported corpus.
+
 ## Pages & features
 - **Home:** a quiet gallery of poet cards. One tap → poet page.
 - **Poet page:** short Bengali bio + a PHASE TIMELINE. Each phase is a segment that

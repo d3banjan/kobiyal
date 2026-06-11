@@ -685,9 +685,10 @@ svg {
   border-top: var(--hairline) solid var(--phase-hairline);
   color: inherit;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
+  min-height: 44px;
   padding: var(--space-4) 0;
   text-decoration: none;
 }
@@ -696,10 +697,13 @@ svg {
   font-family: var(--font-verse);
   font-size: 1.05rem;
   font-weight: 600;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .poem-row span {
   color: var(--phase-ink-muted);
+  flex: none;
   font-size: var(--text-caption);
 }
 

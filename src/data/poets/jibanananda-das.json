@@ -78,6 +78,20 @@
       "chronological": false,
       "periodisation_source": "Editorial lens structured on Jibanananda's published collections; flagged as a non-chronological parallel strand.",
       "rationale": "Verdant paddy-green ground, deep-forest ink, kingfisher-teal accent for lush pastoral Bengal written alongside the grey period."
+    },
+    {
+      "id": "dataset-archive",
+      "label_bn": "সংকলন অজানা — পূর্ণ পাঠ",
+      "label_en": "dataset-archive",
+      "year_range": "সংগ্রহের তথ্য যাচাই চলবে",
+      "collections_bn": ["বাংলা কবিতা ডেটাসেট"],
+      "palette": { "bg": "#F4F1EA", "ink": "#302C25", "accent": "#7A6F55" },
+      "motif_bn": "অস্থায়ী সংকলনের পাতা",
+      "motif_key": "page",
+      "note_bn": "এই অংশে ডেটাসেট থেকে আনা বাকি কবিতাগুলো রাখা হয়েছে; কাব্যগ্রন্থ, সাল ও পর্ব পরে মিলিয়ে সাজানো হবে।",
+      "chronological": false,
+      "periodisation_source": "Temporary dataset import bucket pending a later metadata sprint; not presented as a chronological phase.",
+      "rationale": "Neutral paper palette for poems whose collection metadata has not yet been consolidated, avoiding false phase assignment while preserving a calm reading surface."
     }
   ]
 }
