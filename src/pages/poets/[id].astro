@@ -52,6 +52,12 @@ const timelinePhases = phases.map((phase) => ({
               <p class="phase-note">{phase.year_range} · {phase.collections_bn.join(" · ")}</p>
               <p class="hue-note"><strong>{S.phase.why_this_hue}</strong> · {phase.motif_bn}</p>
               {phase.bio_context_bn && <p class="bio-note"><strong>{S.phase.life_context}</strong> · {phase.bio_context_bn}</p>}
+              {phase.article_bn && (
+                <details class="phase-article">
+                  <summary>পর্বের পাঠ-নোট</summary>
+                  <p>{phase.article_bn}</p>
+                </details>
+              )}
               <p class="phase-note">{phase.note_bn}</p>
               {!phase.chronological && <p class="phase-note">{S.poet.strand_note}</p>}
             </div>
