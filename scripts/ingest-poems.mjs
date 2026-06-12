@@ -34,13 +34,25 @@ const knownPoems = new Map([
     phase_id: "jhara-palak",
     source_edition: "ঝরা পালক",
     source_year: 1927,
+    source_name_bn: "উইকিসংকলন",
+    source_url: "https://bn.wikisource.org/wiki/%E0%A6%9C%E0%A7%80%E0%A6%AC%E0%A6%A8%E0%A6%BE%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6_%E0%A6%A6%E0%A6%BE%E0%A6%B6%E0%A7%87%E0%A6%B0_%E0%A6%B6%E0%A7%8D%E0%A6%B0%E0%A7%87%E0%A6%B7%E0%A7%8D%E0%A6%A0_%E0%A6%95%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A6%BE/%E0%A6%A8%E0%A7%80%E0%A6%B2%E0%A6%BF%E0%A6%AE%E0%A6%BE",
+    isbn: "978-984-8794-79-1",
+    wikisource_url: "https://bn.wikisource.org/wiki/%E0%A6%9C%E0%A7%80%E0%A6%AC%E0%A6%A8%E0%A6%BE%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6_%E0%A6%A6%E0%A6%BE%E0%A6%B6%E0%A7%87%E0%A6%B0_%E0%A6%B6%E0%A7%8D%E0%A6%B0%E0%A7%87%E0%A6%B7%E0%A7%8D%E0%A6%A0_%E0%A6%95%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A6%BE/%E0%A6%A8%E0%A7%80%E0%A6%B2%E0%A6%BF%E0%A6%AE%E0%A6%BE",
+    marketplace_url: "https://www.rokomari.com/book/154443/jhora-palok",
+    verified: true,
     tags: ["আকাশ", "স্বপ্ন"]
   }],
   ["কুড়ি বছর পরে", {
     id: "kuri-bochor-pore",
-    phase_id: "dhusar-pandulipi",
-    source_edition: "ধূসর পাণ্ডুলিপি",
-    source_year: 1936,
+    phase_id: "banalata-sen",
+    source_edition: "বনলতা সেন",
+    source_year: 1942,
+    source_name_bn: "উইকিসংকলন",
+    source_url: "https://bn.wikisource.org/wiki/%E0%A6%9C%E0%A7%80%E0%A6%AC%E0%A6%A8%E0%A6%BE%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6_%E0%A6%A6%E0%A6%BE%E0%A6%B6%E0%A7%87%E0%A6%B0_%E0%A6%B6%E0%A7%8D%E0%A6%B0%E0%A7%87%E0%A6%B7%E0%A7%8D%E0%A6%A0_%E0%A6%95%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A6%BE/%E0%A6%95%E0%A7%81%E0%A6%B1%E0%A6%BF_%E0%A6%AC%E0%A6%9B%E0%A6%B0_%E0%A6%AA%E0%A6%B0%E0%A7%87",
+    isbn: "978-93-5040-043-2",
+    wikisource_url: "https://bn.wikisource.org/wiki/%E0%A6%9C%E0%A7%80%E0%A6%AC%E0%A6%A8%E0%A6%BE%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6_%E0%A6%A6%E0%A6%BE%E0%A6%B6%E0%A7%87%E0%A6%B0_%E0%A6%B6%E0%A7%8D%E0%A6%B0%E0%A7%87%E0%A6%B7%E0%A7%8D%E0%A6%A0_%E0%A6%95%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A6%BE/%E0%A6%95%E0%A7%81%E0%A6%B1%E0%A6%BF_%E0%A6%AC%E0%A6%9B%E0%A6%B0_%E0%A6%AA%E0%A6%B0%E0%A7%87",
+    marketplace_url: "https://www.rokomari.com/book/110543/bonolota-sen",
+    verified: true,
     tags: ["সময়", "স্মৃতি", "পথ"]
   }],
   ["বনলতা সেন", {
@@ -48,13 +60,25 @@ const knownPoems = new Map([
     phase_id: "banalata-sen",
     source_edition: "বনলতা সেন",
     source_year: 1942,
+    source_name_bn: "উইকিসংকলন",
+    source_url: "https://bn.wikisource.org/wiki/%E0%A6%9C%E0%A7%80%E0%A6%AC%E0%A6%A8%E0%A6%BE%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6_%E0%A6%A6%E0%A6%BE%E0%A6%B6%E0%A7%87%E0%A6%B0_%E0%A6%B6%E0%A7%8D%E0%A6%B0%E0%A7%87%E0%A6%B7%E0%A7%8D%E0%A6%A0_%E0%A6%95%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A6%BE/%E0%A6%AC%E0%A6%A8%E0%A6%B2%E0%A6%A4%E0%A6%BE_%E0%A6%B8%E0%A7%87%E0%A6%A8",
+    isbn: "978-93-5040-043-2",
+    wikisource_url: "https://bn.wikisource.org/wiki/%E0%A6%9C%E0%A7%80%E0%A6%AC%E0%A6%A8%E0%A6%BE%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6_%E0%A6%A6%E0%A6%BE%E0%A6%B6%E0%A7%87%E0%A6%B0_%E0%A6%B6%E0%A7%8D%E0%A6%B0%E0%A7%87%E0%A6%B7%E0%A7%8D%E0%A6%A0_%E0%A6%95%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A6%BE/%E0%A6%AC%E0%A6%A8%E0%A6%B2%E0%A6%A4%E0%A6%BE_%E0%A6%B8%E0%A7%87%E0%A6%A8",
+    marketplace_url: "https://www.rokomari.com/book/110543/bonolota-sen",
+    verified: true,
     tags: ["অন্ধকার", "পথ", "শান্তি"]
   }],
   ["অদ্ভুত আঁধার এক", {
     id: "adbhut-andhar-ek",
     phase_id: "mahaprithibi-timir",
-    source_edition: "মহাপৃথিবী",
-    source_year: 1944,
+    source_edition: "সাতটি তারার তিমির",
+    source_year: 1948,
+    source_name_bn: "বাংলা-কবিতা",
+    source_url: "https://www.bangla-kobita.com/jibanananda/odbhut-adhar-prithibite-aaj/",
+    isbn: null,
+    wikisource_url: null,
+    marketplace_url: "https://www.rokomari.com/book/18973/sattee-tarar-timeer",
+    verified: true,
     tags: ["অন্ধকার", "মৃত্যু", "সময়"]
   }],
   ["আবার আসিব ফিরে", {
@@ -62,9 +86,35 @@ const knownPoems = new Map([
     phase_id: "rupasi-bangla",
     source_edition: "রূপসী বাংলা",
     source_year: 1957,
+    source_name_bn: "উইকিসংকলন",
+    source_url: "https://bn.wikisource.org/wiki/%E0%A6%B0%E0%A7%82%E0%A6%AA%E0%A6%B8%E0%A7%80_%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE/%E0%A7%A7%E0%A7%AA",
+    isbn: "978-93-5040-041-8",
+    wikisource_url: "https://bn.wikisource.org/wiki/%E0%A6%B0%E0%A7%82%E0%A6%AA%E0%A6%B8%E0%A7%80_%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE/%E0%A7%A7%E0%A7%AA",
+    marketplace_url: "https://www.rokomari.com/book/119934/ruposhi-bangla",
+    verified: true,
     tags: ["বাংলা", "নদী", "ফিরে-আসা"]
   }]
 ]);
+
+const skippedDuplicateSources = new Map([
+  ["অদ্ভুত আঁধার এক এসেছে এ পৃথিবীতে আজ", "অদ্ভুত আঁধার এক"]
+]);
+
+const preserveVerifiedBodyIds = new Set([
+  "nilima",
+  "kuri-bochor-pore",
+  "banalata-sen",
+  "adbhut-andhar-ek",
+  "abar-asibo-phire"
+]);
+
+const optionalPoemFields = [
+  "source_name_bn",
+  "source_url",
+  "isbn",
+  "wikisource_url",
+  "marketplace_url"
+];
 
 const collectionTitleGroups = [
   {
@@ -423,6 +473,14 @@ function normalizeTitleKey(value) {
     .trim();
 }
 
+function normalizeDuplicateBodyKey(value) {
+  return normalizeBanglaLetters(value)
+    .replace(/[\u200c\u200d]/g, "")
+    .replace(/ৎ/g, "ত")
+    .replace(/[^\p{Letter}\p{Mark}\p{Number}]+/gu, "")
+    .trim();
+}
+
 function buildTitleMetadata() {
   const metadata = new Map();
   for (const group of collectionTitleGroups) {
@@ -478,6 +536,47 @@ async function readBody(dirName) {
   return normalizeText(await readFile(bodyPath, "utf8"));
 }
 
+async function shouldSkipDuplicateSource(dirName, body_bn) {
+  const canonicalDirName = skippedDuplicateSources.get(dirName);
+  if (!canonicalDirName) return false;
+
+  try {
+    const canonicalBody = await readBody(canonicalDirName);
+    return normalizeDuplicateBodyKey(body_bn) === normalizeDuplicateBodyKey(canonicalBody);
+  } catch {
+    return false;
+  }
+}
+
+async function readExistingPoemsById() {
+  const poems = new Map();
+  let files;
+  try {
+    files = await readdir(outputRoot);
+  } catch {
+    return poems;
+  }
+
+  await Promise.all(files.map(async (file) => {
+    if (!file.endsWith(".json")) return;
+    try {
+      const data = JSON.parse(await readFile(path.join(outputRoot, file), "utf8"));
+      if (typeof data.id === "string") poems.set(data.id, data);
+    } catch {
+      return;
+    }
+  }));
+
+  return poems;
+}
+
+function preservedVerifiedBody(id, previousPoemsById) {
+  if (!preserveVerifiedBodyIds.has(id)) return undefined;
+  const previousPoem = previousPoemsById.get(id);
+  if (previousPoem?.verified !== true || typeof previousPoem.body_bn !== "string") return undefined;
+  return previousPoem.body_bn;
+}
+
 function poemId(dirName, index) {
   return knownPoems.get(dirName)?.id ?? `jibanananda-${String(index + 1).padStart(3, "0")}`;
 }
@@ -505,6 +604,21 @@ function tagsFor(dirName, body, classTag) {
   return tags.length ? tags : ["চিন্তামূলক"];
 }
 
+function fieldFromMetadataOrSource(metadata, source, field) {
+  if (metadata && Object.hasOwn(metadata, field)) return metadata[field];
+  if (source && Object.hasOwn(source, field)) return source[field];
+  return undefined;
+}
+
+function optionalFieldsFor(metadata, source) {
+  const fields = {};
+  for (const field of optionalPoemFields) {
+    const value = fieldFromMetadataOrSource(metadata, source, field);
+    if (value !== undefined) fields[field] = value;
+  }
+  return fields;
+}
+
 async function cleanJibananandaPoems() {
   await mkdir(outputRoot, { recursive: true });
   const files = await readdir(outputRoot);
@@ -526,6 +640,8 @@ if (!existsSync(poetDir)) {
   throw new Error(`Dataset not found: ${poetDir}`);
 }
 
+const previousPoemsById = await readExistingPoemsById();
+
 await cleanJibananandaPoems();
 
 const dirNames = (await readdir(poetDir, { withFileTypes: true }))
@@ -534,29 +650,36 @@ const dirNames = (await readdir(poetDir, { withFileTypes: true }))
   .sort((a, b) => a.localeCompare(b, "bn"));
 
 let written = 0;
+let skipped = 0;
 for (const [index, dirName] of dirNames.entries()) {
   const body_bn = await readBody(dirName);
   if (!body_bn) continue;
+  if (await shouldSkipDuplicateSource(dirName, body_bn)) {
+    skipped += 1;
+    continue;
+  }
+
   const metadata = metadataFor(dirName);
   const classTag = await readClass(dirName);
   const source = await readSource(dirName);
+  const id = poemId(dirName, index);
+  const optionalFields = optionalFieldsFor(metadata, source);
   const poem = {
-    id: poemId(dirName, index),
+    id,
     poet_id: "jibanananda-das",
     phase_id: metadata?.phase_id ?? "dataset-archive",
     title_bn: cleanTitle(dirName),
-    body_bn,
+    body_bn: preservedVerifiedBody(id, previousPoemsById) ?? body_bn,
     tags: tagsFor(dirName, body_bn, classTag),
     source_edition: metadata?.source_edition ?? "সংকলন অজানা",
     source_year: metadata?.source_year ?? null,
-    ...(source.source_name_bn ? { source_name_bn: source.source_name_bn } : {}),
-    ...(source.source_url ? { source_url: source.source_url } : {}),
+    ...optionalFields,
     sort_order: index + 1,
-    verified: false
+    verified: metadata?.verified ?? false
   };
 
   await writeFile(path.join(outputRoot, `${poem.id}.json`), `${JSON.stringify(poem, null, 2)}\n`);
   written += 1;
 }
 
-console.log(`Imported ${written} Jibanananda poems from ${poetDir}.`);
+console.log(`Imported ${written} Jibanananda poems from ${poetDir}. Skipped ${skipped} known duplicate.`);
