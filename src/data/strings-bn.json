@@ -63,7 +63,38 @@
     "isbn_label": "আইএসবিএন",
     "wikisource_label": "উইকিসংকলন",
     "marketplace_label": "বইয়ের লিঙ্ক (রকমারি)",
-    "database_label": "প্রামাণ্য তথ্যভাণ্ডার"
+    "database_label": "প্রামাণ্য তথ্যভাণ্ডার",
+    "purchase_links_label": "বইয়ের লিঙ্ক",
+    "purchase_link_text": "বই সংগ্রহের লিঙ্ক",
+    "book_sources_heading": "মুদ্রিত বইয়ের সূত্র",
+    "book_source_role_label": "ভূমিকা",
+    "book_source_role_labels": {
+      "text": "পাঠসূত্র",
+      "source": "সূত্র",
+      "primary": "প্রধান সূত্র",
+      "secondary": "সহায়ক সূত্র",
+      "reference": "তথ্যসূত্র",
+      "purchase": "ক্রয়-সূত্র"
+    },
+    "book_title_label": "গ্রন্থ",
+    "publisher_label": "প্রকাশক",
+    "edition_label": "সংস্করণ",
+    "publication_year_label": "প্রকাশ-বছর",
+    "page_label": "পৃষ্ঠা",
+    "page_basis_label": "পৃষ্ঠা-ভিত্তি",
+    "page_basis_labels": {
+      "printed_page": "মুদ্রিত পৃষ্ঠা",
+      "digital_page": "ডিজিটাল পৃষ্ঠা",
+      "scan_page": "স্ক্যান পৃষ্ঠা",
+      "logical_page": "ক্রমিক পৃষ্ঠা",
+      "unknown": "পৃষ্ঠা-ভিত্তি অজানা"
+    },
+    "note_label": "টীকা",
+    "composition_heading": "রচনাতথ্য",
+    "composition_date_label": "রচনাকাল",
+    "composition_place_label": "রচনাস্থান",
+    "composition_note_label": "রচনা-টীকা",
+    "composition_sources_label": "রচনাসূত্র"
   },
 
   "share": {

@@ -9,74 +9,316 @@ interface Props {
 
 const { poet, poem } = Astro.props;
 const source = poem.source_name_bn ?? S.poem.source_unknown;
+const purchaseLinks = poem.purchase_links ?? [];
+const bookSources = poem.book_sources ?? [];
+const compositionSources = poem.composition_sources ?? [];
+const pageBasisLabels = S.poem.page_basis_labels as Record<string, string>;
+const bookSourceRoleLabels = S.poem.book_source_role_labels as Record<string, string>;
+
+type BookSource = NonNullable<Poem["book_sources"]>[number];
+
+function bookSourceRoleLabel(role: string): string {
+  return bookSourceRoleLabels[role] ?? role;
+}
+
+function pageRange(bookSource: BookSource): string {
+  if (bookSource.page_label_bn) return bookSource.page_label_bn;
+
+  const hasStart = typeof bookSource.page_start === "number";
+  const hasEnd = typeof bookSource.page_end === "number";
+
+  if (hasStart && hasEnd && bookSource.page_start !== bookSource.page_end) {
+    return `${bn(bookSource.page_start)}-${bn(bookSource.page_end)}`;
+  }
+
+  if (hasStart) return bn(bookSource.page_start);
+  if (hasEnd) return bn(bookSource.page_end);
+  return "";
+}
+
+function pageBasisLabel(pageBasis: BookSource["page_basis"]): string {
+  if (!pageBasis) return "";
+  return pageBasisLabels[pageBasis] ?? pageBasis;
+}
+
+const hasCompositionMetadata = Boolean(
+  poem.composition_date_bn
+    || poem.composition_place_bn
+    || poem.composition_note_bn
+    || compositionSources.length,
+);
 ---
 
 <aside class="attribution" aria-label={S.poem.source_label}>
-  <dl>
-    <dt>{S.poem.poet_label}</dt>
-    <dd>{poet.name_bn}</dd>
-    <dt>{S.poem.collection_label}</dt>
-    <dd>{poem.source_edition}</dd>
-    {poem.source_year && (
-      <>
-        <dt>{S.poem.year_label}</dt>
-        <dd>{bn(poem.source_year)}</dd>
-      </>
-    )}
-    {poem.isbn && (
-      <>
-        <dt>{S.poem.isbn_label}</dt>
-        <dd>{bn(poem.isbn)}</dd>
-      </>
-    )}
-    {poem.wikisource_url && (
-      <>
-        <dt>{S.poem.wikisource_label}</dt>
-        <dd>
-          <a href={poem.wikisource_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
-            {poem.title_bn} — {S.poem.wikisource_label}
-          </a>
-        </dd>
-      </>
-    )}
-    {poem.marketplace_url && (
-      <>
-        <dt>{S.poem.marketplace_label}</dt>
-        <dd>
-          <a href={poem.marketplace_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
-            রকমারি ডট কম
-          </a>
-        </dd>
-      </>
-    )}
-    {!poem.wikisource_url && poem.source_url ? (
-      <>
-        <dt>{S.poem.database_label}</dt>
-        <dd>
-          <a href={poem.source_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
-            {source}
-          </a>
-        </dd>
-      </>
-    ) : (
-      !poem.wikisource_url && (
+  <section class="attribution-section">
+    <dl>
+      <dt>{S.poem.poet_label}</dt>
+      <dd>{poet.name_bn}</dd>
+      <dt>{S.poem.collection_label}</dt>
+      <dd>{poem.source_edition}</dd>
+      {poem.source_year && (
         <>
-          <dt>{S.poem.source_label}</dt>
-          <dd>{source}</dd>
+          <dt>{S.poem.year_label}</dt>
+          <dd>{bn(poem.source_year)}</dd>
         </>
-      )
-    )}
-  </dl>
+      )}
+      {poem.isbn && (
+        <>
+          <dt>{S.poem.isbn_label}</dt>
+          <dd>{bn(poem.isbn)}</dd>
+        </>
+      )}
+      {poem.wikisource_url && (
+        <>
+          <dt>{S.poem.wikisource_label}</dt>
+          <dd>
+            <a href={poem.wikisource_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
+              {poem.title_bn} — {S.poem.wikisource_label}
+            </a>
+          </dd>
+        </>
+      )}
+      {purchaseLinks.length > 0 ? (
+        <>
+          <dt>{S.poem.purchase_links_label}</dt>
+          <dd>
+            <ul class="attribution-list">
+              {purchaseLinks.map((purchaseLink) => (
+                <li>
+                  <a href={purchaseLink.url} target="_blank" rel="noopener noreferrer" class="attribution-link">
+                    {purchaseLink.label_bn}
+                  </a>
+                  {purchaseLink.note_bn && <span class="attribution-note">{purchaseLink.note_bn}</span>}
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </>
+      ) : (
+        poem.marketplace_url && (
+          <>
+            <dt>{S.poem.marketplace_label}</dt>
+            <dd>
+              <a href={poem.marketplace_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
+                রকমারি ডট কম
+              </a>
+            </dd>
+          </>
+        )
+      )}
+      {!poem.wikisource_url && poem.source_url ? (
+        <>
+          <dt>{S.poem.database_label}</dt>
+          <dd>
+            <a href={poem.source_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
+              {source}
+            </a>
+          </dd>
+        </>
+      ) : (
+        !poem.wikisource_url && (
+          <>
+            <dt>{S.poem.source_label}</dt>
+            <dd>{source}</dd>
+          </>
+        )
+      )}
+    </dl>
+  </section>
+
+  {bookSources.length > 0 && (
+    <section class="attribution-section">
+      <h2 class="attribution-heading">{S.poem.book_sources_heading}</h2>
+      <div class="attribution-stack">
+        {bookSources.map((bookSource) => (
+          <dl class="attribution-item">
+            {bookSource.role && (
+              <>
+                <dt>{S.poem.book_source_role_label}</dt>
+                <dd>{bookSourceRoleLabel(bookSource.role)}</dd>
+              </>
+            )}
+            <dt>{S.poem.book_title_label}</dt>
+            <dd>{bookSource.title_bn}</dd>
+            {bookSource.publisher_bn && (
+              <>
+                <dt>{S.poem.publisher_label}</dt>
+                <dd>{bookSource.publisher_bn}</dd>
+              </>
+            )}
+            {bookSource.edition_bn && (
+              <>
+                <dt>{S.poem.edition_label}</dt>
+                <dd>{bookSource.edition_bn}</dd>
+              </>
+            )}
+            {bookSource.publication_year !== null && bookSource.publication_year !== undefined && (
+              <>
+                <dt>{S.poem.publication_year_label}</dt>
+                <dd>{bn(bookSource.publication_year)}</dd>
+              </>
+            )}
+            {bookSource.isbn && (
+              <>
+                <dt>{S.poem.isbn_label}</dt>
+                <dd>{bn(bookSource.isbn)}</dd>
+              </>
+            )}
+            {bookSource.purchase_url && (
+              <>
+                <dt>{S.poem.purchase_links_label}</dt>
+                <dd>
+                  <a href={bookSource.purchase_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
+                    {S.poem.purchase_link_text}
+                  </a>
+                </dd>
+              </>
+            )}
+            {pageRange(bookSource) && (
+              <>
+                <dt>{S.poem.page_label}</dt>
+                <dd>{pageRange(bookSource)}</dd>
+              </>
+            )}
+            {pageBasisLabel(bookSource.page_basis) && (
+              <>
+                <dt>{S.poem.page_basis_label}</dt>
+                <dd>{pageBasisLabel(bookSource.page_basis)}</dd>
+              </>
+            )}
+            {bookSource.note_bn && (
+              <>
+                <dt>{S.poem.note_label}</dt>
+                <dd>{bookSource.note_bn}</dd>
+              </>
+            )}
+          </dl>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {hasCompositionMetadata && (
+    <section class="attribution-section">
+      <h2 class="attribution-heading">{S.poem.composition_heading}</h2>
+      <dl>
+        {poem.composition_date_bn && (
+          <>
+            <dt>{S.poem.composition_date_label}</dt>
+            <dd>{poem.composition_date_bn}</dd>
+          </>
+        )}
+        {poem.composition_place_bn && (
+          <>
+            <dt>{S.poem.composition_place_label}</dt>
+            <dd>{poem.composition_place_bn}</dd>
+          </>
+        )}
+        {poem.composition_note_bn && (
+          <>
+            <dt>{S.poem.composition_note_label}</dt>
+            <dd>{poem.composition_note_bn}</dd>
+          </>
+        )}
+        {compositionSources.length > 0 && (
+          <>
+            <dt>{S.poem.composition_sources_label}</dt>
+            <dd>
+              <ul class="attribution-list">
+                {compositionSources.map((compositionSource) => (
+                  <li>
+                    {compositionSource.url ? (
+                      <a href={compositionSource.url} target="_blank" rel="noopener noreferrer" class="attribution-link">
+                        {compositionSource.label_bn}
+                      </a>
+                    ) : (
+                      <span>{compositionSource.label_bn}</span>
+                    )}
+                    {compositionSource.page_label_bn && (
+                      <span class="attribution-note">
+                        {S.poem.page_label}: {compositionSource.page_label_bn}
+                      </span>
+                    )}
+                    {compositionSource.note_bn && <span class="attribution-note">{compositionSource.note_bn}</span>}
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </>
+        )}
+      </dl>
+    </section>
+  )}
 </aside>
 
 <style>
+  .attribution-section {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .attribution-section + .attribution-section {
+    border-top: var(--hairline) solid var(--phase-hairline);
+    margin-top: var(--space-2);
+    padding-top: var(--space-3);
+  }
+
+  .attribution-heading {
+    color: var(--phase-ink);
+    font-family: var(--font-ui);
+    font-size: var(--text-caption);
+    font-weight: 600;
+    line-height: var(--leading-caption);
+    margin: 0;
+  }
+
+  .attribution-stack,
+  .attribution-list {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .attribution-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .attribution-list li {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .attribution-item + .attribution-item {
+    border-top: var(--hairline) solid var(--phase-hairline);
+    padding-top: var(--space-2);
+  }
+
+  .attribution-note {
+    color: var(--phase-ink-faint);
+    display: block;
+    font-size: var(--text-caption);
+  }
+
   .attribution-link {
     color: var(--phase-ink);
     text-decoration: underline;
     text-underline-offset: 2px;
     transition: color 0.2s ease;
   }
+
   .attribution-link:hover {
     color: var(--phase-accent);
+  }
+
+  @media (max-width: 520px) {
+    .attribution dl {
+      gap: var(--space-1);
+      grid-template-columns: 1fr;
+    }
+
+    .attribution dt:not(:first-child) {
+      margin-top: var(--space-1);
+    }
   }
 </style>
