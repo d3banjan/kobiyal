@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build",
+    "build": "GITHUB_PAGES=true astro check && GITHUB_PAGES=true astro build",
+    "build:local": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "ingest": "node scripts/ingest-poems.mjs"
