@@ -31,7 +31,7 @@ const purchaseLinkSchema = z.object({
 });
 
 const bookSourceSchema = z.object({
-  role: z.string(),
+  role: z.string().optional(),
   title_bn: z.string(),
   publisher_bn: z.string().nullable().optional(),
   edition_bn: z.string().nullable().optional(),
