@@ -112,6 +112,12 @@
   --phase-accent: #2e7d8a;
 }
 
+[data-skin="posthumous-manuscript"] {
+  --phase-bg: #ede7d9;
+  --phase-ink: #2f2b24;
+  --phase-accent: #6f6a43;
+}
+
 [data-skin="tagore-sonar-tori"] {
   --phase-bg: #e7e0c8;
   --phase-ink: #2b2b28;

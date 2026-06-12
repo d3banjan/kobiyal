@@ -85,8 +85,23 @@
       "rationale": "Verdant paddy-green ground, deep-forest ink, kingfisher-teal accent for lush pastoral Bengal written alongside the grey period."
     },
     {
+      "id": "posthumous-manuscript",
+      "label_bn": "পরবর্তী সংকলন — পাণ্ডুলিপির ধারা",
+      "label_en": "posthumous-manuscript",
+      "year_range": "১৯৫৪–পরবর্তী",
+      "collections_bn": ["শ্রেষ্ঠ কবিতা (১৯৫৪)", "বেলা অবেলা কালবেলা (১৯৬১)", "আলোপৃথিবী (১৯৮১)", "অগ্রন্থিত/অপ্রকাশিত সূত্র"],
+      "palette": { "bg": "#EDE7D9", "ink": "#2F2B24", "accent": "#6F6A43" },
+      "motif_bn": "বাঁধাই-খোলা পাণ্ডুলিপির পাতা",
+      "motif_key": "page",
+      "note_bn": "প্রাথমিক চার পর্বের পরে বা বাইরে থাকা সংকলিত পাঠ—এখানে কাব্যগ্রন্থের সূত্র আছে, কিন্তু পূর্ণ সাল-মিল পরে যাচাই হবে।",
+      "bio_context_bn": "জীবনানন্দের মৃত্যুর পরে পরিবার, সম্পাদক ও গবেষকের হাতে বহু পাণ্ডুলিপি এবং গ্রন্থিত-অগ্রন্থিত কবিতা প্রকাশিত হয়; এই অংশ সেই বিস্তৃত উত্তরজীবনের পাঠকে আলাদা রাখে।",
+      "chronological": false,
+      "periodisation_source": "Provisional title-to-collection mapping from utsargo/jibanananda table of contents and dataset title hints; pending later metadata sprint.",
+      "rationale": "Muted old-paper ground, dark sepia ink, and olive-brown accent: a manuscript/archive surface distinct from the chronological phase palettes, avoiding a false timeline placement."
+    },
+    {
       "id": "dataset-archive",
-      "label_bn": "সংকলন অজানা — পূর্ণ পাঠ",
+      "label_bn": "মেটাডেটা বাকি — পূর্ণ পাঠ",
       "label_en": "dataset-archive",
       "year_range": "সংগ্রহের তথ্য যাচাই চলবে",
       "collections_bn": ["বাংলা কবিতা ডেটাসেট"],

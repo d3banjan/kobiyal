@@ -23,7 +23,60 @@ const source = poem.source_name_bn ?? S.poem.source_unknown;
         <dd>{bn(poem.source_year)}</dd>
       </>
     )}
-    <dt>{S.poem.source_label}</dt>
-    <dd>{source}</dd>
+    {poem.isbn && (
+      <>
+        <dt>{S.poem.isbn_label}</dt>
+        <dd>{bn(poem.isbn)}</dd>
+      </>
+    )}
+    {poem.wikisource_url && (
+      <>
+        <dt>{S.poem.wikisource_label}</dt>
+        <dd>
+          <a href={poem.wikisource_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
+            {poem.title_bn} — {S.poem.wikisource_label}
+          </a>
+        </dd>
+      </>
+    )}
+    {poem.marketplace_url && (
+      <>
+        <dt>{S.poem.marketplace_label}</dt>
+        <dd>
+          <a href={poem.marketplace_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
+            রকমারি ডট কম
+          </a>
+        </dd>
+      </>
+    )}
+    {!poem.wikisource_url && poem.source_url ? (
+      <>
+        <dt>{S.poem.database_label}</dt>
+        <dd>
+          <a href={poem.source_url} target="_blank" rel="noopener noreferrer" class="attribution-link">
+            {source}
+          </a>
+        </dd>
+      </>
+    ) : (
+      !poem.wikisource_url && (
+        <>
+          <dt>{S.poem.source_label}</dt>
+          <dd>{source}</dd>
+        </>
+      )
+    )}
   </dl>
 </aside>
+
+<style>
+  .attribution-link {
+    color: var(--phase-ink);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s ease;
+  }
+  .attribution-link:hover {
+    color: var(--phase-accent);
+  }
+</style>

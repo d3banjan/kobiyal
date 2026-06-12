@@ -59,7 +59,11 @@
     "back_to_poet": "কবির পাতায় ফিরুন",
     "related_themes": "প্রসঙ্গ",
     "share": "শেয়ার করুন",
-    "unverified_note": "পাঠ যাচাই চলছে"
+    "unverified_note": "পাঠ যাচাই চলছে",
+    "isbn_label": "আইএসবিএন",
+    "wikisource_label": "উইকিসংকলন",
+    "marketplace_label": "বইয়ের লিঙ্ক (রকমারি)",
+    "database_label": "প্রামাণ্য তথ্যভাণ্ডার"
   },
 
   "share": {
