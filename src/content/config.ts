@@ -23,6 +23,34 @@ const phaseSchema = z.object({
   rationale: z.string(),
 });
 
+const purchaseLinkSchema = z.object({
+  label_bn: z.string(),
+  url: z.string().url(),
+  note_bn: z.string().nullable().optional(),
+});
+
+const bookSourceSchema = z.object({
+  role: z.string(),
+  title_bn: z.string(),
+  publisher_bn: z.string().nullable().optional(),
+  edition_bn: z.string().nullable().optional(),
+  publication_year: z.number().nullable().optional(),
+  isbn: z.string().nullable().optional(),
+  purchase_url: z.string().url().nullable().optional(),
+  page_start: z.number().nullable().optional(),
+  page_end: z.number().nullable().optional(),
+  page_label_bn: z.string().nullable().optional(),
+  page_basis: z.enum(["printed_page", "digital_page", "scan_page", "logical_page", "unknown"]).nullable().optional(),
+  note_bn: z.string().nullable().optional(),
+});
+
+const compositionSourceSchema = z.object({
+  label_bn: z.string(),
+  url: z.string().url().nullable().optional(),
+  page_label_bn: z.string().nullable().optional(),
+  note_bn: z.string().nullable().optional(),
+});
+
 const poets = defineCollection({
   loader: glob({ pattern: "**/*.json", base: "./src/data/poets" }),
   schema: z.object({
@@ -54,6 +82,12 @@ const poems = defineCollection({
     isbn: z.string().nullable().optional(),
     wikisource_url: z.string().url().nullable().optional(),
     marketplace_url: z.string().url().nullable().optional(),
+    purchase_links: z.array(purchaseLinkSchema).optional(),
+    book_sources: z.array(bookSourceSchema).optional(),
+    composition_date_bn: z.string().nullable().optional(),
+    composition_place_bn: z.string().nullable().optional(),
+    composition_note_bn: z.string().nullable().optional(),
+    composition_sources: z.array(compositionSourceSchema).optional(),
     sort_order: z.number().optional(),
     verified: z.boolean(),
   }),
