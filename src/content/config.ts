@@ -17,6 +17,7 @@ const phaseSchema = z.object({
   motif_bn: z.string(),
   motif_key: z.enum(["feather", "page", "bird", "stars", "river", "boat", "flame"]),
   note_bn: z.string(),
+  bio_context_bn: z.string().optional(),
   chronological: z.boolean(),
   periodisation_source: z.string(),
   rationale: z.string(),

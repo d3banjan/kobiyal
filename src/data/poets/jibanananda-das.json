@@ -17,6 +17,7 @@
       "motif_bn": "ঝরে-পড়া একটি পালক; অস্তরাগ",
       "motif_key": "feather",
       "note_bn": "অস্তরাগের রং — তখনও কণ্ঠস্বর ধার-করা, অলংকারে ভারী।",
+      "bio_context_bn": "বরিশালের ছাত্রজীবন ও কলকাতার উচ্চশিক্ষার পর তরুণ শিক্ষক-কবি হিসেবে তাঁর সাহিত্যজগতে প্রবেশের সময়। প্রথম কাব্যগ্রন্থে রবীন্দ্র-উত্তর আধুনিক কণ্ঠস্বর খোঁজার চেষ্টা স্পষ্ট।",
       "chronological": true,
       "periodisation_source": "Editorial lens structured on Jibanananda's published collections; informed by Clinton B. Seely, A Poet Apart (1990), and standard Bhumendra Guha / Abdul Mannan Syed chronologies.",
       "rationale": "Faded rose-cream ground with maroon-brown ink and terracotta accent: sunset-glow, feathers, and decorative sensuousness of an apprentice voice."
@@ -31,6 +32,7 @@
       "motif_bn": "ধুলোমাখা ধূসর পাণ্ডুলিপির পাতা",
       "motif_key": "page",
       "note_bn": "ছাই আর ধুলোর ধূসর — এইখানে কবি পেলেন নিজের কণ্ঠ।",
+      "bio_context_bn": "শিক্ষকতার অনিশ্চিত পেশাজীবন, কলকাতা-বরিশাল যাতায়াত, সংসার ও নিভৃত জীবন—এই পটভূমিতে তাঁর কবিতা আরও ব্যক্তিগত, সংযত ও ধূসর হয়ে ওঠে।",
       "chronological": true,
       "periodisation_source": "Editorial lens structured on Jibanananda's published collections; informed by Clinton B. Seely, A Poet Apart (1990), and standard Bhumendra Guha / Abdul Mannan Syed chronologies.",
       "rationale": "Ash-grey paper ground, charcoal ink, faded-ochre accent. The collection literally names grey/ashen sediment and weariness."
@@ -45,6 +47,7 @@
       "motif_bn": "সন্ধ্যায় ঘরে-ফেরা পাখি; অন্ধকার",
       "motif_key": "bird",
       "note_bn": "সন্ধ্যা আর অন্ধকার — ঘরে-ফেরা পাখির ডানায় হাজার বছরের ক্লান্তি।",
+      "bio_context_bn": "দ্বিতীয় বিশ্বযুদ্ধের কলকাতা, শহুরে অস্থিরতা ও ব্যক্তিগত নিঃসঙ্গতার ভিতর এই পর্বের কবিতায় দীর্ঘ ইতিহাসের ক্লান্তি, প্রেম, স্মৃতি ও আশ্রয়ের আকাঙ্ক্ষা একসাথে আসে।",
       "chronological": true,
       "periodisation_source": "Editorial lens structured on Jibanananda's published collections; informed by Clinton B. Seely, A Poet Apart (1990), and standard Bhumendra Guha / Abdul Mannan Syed chronologies.",
       "rationale": "Deep twilight indigo-slate ground, dusk-cream ink, and last-amber accent for the evening homing-bird atmosphere."
@@ -59,6 +62,7 @@
       "motif_bn": "তারার ফাঁকে তিমির; বিস্তীর্ণ রাত",
       "motif_key": "stars",
       "note_bn": "তারার তিমির — যুদ্ধ, মৃত্যু আর মহাপৃথিবীর কালো বিস্তার।",
+      "bio_context_bn": "যুদ্ধ, দুর্ভিক্ষ, দেশভাগের কাছাকাছি সময়ের সামাজিক অন্ধকার এবং অনিশ্চিত কর্মজীবনের চাপ এই পর্যায়ের ভাষাকে আরও ঠান্ডা, বিস্তীর্ণ ও মৃত্যুচেতনায় ঘন করে।",
       "chronological": true,
       "periodisation_source": "Editorial lens structured on Jibanananda's published collections; informed by Clinton B. Seely, A Poet Apart (1990), and standard Bhumendra Guha / Abdul Mannan Syed chronologies.",
       "rationale": "Near-black blue ground, cold-starlight ink, steel-silver accent for war, famine years, death, and vast darkness."
@@ -75,6 +79,7 @@
       "motif_bn": "ধানসিঁড়ি নদী, মাছরাঙা, সবুজ বাংলা",
       "motif_key": "river",
       "note_bn": "ধূসর পর্বের পাশেই লেখা — অথচ একেবারে উল্টো সবুজ সুর। তাই এটি ধারাবাহিক পর্ব নয়, একটি সমান্তরাল স্রোত।",
+      "bio_context_bn": "জীবদ্দশায় গ্রন্থাকারে প্রকাশিত হয়নি; বরিশাল ও বাংলার নদী-ধানক্ষেতের স্মৃতি থেকে লেখা এই কবিতাগুলো মৃত্যুর পরে প্রকাশিত হয়ে জীবনানন্দ-পাঠকে নতুনভাবে খুলে দেয়।",
       "chronological": false,
       "periodisation_source": "Editorial lens structured on Jibanananda's published collections; flagged as a non-chronological parallel strand.",
       "rationale": "Verdant paddy-green ground, deep-forest ink, kingfisher-teal accent for lush pastoral Bengal written alongside the grey period."
@@ -89,6 +94,7 @@
       "motif_bn": "অস্থায়ী সংকলনের পাতা",
       "motif_key": "page",
       "note_bn": "এই অংশে ডেটাসেট থেকে আনা বাকি কবিতাগুলো রাখা হয়েছে; কাব্যগ্রন্থ, সাল ও পর্ব পরে মিলিয়ে সাজানো হবে।",
+      "bio_context_bn": "এই পাঠভাগটি জীবনের কোনো নির্দিষ্ট পর্ব নয়। আপাতত পূর্ণ পাঠের অভিজ্ঞতা সামনে রাখা হয়েছে; পরে আলাদা মেটাডেটা পর্বে কাব্যগ্রন্থ, সাল ও জীবনপর্ব মিলিয়ে এগুলো সরানো হবে।",
       "chronological": false,
       "periodisation_source": "Temporary dataset import bucket pending a later metadata sprint; not presented as a chronological phase.",
       "rationale": "Neutral paper palette for poems whose collection metadata has not yet been consolidated, avoiding false phase assignment while preserving a calm reading surface."

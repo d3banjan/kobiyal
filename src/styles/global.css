@@ -664,16 +664,22 @@ svg {
 }
 
 .phase-note,
-.hue-note {
+.hue-note,
+.bio-note {
   color: var(--phase-ink-muted);
   font-size: var(--text-micro);
   line-height: var(--leading-caption);
   margin: 0;
 }
 
-.hue-note {
+.hue-note,
+.bio-note {
   border-left: var(--hairline) solid var(--phase-hairline);
   padding-left: var(--space-3);
+}
+
+.bio-note {
+  color: var(--phase-ink);
 }
 
 .poem-list {
