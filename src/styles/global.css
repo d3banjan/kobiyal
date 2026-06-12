@@ -688,6 +688,49 @@ svg {
   color: var(--phase-ink);
 }
 
+.phase-article {
+  border-block: var(--hairline) solid var(--phase-hairline);
+  margin-block: var(--space-1);
+  padding-block: var(--space-2);
+}
+
+.phase-article summary {
+  align-items: center;
+  color: var(--phase-ink);
+  cursor: pointer;
+  display: flex;
+  font-weight: 600;
+  gap: var(--space-4);
+  justify-content: space-between;
+  line-height: var(--leading-caption);
+  min-height: 44px;
+}
+
+.phase-article summary::marker {
+  color: var(--phase-accent);
+}
+
+.phase-article summary::after {
+  color: var(--phase-ink-muted);
+  content: "খুলুন";
+  flex: none;
+  font-size: var(--text-caption);
+  font-weight: 400;
+}
+
+.phase-article[open] summary::after {
+  content: "বন্ধ করুন";
+}
+
+.phase-article p {
+  color: var(--phase-ink);
+  font-family: var(--font-verse);
+  font-size: 1rem;
+  line-height: 1.85;
+  margin: var(--space-3) 0 var(--space-2);
+  max-width: var(--measure-verse);
+}
+
 .poem-list {
   display: grid;
   margin-top: var(--space-5);
