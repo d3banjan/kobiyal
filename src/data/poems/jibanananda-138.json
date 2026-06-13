@@ -11,6 +11,22 @@
   ],
   "source_edition": "ধূসর পাণ্ডুলিপি",
   "source_year": 1936,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "ধূসর পাণ্ডুলিপি",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1936,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 53,
+      "page_end": 64,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ],
   "source_name_bn": "বাংলার কবিতা",
   "source_url": "https://banglarkobita.com/poem/famous/881",
   "sort_order": 138,
