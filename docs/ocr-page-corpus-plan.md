@@ -148,14 +148,17 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   Builds a review-only fuzzy line report for remaining printed-page gaps after
   exact line and phrase-window matching are exhausted. It uses a NumPy vector
   prefilter over hashed character shingle embeddings, then runs detailed
-  line-level scoring only on the selected pages. The embedding uses full weight
-  for exact character shingles, half weight for OCR class-normalized shingles,
-  and higher weights for longer contiguous shingles (`3,5,8` by default), so it
-  rewards both OCR-equivalent character classes and contiguous regions rather
-  than scattered character overlap. Candidate windows are capped to short
-  printed-page spans and report the longest consecutive run of matched poem
-  lines. This report is not an apply source; fuzzy-only candidates must still be
-  checked against printed-page evidence before writing poem metadata.
+  line-level scoring only on selected local OCR line windows. The embedding uses
+  full weight for exact character shingles, half weight for OCR class-normalized
+  shingles, and higher weights for longer contiguous shingles (`3,5,8` by
+  default). The detailed pass then requires a poem line to match one local OCR
+  region, not a bag of trigrams scattered across a full page. Each page caches
+  inverted indexes from exact/class shingles to region windows, so the expensive
+  contiguous score only runs on the top matching regions. Candidate windows are
+  capped to short printed-page spans and report the longest consecutive run of
+  matched poem lines. This report is not an apply source; fuzzy-only candidates
+  must still be checked against printed-page evidence before writing poem
+  metadata.
 
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
@@ -298,11 +301,14 @@ the equivalence keys find real likely typos, but they also collapse valid
 poetic words such as `কোণে`, `ভোলো`, `ভেলা`, and `শোণ` into common alternatives.
 Use this report to queue manual/printed-source checks, not bulk text rewrites.
 
-The first fuzzy-line audit over the remaining 103 public printed-page gaps ran
-in about 25 seconds with the cached NumPy vector prefilter. It generated a broad
-review queue, but most high-scoring rows are fuzzy-only with no exact line
-anchors. Treat those rows as prioritization hints for printed-source inspection,
-not as citation evidence.
+The initial page-wide fuzzy-line audit over the remaining 103 public
+printed-page gaps ran in about 25 seconds, but it generated a broad false-positive
+queue: many high-scoring rows were fuzzy-only and drew character shingles from
+unrelated regions of the same page. The current local-region pass is slower
+(about one minute at `--vector-top-pages 24`) but collapses that queue to three
+weak fuzzy rows with zero exact anchors. Treat those rows as negative evidence
+for automatic application: they may help tune OCR, but they are not citation
+evidence.
 
 The poem-body quality report also records leading dash structure across all
 Jibanananda poem JSON files. A single leading ASCII hyphen is treated by the site

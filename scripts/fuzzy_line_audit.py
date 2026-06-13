@@ -31,6 +31,9 @@ except ImportError:  # pragma: no cover - fallback for direct python without uv.
 
 DEFAULT_REVIEW_EXCLUSIONS = "src/data/metadata-review-exclusions.json"
 UNKNOWN_COLLECTION = "সংকলন অজানা"
+DEFAULT_MAX_REGION_LINES = 3
+DEFAULT_MAX_REGION_CHARS = 520
+DEFAULT_REGION_TOP_WINDOWS = 16
 CLASS_GROUPS = [
     "ািীুূৃেৈোৌ",
     "নণংঙঞ",
@@ -152,6 +155,73 @@ def char_ngrams(text: str, size: int, class_mode: bool = False) -> set[str]:
     return set(ngram_sequence(text, size, class_mode=class_mode))
 
 
+def compact_length(text: str) -> int:
+    return len(compact_text(text))
+
+
+def profile_text(page: dict[str, Any]) -> str:
+    return "\n".join(profile.get("text") or "" for profile in page.get("ocr_profiles") or [])
+
+
+def page_region_lines(page: dict[str, Any], max_region_chars: int) -> list[str]:
+    lines: list[str] = []
+    seen = set()
+    for source in [page.get("raw_ocr") or "", page.get("raw_pdftotext") or "", profile_text(page)]:
+        for raw_line in source.splitlines():
+            normalized = spans.normalize(raw_line)
+            compact = compact_text(normalized)
+            if len(compact) < 3:
+                continue
+            if compact.isdigit():
+                continue
+            if len(compact) > max_region_chars:
+                continue
+            if normalized in seen:
+                continue
+            seen.add(normalized)
+            lines.append(normalized)
+    return lines
+
+
+def page_region_windows(
+    page: dict[str, Any],
+    ngram_size: int,
+    max_region_lines: int,
+    max_region_chars: int,
+) -> list[dict[str, Any]]:
+    lines = page_region_lines(page, max_region_chars)
+    windows = []
+    for start in range(len(lines)):
+        pieces: list[str] = []
+        for end in range(start, min(len(lines), start + max_region_lines)):
+            pieces.append(lines[end])
+            text = " ".join(pieces)
+            if compact_length(text) > max_region_chars:
+                break
+            exact_grams = char_ngrams(text, ngram_size)
+            class_grams = char_ngrams(text, ngram_size, class_mode=True)
+            if not exact_grams or not class_grams:
+                continue
+            windows.append(
+                {
+                    "line_start": start,
+                    "line_end": end,
+                    "text": text,
+                    "exact_grams": exact_grams,
+                    "class_grams": class_grams,
+                }
+            )
+    return windows
+
+
+def region_inverted_index(windows: list[dict[str, Any]], key: str) -> dict[str, list[int]]:
+    index: dict[str, list[int]] = defaultdict(list)
+    for window_index, window in enumerate(windows):
+        for gram in window.get(key) or set():
+            index[gram].append(window_index)
+    return dict(index)
+
+
 def longest_run(flags: list[bool]) -> int:
     best = 0
     current = 0
@@ -214,6 +284,8 @@ def normalized_lines(body: str, min_chars: int, ngram_size: int) -> list[dict[st
                 "compact": compact,
                 "exact_ngrams": exact_ngrams,
                 "class_ngrams": class_ngrams,
+                "exact_gram_set": set(exact_ngrams),
+                "class_gram_set": set(class_ngrams),
             }
         )
     return rows
@@ -277,6 +349,8 @@ def prepare_pages(
     embedding_dimensions: int,
     embedding_ngram_sizes: list[int],
     use_vector_prefilter: bool,
+    max_region_lines: int,
+    max_region_chars: int,
 ) -> list[dict[str, Any]]:
     rows = []
     for row in read_jsonl(page_corpus):
@@ -285,6 +359,14 @@ def prepare_pages(
         row = spans.prepare_page(row)
         row["_char_ngrams"] = char_ngrams(spans.page_text(row), ngram_size)
         row["_class_ngrams"] = char_ngrams(spans.page_text(row), ngram_size, class_mode=True)
+        row["_region_windows"] = page_region_windows(
+            row,
+            ngram_size,
+            max_region_lines=max_region_lines,
+            max_region_chars=max_region_chars,
+        )
+        row["_region_exact_index"] = region_inverted_index(row["_region_windows"], "exact_grams")
+        row["_region_class_index"] = region_inverted_index(row["_region_windows"], "class_grams")
         if use_vector_prefilter and np is not None:
             vector = text_embedding(spans.page_text(row), embedding_dimensions, embedding_ngram_sizes)
             row["_embedding"] = vector
@@ -358,38 +440,92 @@ def page_candidate_pool(
     return selected
 
 
+def best_region_match(page: dict[str, Any], line: dict[str, Any], top_windows: int) -> dict[str, Any] | None:
+    best: dict[str, Any] | None = None
+    line_exact_set = line.get("exact_gram_set") or set(line.get("exact_ngrams") or [])
+    line_class_set = line.get("class_gram_set") or set(line.get("class_ngrams") or [])
+    minimum_prefilter = max(3.0, min(len(line_exact_set), len(line_class_set)) * 0.2)
+    window_scores: Counter[int] = Counter()
+    exact_hits: Counter[int] = Counter()
+    exact_index = page.get("_region_exact_index") or {}
+    class_index = page.get("_region_class_index") or {}
+    for gram in line_exact_set:
+        for window_index in exact_index.get(gram, []):
+            window_scores[window_index] += 1.0
+            exact_hits[window_index] += 1
+    for gram in line_class_set:
+        for window_index in class_index.get(gram, []):
+            window_scores[window_index] += 0.5
+
+    ranked_regions = [
+        (score, exact_hits[window_index], window_index)
+        for window_index, score in window_scores.items()
+        if score >= minimum_prefilter
+    ]
+    ranked_regions.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    windows = page.get("_region_windows") or []
+    for _, _, window_index in ranked_regions[:top_windows]:
+        region = windows[window_index]
+        exact = line["normalized"] in region["text"]
+        fuzzy_score = fuzzy_ngram_score(
+            line.get("exact_ngrams") or [],
+            line.get("class_ngrams") or [],
+            region.get("exact_grams") or set(),
+            region.get("class_grams") or set(),
+        )
+        if fuzzy_score is None:
+            continue
+        score = 1.0 if exact else float(fuzzy_score["score"])
+        candidate = {
+            "kind": "exact" if exact else "fuzzy_char",
+            "score": score,
+            "exact_score": fuzzy_score["exact_score"],
+            "class_score": fuzzy_score["class_score"],
+            "class_only_score": fuzzy_score["class_only_score"],
+            "contiguous_bonus": fuzzy_score["contiguous_bonus"],
+            "page_line_start": region["line_start"],
+            "page_line_end": region["line_end"],
+            "region_text": region["text"][:220],
+        }
+        if best is None or (
+            candidate["score"],
+            candidate["exact_score"],
+            -int(candidate["page_line_end"] - candidate["page_line_start"]),
+        ) > (
+            best["score"],
+            best["exact_score"],
+            -int(best["page_line_end"] - best["page_line_start"]),
+        ):
+            best = candidate
+    return best
+
+
 def page_match(
     page: dict[str, Any],
     line_rows: list[dict[str, Any]],
     ngram_size: int,
     min_line_score: float,
+    region_top_windows: int,
 ) -> list[dict[str, Any]]:
-    page_text = spans.page_text(page)
-    page_grams = page.get("_char_ngrams") or set()
-    page_class_grams = page.get("_class_ngrams") or set()
     matches = []
     for line in line_rows:
-        normalized = line["normalized"]
-        exact = normalized in page_text
-        fuzzy_score = fuzzy_ngram_score(
-            line.get("exact_ngrams") or [],
-            line.get("class_ngrams") or [],
-            page_grams,
-            page_class_grams,
-        )
-        if fuzzy_score is None:
+        region_match = best_region_match(page, line, region_top_windows)
+        if region_match is None:
             continue
-        score = 1.0 if exact else float(fuzzy_score["score"])
-        if exact or score >= min_line_score:
+        score = float(region_match["score"])
+        if region_match["kind"] == "exact" or score >= min_line_score:
             matches.append(
                 {
                     "line_index": line["line_index"],
-                    "kind": "exact" if exact else "fuzzy_char",
+                    "kind": region_match["kind"],
                     "score": round(score, 3),
-                    "exact_score": round(float(fuzzy_score["exact_score"]), 3),
-                    "class_score": round(float(fuzzy_score["class_score"]), 3),
-                    "class_only_score": round(float(fuzzy_score["class_only_score"]), 3),
-                    "contiguous_bonus": round(float(fuzzy_score["contiguous_bonus"]), 3),
+                    "exact_score": round(float(region_match["exact_score"]), 3),
+                    "class_score": round(float(region_match["class_score"]), 3),
+                    "class_only_score": round(float(region_match["class_only_score"]), 3),
+                    "contiguous_bonus": round(float(region_match["contiguous_bonus"]), 3),
+                    "page_line_start": region_match["page_line_start"],
+                    "page_line_end": region_match["page_line_end"],
+                    "region_text": region_match["region_text"],
                     "text": line["raw"],
                 }
             )
@@ -460,6 +596,9 @@ def summarize_group(group: list[dict[str, Any]]) -> dict[str, Any]:
                     "class_score": match.get("class_score"),
                     "class_only_score": match.get("class_only_score"),
                     "contiguous_bonus": match.get("contiguous_bonus"),
+                    "page_line_start": match.get("page_line_start"),
+                    "page_line_end": match.get("page_line_end"),
+                    "region_text": match.get("region_text"),
                     "text": match["text"],
                 }
             )
@@ -491,13 +630,17 @@ def candidate_status(candidate: dict[str, Any], source_edition: str | None) -> s
     has_pages = isinstance(candidate.get("printed_page_start"), int) and isinstance(candidate.get("printed_page_end"), int)
     if not has_pages:
         return "needs_printed_page_sequence"
-    if int(candidate.get("longest_line_run") or 0) < 3:
+    longest = int(candidate.get("longest_line_run") or 0)
+    exact = int(candidate.get("exact_line_match_count") or 0)
+    line_count = int(candidate.get("line_match_count") or 0)
+    span_count = int(candidate.get("span_page_count") or 0)
+    if longest < 3:
         return "weak_fuzzy_review"
-    if int(candidate.get("exact_line_match_count") or 0) >= 2:
+    if exact >= 2:
         return "strong_fuzzy_review"
-    if int(candidate.get("line_match_count") or 0) >= 6 and int(candidate.get("span_page_count") or 0) <= 3:
+    if exact >= 1 and line_count >= 6 and longest >= 4 and span_count <= 3:
         return "strong_fuzzy_review"
-    if source_edition == UNKNOWN_COLLECTION and int(candidate.get("line_match_count") or 0) >= 4:
+    if source_edition == UNKNOWN_COLLECTION and line_count >= 4:
         return "manual_collection_review"
     return "weak_fuzzy_review"
 
@@ -522,7 +665,18 @@ def markdown_report(rows: list[dict[str, Any]], max_rows: int) -> str:
         else:
             page_label = "পৃষ্ঠা নেই"
         page_summary = f"{candidate.get('candidate_book_id')}; {page_label}; scan {candidate.get('scan_page_start')}-{candidate.get('scan_page_end')}"
-        sample = " / ".join(match.get("text") or "" for match in (candidate.get("sample_matches") or [])[:2])
+        sample_parts = []
+        for match in (candidate.get("sample_matches") or [])[:2]:
+            region = match.get("region_text") or ""
+            page_lines = "-".join(
+                str(part)
+                for part in [match.get("page_line_start"), match.get("page_line_end")]
+                if part is not None
+            )
+            sample_parts.append(
+                f"{match.get('kind')}@{page_lines}: {match.get('text') or ''} => {region}"
+            )
+        sample = " / ".join(sample_parts)
         lines.append(
             "| "
             + " | ".join(
@@ -566,9 +720,12 @@ def main() -> int:
         default="3,5,8",
         help="Comma-separated contiguous shingle sizes used by the vector prefilter.",
     )
-    parser.add_argument("--vector-top-pages", type=int, default=48)
+    parser.add_argument("--vector-top-pages", type=int, default=24)
     parser.add_argument("--min-vector-score", type=float, default=0.03)
     parser.add_argument("--max-candidate-span-pages", type=int, default=4)
+    parser.add_argument("--max-region-lines", type=int, default=DEFAULT_MAX_REGION_LINES)
+    parser.add_argument("--max-region-chars", type=int, default=DEFAULT_MAX_REGION_CHARS)
+    parser.add_argument("--region-top-windows", type=int, default=DEFAULT_REGION_TOP_WINDOWS)
     parser.add_argument("--min-line-chars", type=int, default=20)
     parser.add_argument("--min-line-score", type=float, default=0.62)
     parser.add_argument("--min-candidate-lines", type=int, default=3)
@@ -593,6 +750,8 @@ def main() -> int:
         embedding_dimensions=args.embedding_dimensions,
         embedding_ngram_sizes=embedding_ngram_sizes,
         use_vector_prefilter=use_vector_prefilter,
+        max_region_lines=args.max_region_lines,
+        max_region_chars=args.max_region_chars,
     )
     pages_by_book: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for page in pages:
@@ -642,7 +801,13 @@ def main() -> int:
             class_prefilter = len(poem_class_grams & (page.get("_class_ngrams") or set()))
             if exact_prefilter + class_prefilter < args.min_candidate_lines * args.ngram_size:
                 continue
-            matches = page_match(page, line_rows, args.ngram_size, args.min_line_score)
+            matches = page_match(
+                page,
+                line_rows,
+                args.ngram_size,
+                args.min_line_score,
+                args.region_top_windows,
+            )
             if len(matches) < args.min_candidate_lines:
                 continue
             page_hits.append(
@@ -724,6 +889,9 @@ def main() -> int:
             "vector_top_pages": args.vector_top_pages,
             "min_vector_score": args.min_vector_score,
             "max_candidate_span_pages": args.max_candidate_span_pages,
+            "max_region_lines": args.max_region_lines,
+            "max_region_chars": args.max_region_chars,
+            "region_top_windows": args.region_top_windows,
             "min_line_chars": args.min_line_chars,
             "min_line_score": args.min_line_score,
             "class_match_weight": 0.5,
