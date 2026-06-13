@@ -69,7 +69,8 @@ const banglaDigitPattern = "[০-৯]";
 const standaloneSectionMarkerPattern = new RegExp(`^${banglaDigitPattern}+$`);
 const wrappedSectionMarkerPattern = new RegExp(`^(.*?)\\s*।।\\s*(${banglaDigitPattern}{1,2})\\s*।।\\s*$`);
 const trailingBareMarkerPattern = new RegExp(`^(.*?)([।!?;:,]?)\\s*(?<!${banglaDigitPattern})(${banglaDigitPattern})\\s*([!।?])?\\s*$`);
-const sourceNotePattern = /^(দেশ|কবিতা),?\s+.*[০-৯]{3,4}$/;
+const sourceNotePattern = /^(?:(দেশ|কবিতা),?\s+.*[০-৯]{3,4}|গ্রন্থ\s*:\s*\S.*)$/;
+const leadingStanzaBreakPattern = /^-+\s*(.*)$/;
 
 function stripTrailingBareMarker(line: string): string {
   const match = line.match(trailingBareMarkerPattern);
@@ -85,13 +86,25 @@ function pushStanza(blocks: VerseBlock[], lines: string[]) {
   }
 }
 
+function normalizeLeadingStanzaBreak(line: string): { startsNewStanza: boolean; line: string } {
+  const match = line.trimStart().match(leadingStanzaBreakPattern);
+  if (!match) return { startsNewStanza: false, line };
+  return { startsNewStanza: true, line: match[1].trim() };
+}
+
 export function verseBlocks(body: string): VerseBlock[] {
   const blocks: VerseBlock[] = [];
 
   for (const stanza of splitStanzas(body)) {
     const currentLines: string[] = [];
 
-    for (const line of stanza) {
+    for (const rawLine of stanza) {
+      const { startsNewStanza, line } = normalizeLeadingStanzaBreak(rawLine);
+      if (startsNewStanza) {
+        pushStanza(blocks, currentLines);
+        if (!line) continue;
+      }
+
       if (standaloneSectionMarkerPattern.test(line)) {
         pushStanza(blocks, currentLines);
         blocks.push({ kind: "section-marker", marker: line });
