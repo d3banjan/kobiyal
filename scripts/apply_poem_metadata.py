@@ -108,19 +108,88 @@ def has_span_anchor_evidence(row: dict[str, Any]) -> bool:
     return True
 
 
-def is_eligible(row: dict[str, Any], poem: dict[str, Any], allow_legacy_candidates: bool) -> tuple[bool, str]:
+def is_known_collection_review_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Allow a narrower review gate for poems already assigned to this book.
+
+    The global acceptance gate has to work for unknown poems across all books.
+    If the poem already has a matching source edition, a lower score can still
+    be useful when the span has printed pages and multiple line anchors.
+    """
+
+    if row.get("status") != "needs_manual_review":
+        return False
+    if poem.get("source_edition") != meta["title_bn"]:
+        return False
+    if not has_span_anchor_evidence(row):
+        return False
+    if "page_sequence_present" not in set(row.get("evidence") or []):
+        return False
+    if float(row.get("score") or 0) < 17:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 4:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 1:
+        return False
+    if not (
+        {"title_match", "first_line_match", "last_line_match", "high_body_coverage"}
+        & set(row.get("evidence") or [])
+    ):
+        return False
+
+    runner_up_gap = row.get("runner_up_gap")
+    return runner_up_gap is None or float(runner_up_gap) >= 4
+
+
+def is_known_collection_ambiguous_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Promote dense same-book spans where adjacent pages tie in scoring."""
+
+    if row.get("status") != "ambiguous":
+        return False
+    if poem.get("source_edition") != meta["title_bn"]:
+        return False
+    if not has_span_anchor_evidence(row):
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if "page_sequence_present" not in evidence:
+        return False
+    if not ({"title_match", "first_line_match", "last_line_match", "high_body_coverage"} & evidence):
+        return False
+    if float(row.get("score") or 0) < 25:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 10:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 5:
+        return False
+
+    page_span = int(row["printed_page_end"]) - int(row["printed_page_start"]) + 1
+    return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
+
+
+def is_eligible(
+    row: dict[str, Any],
+    poem: dict[str, Any],
+    allow_legacy_candidates: bool,
+    allow_known_review_candidates: bool,
+    allow_known_ambiguous_candidates: bool,
+) -> tuple[bool, str]:
     if poem.get("poet_id") != "jibanananda-das":
         return False, "not_jibanananda"
-    if row.get("status") != "accepted_candidate":
-        return False, "not_accepted"
     if not isinstance(row.get("printed_page_start"), int) or not isinstance(row.get("printed_page_end"), int):
         return False, "missing_printed_page"
-    if not allow_legacy_candidates and not has_span_anchor_evidence(row):
-        return False, "missing_span_anchor_evidence"
 
     meta = BOOK_META.get(row.get("candidate_book_id"))
     if not meta:
         return False, "unknown_candidate_book"
+
+    if row.get("status") != "accepted_candidate":
+        if allow_known_review_candidates and is_known_collection_review_candidate(row, poem, meta):
+            return True, "eligible_known_review"
+        if allow_known_ambiguous_candidates and is_known_collection_ambiguous_candidate(row, poem, meta):
+            return True, "eligible_known_ambiguous"
+        return False, "not_accepted"
+    if not allow_legacy_candidates and not has_span_anchor_evidence(row):
+        return False, "missing_span_anchor_evidence"
 
     current_edition = poem.get("source_edition")
     if current_edition != UNKNOWN_COLLECTION and current_edition != meta["title_bn"]:
@@ -161,6 +230,16 @@ def main() -> int:
         action="store_true",
         help="Allow accepted candidates that do not include deterministic span-anchor evidence.",
     )
+    parser.add_argument(
+        "--allow-known-review-candidates",
+        action="store_true",
+        help="Apply printed-page citations for review candidates whose candidate book already matches the poem source edition.",
+    )
+    parser.add_argument(
+        "--allow-known-ambiguous-candidates",
+        action="store_true",
+        help="Apply dense same-book ambiguous spans where adjacent pages tie in scoring.",
+    )
     args = parser.parse_args()
 
     poems_dir = Path(args.poems_dir)
@@ -178,7 +257,13 @@ def main() -> int:
             continue
 
         poem = read_json(path)
-        eligible, reason = is_eligible(row, poem, args.allow_legacy_candidates)
+        eligible, reason = is_eligible(
+            row,
+            poem,
+            args.allow_legacy_candidates,
+            args.allow_known_review_candidates,
+            args.allow_known_ambiguous_candidates,
+        )
         summary[reason] = summary.get(reason, 0) + 1
         if not eligible:
             continue
