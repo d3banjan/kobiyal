@@ -132,8 +132,8 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 
 Current cumulative site-facing metadata state:
 
-- 272 of 389 Jibanananda records have printed book citations.
-- 263 of 376 public/non-duplicate Jibanananda records have printed book citations.
+- 276 of 389 Jibanananda records have printed book citations.
+- 267 of 376 public/non-duplicate Jibanananda records have printed book citations.
 - 97 public/non-duplicate records still have `সংকলন অজানা` as the collection.
 - 99 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
@@ -141,6 +141,13 @@ Current cumulative site-facing metadata state:
   মাঠ` import whose cited `রূপসী বাংলা` counterpart remains listed.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
+
+A reviewed appendix pass added four `মহাপৃথিবী` citations from the `সংযোজন`
+section in the shared scan: `মনোকণিকা` pages 173-174, `সুবিনয় মুস্তফী` page
+175, `অনুপম ত্রিবেদী` pages 175-176, and `একটি নক্ষত্র আসে` page 176. The
+evidence is the appendix contents list plus the visible page 173 anchor and
+contiguous page order through 176. The imported online source marker
+`(মহাপৃথিবী কাব্যগ্রন্থ)` was removed from the two affected poem bodies.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 

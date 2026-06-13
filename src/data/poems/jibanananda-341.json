@@ -14,5 +14,21 @@
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/shubinoy-mustofi/",
   "sort_order": 341,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "মহাপৃথিবী",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1944,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 175,
+      "page_end": 175,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "সংযোজন অংশের সূচীপত্র, দৃশ্যমান পৃষ্ঠা ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }
