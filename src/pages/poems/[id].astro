@@ -5,20 +5,20 @@ import Layout from "../../components/Layout.astro";
 import Motif from "../../components/Motif.astro";
 import ShareTool from "../../components/ShareTool.astro";
 import ThemeChip from "../../components/ThemeChip.astro";
-import { findPhase, splitStanzas } from "../../lib/content";
+import { findPhase, publicPoems, splitStanzas } from "../../lib/content";
 import { S, withBase } from "../../lib/i18n";
 
 export async function getStaticPaths() {
-  const poems = await getCollection("poems");
+  const poems = publicPoems((await getCollection("poems")).map((entry) => entry.data));
   const poets = (await getCollection("poets")).map((entry) => entry.data);
 
   return poems.map((poem) => {
-    const poet = poets.find((item) => item.id === poem.data.poet_id);
-    if (!poet) throw new Error(`Missing poet for ${poem.data.id}`);
-    const phase = findPhase(poet, poem.data.phase_id);
+    const poet = poets.find((item) => item.id === poem.poet_id);
+    if (!poet) throw new Error(`Missing poet for ${poem.id}`);
+    const phase = findPhase(poet, poem.phase_id);
     return {
-      params: { id: poem.data.id },
-      props: { poem: poem.data, poet, phase }
+      params: { id: poem.id },
+      props: { poem, poet, phase }
     };
   });
 }

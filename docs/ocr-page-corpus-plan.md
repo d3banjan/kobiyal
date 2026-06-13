@@ -142,14 +142,16 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 
 Current cumulative site-facing metadata state:
 
-- 276 of 389 Jibanananda records have printed book citations.
-- 267 of 375 public/non-duplicate Jibanananda records have printed book citations.
+- 273 of 389 Jibanananda records have printed book citations.
+- 264 of 374 public/non-duplicate Jibanananda records have printed book citations.
+- 110 public/non-duplicate Jibanananda records still lack printed book citations.
 - 96 public/non-duplicate records still have `সংকলন অজানা` as the collection.
 - 98 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
   parenthesized `সূর্য নক্ষত্র নারী` fragments and the alternate `সেই দিন এই
   মাঠ` import whose cited `রূপসী বাংলা` counterpart remains listed, plus the
-  stanza-only `চারিদিকে শান্ত বাতি` fragment.
+  stanza-only `চারিদিকে শান্ত বাতি` fragment and the composite dialogue import
+  `আকাশে সাতটি তাঁরা`.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 
@@ -173,6 +175,12 @@ carry the visible `মাঠের গল্প` / `মেঠো চাঁদ` s
 generator now guards this case by trimming only sparse repeated-line anchors
 that precede a title/opening-line page, while keeping dense OCR-damaged starts
 such as `ডাকিয়া কহিল মোরে রাজার দুলাল` on their first printed page.
+
+A duplicate-data pass hid `আকাশে সাতটি তাঁরা` (`jibanananda-029`) from public
+lists. Its imported body is a composite `ছেলে`/`মেয়ে` dialogue made from several
+poem fragments, while the clean `রূপসী বাংলা` poem
+`আকাশে সাতটি তারা যখন উঠেছে ফুটে` (`jibanananda-030`) remains public with the
+printed page 15 citation.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 

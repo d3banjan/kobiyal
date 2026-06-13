@@ -9,6 +9,7 @@ const duplicatePoemIds = new Set([
   "jibanananda-225",
   "jibanananda-190",
   "jibanananda-214",
+  "jibanananda-029",
   "jibanananda-094",
   "jibanananda-099",
   "jibanananda-131",
