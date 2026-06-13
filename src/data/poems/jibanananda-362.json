@@ -11,6 +11,22 @@
   ],
   "source_edition": "রূপসী বাংলা",
   "source_year": 1957,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 9,
+      "page_end": 9,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR-পাঠ ও মেরামত করা পৃষ্ঠা-ক্রমে মিলিয়ে অনুমিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ],
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/sheidin-ai-math/",
   "sort_order": 362,
