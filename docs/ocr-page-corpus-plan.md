@@ -133,12 +133,12 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 Current cumulative site-facing metadata state:
 
 - 272 of 389 Jibanananda records have printed book citations.
-- 263 of 377 public/non-suppressed Jibanananda records have printed book citations.
-- 98 records still have `সংকলন অজানা` as the collection.
-- 100 records still lack `source_year`.
+- 263 of 376 public/non-duplicate Jibanananda records have printed book citations.
+- 97 public/non-duplicate records still have `সংকলন অজানা` as the collection.
+- 99 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
-  parenthesized `সূর্য নক্ষত্র নারী` fragments whose full counterparts remain
-  listed.
+  parenthesized `সূর্য নক্ষত্র নারী` fragments and the alternate `সেই দিন এই
+  মাঠ` import whose cited `রূপসী বাংলা` counterpart remains listed.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 
@@ -158,7 +158,7 @@ The report is written to the ignored sidecar file
 written to `metadata_reports/ocr-lexicon-substitutions.current.json`. It surfaces
 repeated OCR forms with suggested corrections, for example `আঁম` -> `আমি`,
 `যাঁদ` -> `যদি`, `পাঁথবীর` -> `পৃথিবীর`, and `শাঁশরের` -> `শিশিরের`. Feeding
-that map into span proposal changed the report from 144 to 158 accepted
+that map into span proposal changed the report from 144 to 160 accepted
 candidates and reduced `no_candidate` records from 69 to 59. Against the current
 site data, the only gated JSON change was `সুচেতনা`: its printed citation moves
 from `বনলতা সেন`, page 28, to pages 27-28 after the page-27 OCR is normalized
