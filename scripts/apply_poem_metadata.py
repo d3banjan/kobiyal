@@ -312,6 +312,36 @@ def is_known_collection_long_ambiguous_candidate(row: dict[str, Any], poem: dict
     return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
 
 
+def is_known_collection_single_page_body_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Promote reviewed one-page same-book spans with high body coverage."""
+
+    if row.get("status") != "ambiguous":
+        return False
+    if poem.get("source_edition") != meta["title_bn"]:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int) or start != end:
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+    if int(row.get("span_anchor_count") or 0) != 1:
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if not {"body_token_overlap", "high_body_coverage", "page_sequence_present"} <= evidence:
+        return False
+    if float(row.get("score") or 0) < 25:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 7:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 1:
+        return False
+
+    return True
+
+
 def is_unknown_collection_exact_rich_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
     """Promote unknown-collection spans only when exact line evidence is dense."""
 
@@ -445,6 +475,102 @@ def is_unknown_collection_ambiguous_line_candidate(row: dict[str, Any], poem: di
     return runner_up_gap is not None and float(runner_up_gap) >= 2
 
 
+def is_unknown_collection_continuation_body_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Classify unknown multi-page spans with body coverage and a printed page sequence."""
+
+    if row.get("status") != "ambiguous":
+        return False
+    if poem.get("source_edition") != UNKNOWN_COLLECTION:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int) or end <= start:
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+    if int(row.get("span_anchor_count") or 0) < 1:
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if not {"body_token_overlap", "high_body_coverage", "page_sequence_present"} <= evidence:
+        return False
+    if float(row.get("score") or 0) < 17:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 8:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 1:
+        return False
+
+    return True
+
+
+def is_unknown_collection_fuzzy_single_page_body_candidate(
+    row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]
+) -> bool:
+    """Classify reviewed one-page Rupasi Bangla spans with fuzzy body coverage."""
+
+    if row.get("status") != "needs_manual_review":
+        return False
+    if poem.get("source_edition") != UNKNOWN_COLLECTION:
+        return False
+    if row.get("candidate_book_id") != "rupasi-bangla":
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int) or start != end:
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+    if int(row.get("span_anchor_count") or 0) != 1:
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if not {"body_token_overlap", "high_body_coverage", "page_sequence_present"} <= evidence:
+        return False
+    if float(row.get("score") or 0) < 17:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 4:
+        return False
+
+    return True
+
+
+def is_unknown_collection_single_page_ambiguous_body_candidate(
+    row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]
+) -> bool:
+    """Classify ambiguous one-page Rupasi Bangla spans with title and body coverage."""
+
+    if row.get("status") != "ambiguous":
+        return False
+    if poem.get("source_edition") != UNKNOWN_COLLECTION:
+        return False
+    if row.get("candidate_book_id") != "rupasi-bangla":
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int) or start != end:
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+    if int(row.get("span_anchor_count") or 0) != 1:
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if not {"body_token_overlap", "high_body_coverage", "page_sequence_present", "title_match"} <= evidence:
+        return False
+    if float(row.get("score") or 0) < 25:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 4:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 1:
+        return False
+
+    return True
+
+
 def is_conflict_exact_rich_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
     """Override stale known editions only with dense exact-line evidence."""
 
@@ -565,10 +691,14 @@ def is_eligible(
     allow_known_fuzzy_rich_candidates: bool,
     allow_known_continuation_candidates: bool,
     allow_known_long_ambiguous_candidates: bool,
+    allow_known_single_page_body_candidates: bool,
     allow_unknown_exact_rich_candidates: bool,
     allow_unknown_exact_anchor_candidates: bool,
     allow_unknown_single_page_body_candidates: bool,
     allow_unknown_ambiguous_line_candidates: bool,
+    allow_unknown_continuation_body_candidates: bool,
+    allow_unknown_fuzzy_single_page_body_candidates: bool,
+    allow_unknown_single_page_ambiguous_body_candidates: bool,
     allow_unknown_embedded_candidates: bool,
     allow_conflict_exact_rich_candidates: bool,
     allow_conflict_embedded_candidates: bool,
@@ -602,6 +732,8 @@ def is_eligible(
             return True, "eligible_known_continuation"
         if allow_known_long_ambiguous_candidates and is_known_collection_long_ambiguous_candidate(row, poem, meta):
             return True, "eligible_known_long_ambiguous"
+        if allow_known_single_page_body_candidates and is_known_collection_single_page_body_candidate(row, poem, meta):
+            return True, "eligible_known_single_page_body"
         if allow_unknown_exact_rich_candidates and is_unknown_collection_exact_rich_candidate(row, poem, meta):
             return True, "eligible_unknown_exact_rich"
         if allow_unknown_exact_anchor_candidates and is_unknown_collection_exact_anchor_candidate(row, poem, meta):
@@ -610,6 +742,17 @@ def is_eligible(
             return True, "eligible_unknown_single_page_body"
         if allow_unknown_ambiguous_line_candidates and is_unknown_collection_ambiguous_line_candidate(row, poem, meta):
             return True, "eligible_unknown_ambiguous_line"
+        if allow_unknown_continuation_body_candidates and is_unknown_collection_continuation_body_candidate(row, poem, meta):
+            return True, "eligible_unknown_continuation_body"
+        if allow_unknown_fuzzy_single_page_body_candidates and is_unknown_collection_fuzzy_single_page_body_candidate(
+            row, poem, meta
+        ):
+            return True, "eligible_unknown_fuzzy_single_page_body"
+        if (
+            allow_unknown_single_page_ambiguous_body_candidates
+            and is_unknown_collection_single_page_ambiguous_body_candidate(row, poem, meta)
+        ):
+            return True, "eligible_unknown_single_page_ambiguous_body"
         if allow_unknown_embedded_candidates and is_unknown_embedded_collection_candidate(row, poem, meta):
             return True, "eligible_unknown_embedded_collection"
         return False, "not_accepted"
@@ -712,6 +855,11 @@ def main() -> int:
         help="Apply long same-book ambiguous spans with dense line anchors and printed page sequence evidence.",
     )
     parser.add_argument(
+        "--allow-known-single-page-body-candidates",
+        action="store_true",
+        help="Apply same-book one-page ambiguous spans with reviewed body coverage and printed page sequence evidence.",
+    )
+    parser.add_argument(
         "--allow-unknown-exact-rich-candidates",
         action="store_true",
         help="Classify unknown-collection review/ambiguous spans with dense exact line anchors.",
@@ -730,6 +878,21 @@ def main() -> int:
         "--allow-unknown-ambiguous-line-candidates",
         action="store_true",
         help="Classify unknown ambiguous spans with title/high-body evidence, line anchors, and printed pages.",
+    )
+    parser.add_argument(
+        "--allow-unknown-continuation-body-candidates",
+        action="store_true",
+        help="Classify unknown multi-page ambiguous spans with body coverage and printed page sequence evidence.",
+    )
+    parser.add_argument(
+        "--allow-unknown-fuzzy-single-page-body-candidates",
+        action="store_true",
+        help="Classify unknown one-page Rupasi Bangla spans with fuzzy body coverage and printed page sequence evidence.",
+    )
+    parser.add_argument(
+        "--allow-unknown-single-page-ambiguous-body-candidates",
+        action="store_true",
+        help="Classify unknown one-page Rupasi Bangla ambiguous spans with title/body coverage and printed page sequence evidence.",
     )
     parser.add_argument(
         "--allow-unknown-embedded-candidates",
@@ -774,10 +937,14 @@ def main() -> int:
             args.allow_known_fuzzy_rich_candidates,
             args.allow_known_continuation_candidates,
             args.allow_known_long_ambiguous_candidates,
+            args.allow_known_single_page_body_candidates,
             args.allow_unknown_exact_rich_candidates,
             args.allow_unknown_exact_anchor_candidates,
             args.allow_unknown_single_page_body_candidates,
             args.allow_unknown_ambiguous_line_candidates,
+            args.allow_unknown_continuation_body_candidates,
+            args.allow_unknown_fuzzy_single_page_body_candidates,
+            args.allow_unknown_single_page_ambiguous_body_candidates,
             args.allow_unknown_embedded_candidates,
             args.allow_conflict_exact_rich_candidates,
             args.allow_conflict_embedded_candidates,

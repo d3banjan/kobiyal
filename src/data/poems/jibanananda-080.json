@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-080",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "এখানে ঘুঘুর ডাকে অপরাহ্নে",
   "body_bn": "এখানে ঘুঘুর ডাকে অপরাহ্নে শান্তি আসে মানুষের মনে;\nএখানে সবুজ শাখা আঁকাবাঁকা হলুদ পাখিরে রাখে ঢেকে;\nজামের আড়ালে সেই বউকথাকওটিরে যদি ফেল দেখে\nএকবার — একবার দু’পহর অপরাহ্নে যদি এই ঘুঘুর গুঞ্জনে\nধরা দাও — তাহলে অনন্তকাল থাকিতে যে হবে এই বনে;\nমৌরির গন্ধমাখা ঘাসের শরীরে ক্লান্ত দেহটিরে রেখে\nআশ্বিনের ক্ষেতঝরা কচি কচি শ্যামা পোকাদের কাছে ডেকে\nরব আমি চকোরীর সাথে যেন চকোরের মতন মিলনে;উঠানে কে রূপবতী খেলা করে — ছাড়ায়ে দিতেছে বুঝি ধান\nশালিখের; ঘাস থেকে ঘাসে ঘাসে খুঁটে খুঁটে খেতেছে সে তাই;\nহলুদ নরম পায়ে খয়েরি শালিখগুলো ডরিছে উঠান;\nচেয়ে দ্যাখো সুন্দরীরে : গোরোচনা রূপ নিয়ে এসেছে কি রাই!\nনীলনদে — গাঢ় রৌদ্রে — কবে আমি দেখিয়াছি — করেছিল স্নান",
   "tags": [
@@ -9,10 +9,26 @@
     "আকাশ",
     "ফসল"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/ekhaney-ghughur-dakey-opranhey/",
   "sort_order": 80,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 42,
+      "page_end": 42,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }
