@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "filename": "jibanananda-340.json",
+      "poem_id": "jibanananda-340",
+      "title_bn": "সুদর্শনা",
+      "candidate_book_id": "banalata-sen",
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "title_collision_distinct_poem",
+      "note_bn": "বনলতা সেন মুদ্রিত পৃষ্ঠা ১৮-তে একই শিরোনামের আলাদা কবিতা আছে, যা ইতিমধ্যে jibanananda-339 হিসেবে উদ্ধৃত। এই আমদানি করা অপ্রকাশিত পাঠের শরীর আলাদা, তাই title-only মিল গ্রহণযোগ্য নয়।"
+    },
+    {
+      "filename": "jibanananda-340.json",
+      "poem_id": "jibanananda-340",
+      "title_bn": "সুদর্শনা",
+      "candidate_book_id": "banalata-sen",
+      "candidate_page_start": 18,
+      "candidate_page_end": 18,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "title_collision_distinct_poem",
+      "note_bn": "বনলতা সেন মুদ্রিত পৃষ্ঠা ১৮-তে একই শিরোনামের আলাদা কবিতা আছে, যা ইতিমধ্যে jibanananda-339 হিসেবে উদ্ধৃত। এই আমদানি করা অপ্রকাশিত পাঠের শরীর আলাদা, তাই পৃষ্ঠা ১৮ গ্রহণযোগ্য নয়।"
+    },
+    {
+      "filename": "jibanananda-057.json",
+      "poem_id": "jibanananda-057",
+      "title_bn": "ঊনিশশো চৌত্রিশের",
+      "candidate_book_id": "banalata-sen",
+      "candidate_page_start": 21,
+      "candidate_page_end": 21,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "weak_line_overlap_wrong_poem",
+      "note_bn": "বনলতা সেন পৃষ্ঠা ২১ মুদ্রিত কবিতা 'দু'জন'। ক্ষীণ পঙ্‌ক্তি/শব্দ মিল থাকলেও শিরোনাম ও মূল শরীর মেলে না।"
+    },
+    {
+      "filename": "jibanananda-236.json",
+      "poem_id": "jibanananda-236",
+      "title_bn": "বিপাশা",
+      "candidate_book_id": "mahaprithibi",
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "title_fragment_on_section_page",
+      "note_bn": "মহাপৃথিবী scan page 28 একটি section/title-like পৃষ্ঠা; সেখানে 'বিপাশামদির' শব্দ আছে, কিন্তু 'বিপাশা' কবিতার শরীর বা নির্ভরযোগ্য পঙ্‌ক্তি নেই।"
+    },
+    {
+      "filename": "jibanananda-290.json",
+      "poem_id": "jibanananda-290",
+      "title_bn": "রবীন্দ্রনাথ",
+      "candidate_book_id": "rupasi-bangla",
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "publisher_page_false_match",
+      "note_bn": "রূপসী বাংলা scan page 80 প্রকাশক/বিজ্ঞাপনধর্মী পৃষ্ঠা; প্রস্তাবিত 'রবীন্দ্রনাথ' মিল কবিতার শিরোনাম বা শরীরের প্রমাণ নয়।"
+    },
+    {
+      "filename": "jibanananda-293.json",
+      "poem_id": "jibanananda-293",
+      "title_bn": "রাত্রি ও ভোর",
+      "candidate_book_id": "bela-abela-kalabela",
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "no_line_anchor_wrong_page",
+      "note_bn": "বেলা অবেলা কালবেলা scan page 67-তে পৃষ্ঠা/সূচির মতো বিচ্ছিন্ন পঙ্‌ক্তি আছে; 'রাত্রি ও ভোর' কবিতার শিরোনাম বা শরীর মেলে না।"
+    },
+    {
+      "filename": "jibanananda-320.json",
+      "poem_id": "jibanananda-320",
+      "title_bn": "সন্ধ্যা হয়ে আসে",
+      "candidate_book_id": "banalata-sen",
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "front_matter_false_match",
+      "note_bn": "বনলতা সেন scan page 6 রূপসী বাংলা সংযোজন/সূচি-জাত front matter; এই কবিতার শরীর সেখানে নেই।"
+    },
+    {
+      "filename": "jibanananda-333.json",
+      "poem_id": "jibanananda-333",
+      "title_bn": "সারা দিন ট্রাম-বাস",
+      "candidate_book_id": "banalata-sen",
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "front_matter_false_match",
+      "note_bn": "বনলতা সেন scan page 6 রূপসী বাংলা সংযোজন/সূচি-জাত front matter; 'সারা দিন ট্রাম-বাস' কবিতার শিরোনাম বা শরীর নেই।"
+    },
+    {
+      "filename": "jibanananda-159.json",
+      "poem_id": "jibanananda-159",
+      "title_bn": "তোমাকে ভালোবেসে",
+      "candidate_book_id": "bela-abela-kalabela",
+      "candidate_page_start": 14,
+      "candidate_page_end": 14,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "title_phrase_inside_wrong_poem",
+      "note_bn": "বেলা অবেলা কালবেলা পৃষ্ঠা ১৪-তে 'তোমাকে ভালোবেসে' একটি বাক্যাংশ হিসেবে আছে; আমদানি করা কবিতার শুরু বা শরীর সেখানে নেই।"
+    },
+    {
+      "filename": "jibanananda-265.json",
+      "poem_id": "jibanananda-265",
+      "title_bn": "মাঝে মাঝে",
+      "candidate_book_id": "bela-abela-kalabela",
+      "candidate_page_start": 51,
+      "candidate_page_end": 51,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "title_phrase_inside_wrong_poem",
+      "note_bn": "বেলা অবেলা কালবেলা পৃষ্ঠা ৫১-তে 'মাঝে-মাঝে' বাক্যাংশ আছে, কিন্তু এই আমদানি করা কবিতার শরীর মেলে না।"
+    },
+    {
+      "filename": "jibanananda-165.json",
+      "poem_id": "jibanananda-165",
+      "title_bn": "দিনরাত্রি",
+      "candidate_book_id": "bela-abela-kalabela-copy",
+      "candidate_page_start": 165,
+      "candidate_page_end": 165,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "weak_line_overlap_wrong_page",
+      "note_bn": "বেলা অবেলা কালবেলা কপি পৃষ্ঠা ১৬৫ দেখা পাঠটি এই আমদানি করা কবিতার শুরু বা শরীরের সঙ্গে নির্ভরযোগ্যভাবে মেলে না।"
+    },
+    {
+      "filename": "jibanananda-333.json",
+      "poem_id": "jibanananda-333",
+      "title_bn": "সারা দিন ট্রাম-বাস",
+      "candidate_book_id": "rupasi-bangla-copy",
+      "candidate_page_start": 146,
+      "candidate_page_end": 146,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "generic_line_overlap_wrong_poem",
+      "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৪৬ 'হায় পাখি...' পাঠ; প্রস্তাবিত এক-পঙ্‌ক্তির মিল সাধারণ/অপ্রতুল, শিরোনাম ও শরীর মেলে না।"
+    },
+    {
+      "filename": "adbhut-andhar-ek.json",
+      "poem_id": "adbhut-andhar-ek",
+      "title_bn": "অদ্ভুত আঁধার এক",
+      "candidate_book_id": null,
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_insufficient_scan_evidence",
+      "reason": "not_found_in_current_scan_corpus",
+      "note_bn": "বর্তমান সাতটি তারার তিমির পেজ কর্পাসে শিরোনাম বা স্বতন্ত্র পঙ্‌ক্তি নির্ভরযোগ্যভাবে পাওয়া যায়নি। মুদ্রিত পৃষ্ঠা না দেখে বই-সূত্র থেকে পৃষ্ঠা বানানো যাবে না।"
+    }
+  ]
+}

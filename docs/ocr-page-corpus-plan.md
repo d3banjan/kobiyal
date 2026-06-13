@@ -125,7 +125,12 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   with a span-candidate report, excludes hidden duplicate imports, and ranks
   gaps into buckets such as `manual_collection_review`,
   `needs_printed_page_sequence`, `weak_text_anchor`, and `no_candidate`. This is
-  the handoff list for printed-source review; it does not apply metadata.
+  the handoff list for printed-source review; it does not apply metadata. It
+  also reads `src/data/metadata-review-exclusions.json`, a committed audit trail
+  of candidate-specific false positives. Reviewed exclusions remain in the
+  missing-citation count, but are moved to `reviewed_*` buckets so the next
+  review pass focuses on unresolved evidence instead of rechecking disproved
+  title collisions or weak one-line overlaps.
 
 - `scripts/phrase_window_audit.py`
   Builds a review-only exact phrase-window report for remaining poems by
@@ -228,6 +233,19 @@ A trailing page-sequence pass added a printed citation for `তোমাকে`
 172. The page contains the poem title, high body coverage, nine line matches,
 and three exact line anchors. The poem remains classified as
 `অপ্রকাশিত কবিতা`; only the printed book-source citation was added.
+
+A review-exclusion pass added `src/data/metadata-review-exclusions.json` and
+taught the gap reporter to demote candidate-specific false positives. Current
+reviewed exclusions include the duplicate-title `সুদর্শনা` collision, weak
+one-line/page overlaps for `ঊনিশশো চৌত্রিশের`, `দিনরাত্রি`,
+`তোমাকে ভালোবেসে`, `মাঝে মাঝে`, and `সারা দিন ট্রাম-বাস`, front-matter or
+publisher-page false positives for `বিপাশা`, `রবীন্দ্রনাথ`, `রাত্রি ও ভোর`,
+and `সন্ধ্যা হয়ে আসে`, plus the current scan-corpus absence of
+`অদ্ভুত আঁধার এক`. These rows are still metadata gaps; the sidecar only records
+that the listed candidate evidence is insufficient and must not be applied
+without stronger printed-page proof. After this pass, the all-books gap report
+has no unresolved candidate with line-anchor evidence; the remaining unresolved
+rows are title/body-token-only matches or no-candidate records.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 
