@@ -33,6 +33,14 @@ COLLECTION_TO_BOOK_ID = {
     "রূপসী বাংলা": "rupasi-bangla",
 }
 
+COLLECTION_TO_ALIAS_BOOK_IDS = {
+    "ধূসর পাণ্ডুলিপি": {"dhusar-pandulipi-copy"},
+    "বনলতা সেন": {"banalata-sen-appendix"},
+    "বেলা অবেলা কালবেলা": {"bela-abela-kalabela-copy"},
+    "মহাপৃথিবী": {"mahaprithibi-copy", "mahaprithibi-appendix-copy"},
+    "রূপসী বাংলা": {"rupasi-bangla-copy"},
+}
+
 OCR_EQUIVALENCES = [
     ["ি", "ী"],
     ["ু", "ূ"],
@@ -153,13 +161,29 @@ def book_token_document_frequency(pages_by_book: dict[str, list[dict[str, Any]]]
     return by_book
 
 
-def candidate_books(poem: dict[str, Any], all_books: bool) -> set[str]:
+def collection_book_ids(collection: str, include_logical_aliases: bool) -> set[str]:
+    book_id = COLLECTION_TO_BOOK_ID[collection]
+    book_ids = {book_id}
+    if include_logical_aliases:
+        book_ids.update(COLLECTION_TO_ALIAS_BOOK_IDS.get(collection, set()))
+    return book_ids
+
+
+def candidate_books(poem: dict[str, Any], all_books: bool, include_logical_aliases: bool) -> set[str]:
     if all_books:
-        return set(COLLECTION_TO_BOOK_ID.values())
+        return {
+            book_id
+            for collection in COLLECTION_TO_BOOK_ID
+            for book_id in collection_book_ids(collection, include_logical_aliases)
+        }
     edition = poem.get("source_edition")
     if edition in COLLECTION_TO_BOOK_ID:
-        return {COLLECTION_TO_BOOK_ID[edition]}
-    return set(COLLECTION_TO_BOOK_ID.values())
+        return collection_book_ids(edition, include_logical_aliases)
+    return {
+        book_id
+        for collection in COLLECTION_TO_BOOK_ID
+        for book_id in collection_book_ids(collection, include_logical_aliases)
+    }
 
 
 def score_page(
@@ -403,6 +427,11 @@ def main() -> int:
     parser.add_argument("--output", default="metadata_reports/poem-span-candidates.jsonl")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--all-books", action="store_true", help="Search all primary books for every poem.")
+    parser.add_argument(
+        "--include-logical-aliases",
+        action="store_true",
+        help="Also search logical copy/appendix sections for each collection. Use for targeted gap-filling review.",
+    )
     parser.add_argument("--min-score", type=float, default=10.0)
     parser.add_argument(
         "--ocr-substitutions",
@@ -446,7 +475,7 @@ def main() -> int:
             if len((normalized := normalize(line))) >= 8
         ]
         candidates = []
-        for book_id in candidate_books(poem, args.all_books):
+        for book_id in candidate_books(poem, args.all_books, args.include_logical_aliases):
             for page in pages_by_book.get(book_id, []):
                 score, evidence = score_page(title_norm, line_norms, poem_token_set, page)
                 if score >= args.min_score:

@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 
-BOOK_META = {
+BASE_BOOK_META = {
     "dhusar-pandulipi": {
         "title_bn": "ধূসর পাণ্ডুলিপি",
         "publication_year": 1936,
@@ -52,6 +52,19 @@ BOOK_META = {
         "phase_id": "posthumous-manuscript",
     },
 }
+
+BOOK_ALIASES = {
+    "dhusar-pandulipi-copy": "dhusar-pandulipi",
+    "banalata-sen-appendix": "banalata-sen",
+    "mahaprithibi-copy": "mahaprithibi",
+    "mahaprithibi-appendix-copy": "mahaprithibi",
+    "rupasi-bangla-copy": "rupasi-bangla",
+    "bela-abela-kalabela-copy": "bela-abela-kalabela",
+}
+
+BOOK_META = dict(BASE_BOOK_META)
+for alias, canonical in BOOK_ALIASES.items():
+    BOOK_META[alias] = BASE_BOOK_META[canonical]
 
 UNKNOWN_COLLECTION = "সংকলন অজানা"
 
@@ -107,6 +120,16 @@ def has_span_anchor_evidence(row: dict[str, Any]) -> bool:
     if page_span >= 5 and int(row.get("span_anchor_count") or 0) < page_span:
         return False
     return True
+
+
+def has_existing_book_source(poem: dict[str, Any], title_bn: str) -> bool:
+    return any(
+        source.get("role") == "primary"
+        and source.get("title_bn") == title_bn
+        and isinstance(source.get("page_start"), int)
+        and isinstance(source.get("page_end"), int)
+        for source in poem.get("book_sources") or []
+    )
 
 
 def is_known_collection_review_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
@@ -716,6 +739,8 @@ def is_eligible(
         return True, "eligible_conflict_exact_rich"
     if allow_conflict_embedded_candidates and is_conflict_embedded_collection_candidate(row, poem, meta):
         return True, "eligible_conflict_embedded_collection"
+    if row.get("candidate_book_id") in BOOK_ALIASES and has_existing_book_source(poem, meta["title_bn"]):
+        return False, "alias_existing_source"
 
     if row.get("status") != "accepted_candidate":
         if allow_known_review_candidates and is_known_collection_review_candidate(row, poem, meta):
@@ -798,11 +823,14 @@ def apply_metadata(row: dict[str, Any], poem: dict[str, Any], force_collection_u
 
     source = book_source(row, meta)
     existing_sources = poem.get("book_sources") or []
-    next_sources = [
-        item
-        for item in existing_sources
-        if item.get("title_bn") != source["title_bn"] or item.get("role") != source["role"]
-    ]
+    if force_collection_update or poem.get("source_edition") == source["title_bn"]:
+        next_sources = [item for item in existing_sources if item.get("role") != source["role"]]
+    else:
+        next_sources = [
+            item
+            for item in existing_sources
+            if item.get("title_bn") != source["title_bn"] or item.get("role") != source["role"]
+        ]
     next_sources.append(source)
     poem["book_sources"] = next_sources
 

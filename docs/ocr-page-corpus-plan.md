@@ -90,6 +90,9 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
 
   - normalize Bengali text with known OCR equivalence classes;
   - optionally apply a generated OCR substitution map for matching only;
+  - optionally search logical copy-section aliases for the same source
+    collection, such as `mahaprithibi-appendix-copy` for `মহাপৃথিবী`, via the
+    explicit `--include-logical-aliases` review flag;
   - score candidate pages by title, first/last line, body-token overlap, and repaired printed-page availability;
   - derive the span from clustered title/line anchors rather than broad adjacent token overlap;
   - reject title-only anchors, which are unsafe for short titles like `তুমি`;
@@ -101,6 +104,11 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
 
 - `scripts/apply_poem_metadata.py`
   Applies only gated span candidates to poem JSON. A row must be an accepted candidate, have printed page start/end, include deterministic span-anchor evidence, and either match the poem's known collection or fill `সংকলন অজানা`. It does not mark poems as text-verified. Legacy broad-token candidate reports require the explicit `--allow-legacy-candidates` override.
+  Logical copy-section IDs are mapped back to the canonical collection metadata
+  before writing `book_sources`, so a `mahaprithibi-appendix-copy` candidate is
+  cited as `মহাপৃথিবী`. Alias candidates fill missing citations only during
+  bulk application; they do not overwrite an existing primary citation for the
+  same collection.
 
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
@@ -133,12 +141,13 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 Current cumulative site-facing metadata state:
 
 - 276 of 389 Jibanananda records have printed book citations.
-- 267 of 376 public/non-duplicate Jibanananda records have printed book citations.
-- 97 public/non-duplicate records still have `সংকলন অজানা` as the collection.
-- 99 public/non-duplicate records still lack `source_year`.
+- 267 of 375 public/non-duplicate Jibanananda records have printed book citations.
+- 96 public/non-duplicate records still have `সংকলন অজানা` as the collection.
+- 98 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
   parenthesized `সূর্য নক্ষত্র নারী` fragments and the alternate `সেই দিন এই
-  মাঠ` import whose cited `রূপসী বাংলা` counterpart remains listed.
+  মাঠ` import whose cited `রূপসী বাংলা` counterpart remains listed, plus the
+  stanza-only `চারিদিকে শান্ত বাতি` fragment.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 
@@ -148,6 +157,13 @@ section in the shared scan: `মনোকণিকা` pages 173-174, `সুব
 evidence is the appendix contents list plus the visible page 173 anchor and
 contiguous page order through 176. The imported online source marker
 `(মহাপৃথিবী কাব্যগ্রন্থ)` was removed from the two affected poem bodies.
+
+A reviewed logical-alias pass corrected two stale `সাতটি তারার তিমির`
+assignments to `বেলা অবেলা কালবেলা`: `ইতিহাসযান` uses the logical copy-section
+evidence on pages 164-168, while `হে হৃদয়` uses the stronger primary-scan
+evidence on pages 67-68. The pass also marked
+`চারিদিকে শান্ত বাতি` as a public duplicate fragment because the page corpus
+shows it is a stanza inside the already imported `সেইদিন এই মাঠ...` poem.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 
