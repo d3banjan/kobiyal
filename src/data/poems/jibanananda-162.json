@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-162",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "তোমার বুকের থেকে একদিন চলে যাবে",
   "body_bn": "তোমার বুকের থেকে একদিন চলে যাবে তোমার সন্তান\nবাংলার বুক ছেড়ে চলে যাবে; যে ইঙ্গিতে নক্ষত্রও ঝরে,\nআকাশের নীলাভ নরম বুক ছেড়ে দিয়ে হিমের ভিতরে\nডুবে যায়, – কুয়াশায় ঝ’রে পড়ে দিকে-দিকে রপশালী ধান\nএকদিন; – হয়তো বা নিমপেঁচা অন্ধকারে গা’বে তার গান,\nআমারে কুড়ায়ে নেবে মেঠো ইঁদুরের মতো মরণের ঘরে –\nহ্নদয়ে ক্ষদের গন্ধ লেগে আছে আকাঙ্খার তবু ও তো চোখের উপরে\nনীল, মৃত্যু উজাগর – বাঁকা চাঁদ, শূন্য মাঠ, শিশিরের ঘ্রাণ -কখন মরণ আসে কে বা জানে – কালীদহে কখন যে ঝড়\nকমলের নাম ভাঙে – ছিঁড়ে ফেলে গাংচিল শালিকের প্রাণ\nজানি নাকো;- তবু যেন মরি আমি এই মাঠ – ঘাটের ভিতর,\nকৃষ্ণা যমুনায় নয় – যেন এই গাঙুড়ের ডেউয়ের আঘ্রাণ\nলেগে থাকে চোখে মুখে – রুপসী বাংলা যেন বুকের উপর\nজেগে থাকে; তারি নিচে শুয়ে থাকি যেন আমি অর্ধনারীশ্বর।",
   "tags": [
@@ -9,10 +9,26 @@
     "বাংলা",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/tomar-buker-theke-akdin-chole-jabo/",
   "sort_order": 162,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 29,
+      "page_end": 29,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

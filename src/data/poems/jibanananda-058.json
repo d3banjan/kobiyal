@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-058",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "এ-সব কবিতা আমি যখন লিখেছি",
   "body_bn": "এ-সব কবিতা আমি যখন লিখেছি বসে নিজ মনে একা;\nচালতার পাতা থেকে টুপ — টুপ জ্যোৎস্নায় ঝরছে শিশির;\nকুয়াশায় সি’র হয়ে ছিল স্নান ধানসিড়ি নদীটির তীরে;\nবাদুড় আধাঁর ডানা মেলে হিম জ্যোৎস্নায় কাটিয়াছে রেখা\nআকাঙ্খার; নিভু দীপ আগলায়ে মনোরমা দিয়ে গেছে দেখা\nসঙ্গে তার কবেকার মৌমাছির…. কিশোরীর ভিড়\nআমের বউল দিল শীতরাতে; — আনিল আতার হিম ক্ষীর;\nমলিন আলোয় আমি তাহাদের দেখিলাম, — এ কবিতা লেখাতাহাদের ম্লান মনে কবে, তাহাদের কড়ির মতন\nধূসর হাতের রূপ মনে করে; তাহাদের হৃদয়ের তরে।\nসে কত শতাব্দী আগে তাহাদের করুণ শঙ্খের মতো স্তন\nতাহাদের হলুদ শাড়ি — ক্ষীর দেহ — তাহাদের অপরূপ মন\nচলে গেছে পৃথিবীর সব চেয়ে শান্ত হিম সান্ত্বনার ঘরে :\nআমার বিষন্ন স্বপ্নে থেকে থেকে তাহাদের ঘুম ভেঙে পড়ে।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "অন্ধকার"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/e-shob-kobita-aami-jokhon-likechi/",
   "sort_order": 58,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 47,
+      "page_end": 47,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

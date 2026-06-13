@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-102",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "কোথাও চলিয়া যাবো একদিন",
   "body_bn": "কোথাও চলিয়া যাব একদিন;-তারপর রাত্রির আকাশ\nঅসংখ্য নক্ষত্র নিয়ে ঘুরে যাবে কতকাল জানিব না আমি;\nজানিব না কতকাল উঠানে ঝরিবে এই হলুদ বাদামী\nপাতাগুলো-মাদারের ডুমুরের-সোঁদা গন্ধ-বাংলার শ্বাস\nবুকে নিয়ে তাহাদের;-জানিব না পরথুপী মধুকূপী ঘাস\nকত কাল প্রান-রে ছড়ায়ে রবে- কাঁঠাল শাখার থেকে নামি\nপাখনা ডলিবে পেচাঁ এই ঘাসে-বাংলার সবুজ বালামী\nধানী শাল পশমিনা বুকে তার -শরতের রোদের বিলাস\nকতো কাল নিঙড়াবে;-আচলে নাটোর কথা ভুলে গিয়ে বুঝি\nকিশোরের মুখে চেয়ে কিশোরী করিবে তার মৃদু মাথা নিচু;\nআসন্ন সন্ধ্যার কাক-করুণ কাকের দল খোড়া নীড় খুঁজি\nউড়ে যাবে;-দুপুরে ঘাসের বুকে সিদুরের মতো রাঙা লিচু\nমুখে গুজে পড়ে রবে-আমিও ঘাসের বুকে রবো মুখ গুজি;\nমৃদু কাঁকনের শব্দ-গোরোচনা জিনি রং চিনিব না কিছু-",
   "tags": [
@@ -9,10 +9,26 @@
     "বাংলা",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/kothao-cholia-jabo-ekdin/",
   "sort_order": 102,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 28,
+      "page_end": 28,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

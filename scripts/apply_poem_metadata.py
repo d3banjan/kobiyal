@@ -312,6 +312,44 @@ def is_unknown_collection_exact_anchor_candidate(row: dict[str, Any], poem: dict
     return int(row.get("span_anchor_count") or 0) >= page_span
 
 
+def is_unknown_collection_single_page_body_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Promote high-coverage one-page unknown poems with line anchors.
+
+    This is intentionally narrower than the general unknown gates. It is aimed
+    at titleless one-page poems where the body spans a single printed page and
+    the page sequence plus line anchors are the strongest deterministic signal.
+    """
+
+    if row.get("status") != "needs_manual_review":
+        return False
+    if poem.get("source_edition") != UNKNOWN_COLLECTION:
+        return False
+    if row.get("candidate_book_id") != "rupasi-bangla":
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int) or start != end:
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+    if int(row.get("span_anchor_count") or 0) != 1:
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if not {"high_body_coverage", "page_sequence_present"} <= evidence:
+        return False
+    if float(row.get("score") or 0) < 17:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 3:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 1:
+        return False
+
+    runner_up_gap = row.get("runner_up_gap")
+    return runner_up_gap is None or float(runner_up_gap) >= 4
+
+
 def is_conflict_exact_rich_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
     """Override stale known editions only with dense exact-line evidence."""
 
@@ -432,6 +470,7 @@ def is_eligible(
     allow_known_fuzzy_rich_candidates: bool,
     allow_unknown_exact_rich_candidates: bool,
     allow_unknown_exact_anchor_candidates: bool,
+    allow_unknown_single_page_body_candidates: bool,
     allow_unknown_embedded_candidates: bool,
     allow_conflict_exact_rich_candidates: bool,
     allow_conflict_embedded_candidates: bool,
@@ -465,6 +504,8 @@ def is_eligible(
             return True, "eligible_unknown_exact_rich"
         if allow_unknown_exact_anchor_candidates and is_unknown_collection_exact_anchor_candidate(row, poem, meta):
             return True, "eligible_unknown_exact_anchor"
+        if allow_unknown_single_page_body_candidates and is_unknown_collection_single_page_body_candidate(row, poem, meta):
+            return True, "eligible_unknown_single_page_body"
         if allow_unknown_embedded_candidates and is_unknown_embedded_collection_candidate(row, poem, meta):
             return True, "eligible_unknown_embedded_collection"
         return False, "not_accepted"
@@ -567,6 +608,11 @@ def main() -> int:
         help="Classify unknown-collection spans whose exact line anchors cover the full printed span.",
     )
     parser.add_argument(
+        "--allow-unknown-single-page-body-candidates",
+        action="store_true",
+        help="Classify unknown one-page Rupasi Bangla spans with high body coverage, page sequence evidence, and line anchors.",
+    )
+    parser.add_argument(
         "--allow-unknown-embedded-candidates",
         action="store_true",
         help="Classify unknown-collection spans when the poem body embeds the candidate collection as a source marker.",
@@ -609,6 +655,7 @@ def main() -> int:
             args.allow_known_fuzzy_rich_candidates,
             args.allow_unknown_exact_rich_candidates,
             args.allow_unknown_exact_anchor_candidates,
+            args.allow_unknown_single_page_body_candidates,
             args.allow_unknown_embedded_candidates,
             args.allow_conflict_exact_rich_candidates,
             args.allow_conflict_embedded_candidates,

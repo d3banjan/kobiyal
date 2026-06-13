@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-288",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "যেদিন সরিয়া যাব তোমাদের কাছ থেকে",
   "body_bn": "যেদিন সরিয়া যাব তোমাদের কাছ থেকে – দূর কুয়াশায়\nচ’লে যাবো, সেদিন মরণ এসে অন্ধকারে আমার শরীর\nভিক্ষা ক’রে লয়ে যাবে;- সেদিন দু’দও এই বাংলার তীর —\nএই নীল বাংলার তীরে শুয়ে একা একা কি ভাবিব, হায়;-\nসেদিন র’বে না কোনো ক্ষোভ মনে –এই সোঁদা ঘাসের ধুলায়\nজীবন যে কাটিয়াছে বাংলায় – চারিদিকে বাঙালীর ভিড়\nবহুদিন কীর্তন ভাসান গান রুপকথা যাত্রা পাঁচালীর\nনরম নিবিড় ছন্দে যারা আজো শ্রাবণের জীবণের জীবন গোঙায়,আমারে দিয়াছে তৃপ্তি; কোনো দিন রুপহীন প্রবাসের পথে\nবাংলার মুখ ভুলে খাঁচার ভিতরে নষ্ট শুকের মতন\nকাটাইনি দিন মাস,বেহুলার লহনার মধুর জগতে\nতাদের পায়ের ধুলো – মাখা পথে বিকায়ে দিয়েছি আমি মন\nবাঙালি নারীর কাছে – চাল- ধোয়া স্নিগ্ধ হাত, ধান – মাখা চুল,\nহাতে তার শাড়িটির কস্তা পাড়; – ডাঁশা আম কামরাঙা কুল।",
   "tags": [
@@ -9,10 +9,26 @@
     "বাংলা",
     "অন্ধকার"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/jedin-shoria-jabo-tomar-kas-theke/",
   "sort_order": 288,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 19,
+      "page_end": 19,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }
