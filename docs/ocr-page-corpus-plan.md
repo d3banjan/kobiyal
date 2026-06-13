@@ -127,6 +127,15 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   `needs_printed_page_sequence`, `weak_text_anchor`, and `no_candidate`. This is
   the handoff list for printed-source review; it does not apply metadata.
 
+- `scripts/phrase_window_audit.py`
+  Builds a review-only exact phrase-window report for remaining poems by
+  matching normalized 4-6 token body phrases against trusted OCR page records.
+  It is a stricter second opinion for cases where full-line anchors fail
+  because OCR or imported poem text has different line breaks. Its output is
+  still evidence for manual review, not an automatic apply source: a phrase hit
+  can identify an overlapping passage inside a different printed poem, or a
+  page where the printed title differs from the imported title.
+
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
   compares OCR page tokens against it. The output is a sidecar suspicion report
