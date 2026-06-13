@@ -120,10 +120,13 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 
 Current cumulative site-facing metadata state:
 
-- 262 of 389 Jibanananda records have printed book citations.
-- 254 of 380 public/non-suppressed Jibanananda records have printed book citations.
+- 269 of 389 Jibanananda records have printed book citations.
+- 260 of 377 public/non-suppressed Jibanananda records have printed book citations.
 - 98 records still have `সংকলন অজানা` as the collection.
 - 100 records still lack `source_year`.
+- Public counts exclude exact or partial duplicate import rows, including the
+  parenthesized `সূর্য নক্ষত্র নারী` fragments whose full counterparts remain
+  listed.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 
