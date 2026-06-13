@@ -442,6 +442,7 @@ def main() -> int:
         )
         printed_start, printed_end = printed_range(pages_by_scan, span_start, span_end)
         runner_up_gap = best_score - candidates[1][0] if len(candidates) > 1 else None
+        has_printed_range = isinstance(printed_start, int) and isinstance(printed_end, int)
         strong_line_or_body = bool(
             {"first_line_match", "last_line_match", "high_body_coverage"} & set(best_evidence)
         )
@@ -455,6 +456,7 @@ def main() -> int:
         status = "needs_manual_review"
         if (
             has_span_anchor
+            and has_printed_range
             and
             best_score >= 18
             and "title_match" in best_evidence
@@ -464,6 +466,7 @@ def main() -> int:
             status = "accepted_candidate"
         elif (
             has_span_anchor
+            and has_printed_range
             and best_score >= 24
             and strong_line_or_body
             and (runner_up_gap is None or runner_up_gap >= 6)
@@ -471,6 +474,7 @@ def main() -> int:
             status = "accepted_candidate"
         elif (
             has_span_anchor
+            and has_printed_range
             and best_score >= 24
             and "high_body_coverage" in best_evidence
             and span_info.get("line_match_count", 0) >= 12
@@ -481,6 +485,8 @@ def main() -> int:
 
         if runner_up_gap is not None and runner_up_gap < 4:
             status = "ambiguous"
+        if not has_printed_range and status == "accepted_candidate":
+            status = "needs_manual_review"
 
         output_rows.append(
             {

@@ -77,13 +77,13 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   Optional Docker wrapper for Bengali Tesseract OCR. It writes OCR output into the same cache shape as the host runner.
 
 - `scripts/classify_pages.py`
-  Reclassifies page records from structural features only.
+  Reclassifies page records from structural features only. Pages that begin with a contents marker (`সূচ...` or OCR-damaged `সুচ...`) are treated as front matter even when they have many long table-of-contents lines.
 
 - `scripts/repair_page_sequence.py`
-Repairs printed page numbers using OCR candidates, optional TSV layout candidates, supported scan-to-printed-page offsets, monotonic sequence constraints, and page-type confidence. Offset support prevents a contents-page number from poisoning later poem pages.
+  Repairs printed page numbers using OCR candidates, optional TSV layout candidates, supported scan-to-printed-page offsets, monotonic sequence constraints, and page-type confidence. Offset support prevents a contents-page number from poisoning later poem pages.
 
 - `scripts/propose_poem_spans.py`
-  Proposes poem-to-page spans using the repaired page corpus and current poem JSON. It emits sidecar candidates only. The current algorithm is deterministic:
+  Proposes poem-to-page spans using the repaired page corpus and current poem JSON. It emits sidecar candidates only. Accepted candidates require deterministic title/line anchors and a repaired printed page range; a match without printed book page numbers remains a manual-review candidate because the website citation must name printed pages rather than PDF scan pages. The current algorithm is deterministic:
 
   - normalize Bengali text with known OCR equivalence classes;
   - score candidate pages by title, first/last line, body-token overlap, and repaired printed-page availability;

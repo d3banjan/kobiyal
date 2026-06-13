@@ -39,7 +39,9 @@ def classify(record: dict[str, Any]) -> str:
         return "blank_or_near_blank"
     if re.search(r"প্রকাশক|মুদ্রক|প্রথমমুদ্রণ|প্রথমসংস্করণ|প্রচ্ছদ", text):
         return "publisher_page"
-    if re.search(r"সূচিপত্র|উৎসর্গ|ভূমিকা|রচনাকাল", text) and long_lines < 8:
+    if re.search(r"^[\"'‘’“”।]*(সূচ|সুচ)", text):
+        return "front_matter"
+    if re.search(r"উৎসর্গ|ভূমিকা|রচনাকাল", text) and long_lines < 8:
         return "front_matter"
     if re.search(r"জীবনানন্দেরচেতনাজগৎ|প্রবন্ধ|আলোচনা|পর্যালোচনা", text):
         return "critical_prose_page"

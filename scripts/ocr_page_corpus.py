@@ -339,7 +339,9 @@ def classify_page(features: dict[str, Any], text: str, candidates: list[dict[str
         return "blank_or_near_blank"
     if re.search(r"প্রকাশক|মুদ্রক|প্রথম\s*মুদ্রণ|প্রথম\s*সংস্করণ|প্রচ্ছদ", normalized):
         return "publisher_page"
-    if re.search(r"সূচিপত্র|উৎসর্গ|ভূমিকা|রচনাকাল", normalized) and long_line_count < 8:
+    if re.search(r"^[\"'‘’“”।]*(সূচ|সুচ)", normalized):
+        return "front_matter"
+    if re.search(r"উৎসর্গ|ভূমিকা|রচনাকাল", normalized) and long_line_count < 8:
         return "front_matter"
     if re.search(r"জীবনানন্দেরচেতনাজগৎ|প্রবন্ধ|আলোচনা|পর্যালোচনা", normalized):
         return "critical_prose_page"
