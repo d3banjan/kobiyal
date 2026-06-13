@@ -201,6 +201,34 @@ def fill_contiguous_offset_runs(rows: list[dict[str, Any]], offset: int) -> None
                 idx += direction
 
 
+def fill_trailing_sequence_extensions(rows: list[dict[str, Any]], anchors: list[tuple[int, int]], max_pages: int = 2) -> None:
+    """Infer a short trusted tail after the last visible sequential anchors."""
+
+    if len(anchors) < 2:
+        return
+    prev_idx, prev_page = anchors[-2]
+    last_idx, last_page = anchors[-1]
+    scan_delta = last_idx - prev_idx
+    page_delta = last_page - prev_page
+    if scan_delta <= 0 or page_delta != scan_delta:
+        return
+
+    for idx in range(last_idx + 1, min(len(rows), last_idx + 1 + max_pages)):
+        row = rows[idx]
+        if row.get("page_type") not in TRUSTED_PAGE_TYPES:
+            break
+        if row.get("printed_page_fixed") is not None:
+            break
+        if best_visible_candidate(row) is not None:
+            break
+
+        inferred = last_page + (idx - last_idx)
+        row["printed_page_fixed"] = inferred
+        row["printed_page_label_bn"] = bangla_number(inferred)
+        row["printed_page_basis"] = "trailing_sequence_inferred"
+        row["sequence_confidence"] = 0.55
+
+
 def repair_book(rows: list[dict[str, Any]]) -> None:
     rows.sort(key=lambda row: int(row.get("scan_page") or 0))
     raw_candidates: list[tuple[int, dict[str, Any]]] = []
@@ -282,6 +310,8 @@ def repair_book(rows: list[dict[str, Any]]) -> None:
                 row["printed_page_label_bn"] = bangla_number(inferred)
                 row["printed_page_basis"] = "sequence_inferred"
                 row["sequence_confidence"] = 0.65
+
+    fill_trailing_sequence_extensions(rows, anchors)
 
 
 def main() -> int:

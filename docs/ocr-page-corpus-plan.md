@@ -84,6 +84,9 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
 
 - `scripts/repair_page_sequence.py`
   Repairs printed page numbers using OCR candidates, optional TSV layout candidates, supported scan-to-printed-page offsets, monotonic sequence constraints, and page-type confidence. Offset support prevents a contents-page number from poisoning later poem pages.
+  It also allows a short trusted tail after two visible sequential anchors; this
+  handles cases where the final poem page in a section has no readable printed
+  page number but directly follows visible pages.
 
 - `scripts/propose_poem_spans.py`
   Proposes poem-to-page spans using the repaired page corpus and current poem JSON. It emits sidecar candidates only. Accepted candidates require deterministic title/line anchors and a repaired printed page range; a match without printed book page numbers remains a manual-review candidate because the website citation must name printed pages rather than PDF scan pages. The current algorithm is deterministic:
@@ -114,6 +117,14 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   default; replacing a page range requires the explicit
   `--allow-existing-page-overwrite` flag after review against the printed
   source.
+
+- `scripts/report_metadata_gaps.py`
+  Builds a review-only Markdown/JSON inventory of public Jibanananda records
+  that still lack printed book page citations. It joins the current poem JSON
+  with a span-candidate report, excludes hidden duplicate imports, and ranks
+  gaps into buckets such as `manual_collection_review`,
+  `needs_printed_page_sequence`, `weak_text_anchor`, and `no_candidate`. This is
+  the handoff list for printed-source review; it does not apply metadata.
 
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
@@ -150,9 +161,9 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 
 Current cumulative site-facing metadata state:
 
-- 273 of 389 Jibanananda records have printed book citations.
-- 264 of 374 public/non-duplicate Jibanananda records have printed book citations.
-- 110 public/non-duplicate Jibanananda records still lack printed book citations.
+- 274 of 389 Jibanananda records have printed book citations.
+- 265 of 374 public/non-duplicate Jibanananda records have printed book citations.
+- 109 public/non-duplicate Jibanananda records still lack printed book citations.
 - 96 public/non-duplicate records still have `সংকলন অজানা` as the collection.
 - 98 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
@@ -189,6 +200,13 @@ lists. Its imported body is a composite `ছেলে`/`মেয়ে` dialogue m
 poem fragments, while the clean `রূপসী বাংলা` poem
 `আকাশে সাতটি তারা যখন উঠেছে ফুটে` (`jibanananda-030`) remains public with the
 printed page 15 citation.
+
+A trailing page-sequence pass added a printed citation for `তোমাকে`
+(`jibanananda-158`). In the `বনলতা সেন` সংযোজন section, visible page anchors
+169 and 171 plus the intervening sequence infer the following page as printed
+172. The page contains the poem title, high body coverage, nine line matches,
+and three exact line anchors. The poem remains classified as
+`অপ্রকাশিত কবিতা`; only the printed book-source citation was added.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 
