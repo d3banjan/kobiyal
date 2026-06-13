@@ -282,6 +282,72 @@ def is_unknown_collection_exact_anchor_candidate(row: dict[str, Any], poem: dict
     return int(row.get("span_anchor_count") or 0) >= page_span
 
 
+def is_conflict_exact_rich_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Override stale known editions only with dense exact-line evidence."""
+
+    current_edition = poem.get("source_edition")
+    if current_edition in {UNKNOWN_COLLECTION, meta["title_bn"]}:
+        return False
+    if row.get("status") not in {"accepted_candidate", "ambiguous", "needs_manual_review"}:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int):
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if "title_match" not in evidence or "page_sequence_present" not in evidence:
+        return False
+    if float(row.get("score") or 0) < 27:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 20:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 10:
+        return False
+
+    runner_up_gap = row.get("runner_up_gap")
+    if runner_up_gap is not None and float(runner_up_gap) < 3:
+        return False
+
+    page_span = end - start + 1
+    return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
+
+
+def has_embedded_collection_marker(poem: dict[str, Any], title_bn: str) -> bool:
+    marker = f"#{title_bn}"
+    return any(line.strip() == marker for line in (poem.get("body_bn") or "").splitlines())
+
+
+def is_conflict_embedded_collection_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Override stale editions when the stored body names the candidate book."""
+
+    current_edition = poem.get("source_edition")
+    if current_edition in {UNKNOWN_COLLECTION, meta["title_bn"]}:
+        return False
+    if not has_embedded_collection_marker(poem, meta["title_bn"]):
+        return False
+    if row.get("status") not in {"accepted_candidate", "ambiguous", "needs_manual_review"}:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int):
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+    if int(row.get("span_anchor_count") or 0) <= 0:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 4:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 4:
+        return False
+
+    return float(row.get("score") or 0) >= 17
+
+
 def is_eligible(
     row: dict[str, Any],
     poem: dict[str, Any],
@@ -292,6 +358,8 @@ def is_eligible(
     allow_known_line_rich_candidates: bool,
     allow_unknown_exact_rich_candidates: bool,
     allow_unknown_exact_anchor_candidates: bool,
+    allow_conflict_exact_rich_candidates: bool,
+    allow_conflict_embedded_candidates: bool,
 ) -> tuple[bool, str]:
     if poem.get("poet_id") != "jibanananda-das":
         return False, "not_jibanananda"
@@ -301,6 +369,11 @@ def is_eligible(
     meta = BOOK_META.get(row.get("candidate_book_id"))
     if not meta:
         return False, "unknown_candidate_book"
+
+    if allow_conflict_exact_rich_candidates and is_conflict_exact_rich_candidate(row, poem, meta):
+        return True, "eligible_conflict_exact_rich"
+    if allow_conflict_embedded_candidates and is_conflict_embedded_collection_candidate(row, poem, meta):
+        return True, "eligible_conflict_embedded_collection"
 
     if row.get("status") != "accepted_candidate":
         if allow_known_review_candidates and is_known_collection_review_candidate(row, poem, meta):
@@ -326,14 +399,23 @@ def is_eligible(
     return True, "eligible"
 
 
-def apply_metadata(row: dict[str, Any], poem: dict[str, Any]) -> bool:
+def remove_embedded_collection_marker(poem: dict[str, Any], title_bn: str) -> None:
+    marker = f"#{title_bn}"
+    lines = (poem.get("body_bn") or "").splitlines()
+    filtered = [line for line in lines if line.strip() != marker]
+    if len(filtered) != len(lines):
+        poem["body_bn"] = "\n".join(filtered)
+
+
+def apply_metadata(row: dict[str, Any], poem: dict[str, Any], force_collection_update: bool = False) -> bool:
     meta = BOOK_META[row["candidate_book_id"]]
     before = json.dumps(poem, ensure_ascii=False, sort_keys=True)
 
-    if poem.get("source_edition") == UNKNOWN_COLLECTION:
+    if poem.get("source_edition") == UNKNOWN_COLLECTION or force_collection_update:
         poem["source_edition"] = meta["title_bn"]
         poem["source_year"] = meta["publication_year"]
         poem["phase_id"] = meta["phase_id"]
+        remove_embedded_collection_marker(poem, meta["title_bn"])
 
     source = book_source(row, meta)
     existing_sources = poem.get("book_sources") or []
@@ -388,6 +470,16 @@ def main() -> int:
         action="store_true",
         help="Classify unknown-collection spans whose exact line anchors cover the full printed span.",
     )
+    parser.add_argument(
+        "--allow-conflict-exact-rich-candidates",
+        action="store_true",
+        help="Override stale known collection assignments with dense exact line-anchor evidence.",
+    )
+    parser.add_argument(
+        "--allow-conflict-embedded-candidates",
+        action="store_true",
+        help="Override stale known collection assignments when the poem body embeds the candidate collection marker.",
+    )
     args = parser.parse_args()
 
     poems_dir = Path(args.poems_dir)
@@ -415,12 +507,18 @@ def main() -> int:
             args.allow_known_line_rich_candidates,
             args.allow_unknown_exact_rich_candidates,
             args.allow_unknown_exact_anchor_candidates,
+            args.allow_conflict_exact_rich_candidates,
+            args.allow_conflict_embedded_candidates,
         )
         summary[reason] = summary.get(reason, 0) + 1
         if not eligible:
             continue
 
-        if apply_metadata(row, poem):
+        force_collection_update = reason in {
+            "eligible_conflict_exact_rich",
+            "eligible_conflict_embedded_collection",
+        }
+        if apply_metadata(row, poem, force_collection_update):
             changed.append(filename)
             if not args.dry_run:
                 write_json(path, poem)
