@@ -162,11 +162,11 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 
 Current cumulative site-facing metadata state:
 
-- 274 of 389 Jibanananda records have printed book citations.
-- 265 of 374 public/non-duplicate Jibanananda records have printed book citations.
-- 109 public/non-duplicate Jibanananda records still lack printed book citations.
-- 96 public/non-duplicate records still have `সংকলন অজানা` as the collection.
-- 98 public/non-duplicate records still lack `source_year`.
+- 276 of 389 Jibanananda records have printed book citations.
+- 267 of 373 public/non-duplicate Jibanananda records have printed book citations.
+- 106 public/non-duplicate Jibanananda records still lack printed book citations.
+- 93 public/non-duplicate records still have `সংকলন অজানা` as the collection.
+- 95 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
   parenthesized `সূর্য নক্ষত্র নারী` fragments and the alternate `সেই দিন এই
   মাঠ` import whose cited `রূপসী বাংলা` counterpart remains listed, plus the
@@ -174,6 +174,12 @@ Current cumulative site-facing metadata state:
   `আকাশে সাতটি তাঁরা`.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
+
+A manual evidence pass over the strongest remaining line-anchor candidates added
+`ভিখিরী` to the `বনলতা সেন` appendix on printed pages 171-172 and `হাঁস` to
+`সাতটি তারার তিমির` printed page 21. The same pass identified
+`স্বাতীতারা` as a duplicate import of the already-cited `পটভূমির` record and
+hid it from public routes.
 
 A reviewed appendix pass added four `মহাপৃথিবী` citations from the `সংযোজন`
 section in the shared scan: `মনোকণিকা` pages 173-174, `সুবিনয় মুস্তফী` page
