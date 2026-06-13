@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-122",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "ঘাসের বুকের থেকে",
   "body_bn": "ঘাসের বুকের থেকে কবে আমি পেয়েছি যে আমার শরীর –\nসবুজ ঘাসের থেকে; তাই রোদ ভালো লাগে — তাই নীলাকাশ\nমৃদু ভিজে সকরুণ মনে হয়; — পথে পথে তাই এই ঘাস\nজলের মতন স্নিগ্ধ মনে হয়, — কউমাছিদের যেন নীড়\nএই ঘাস; — যত দূর যাই আমি আরো যত দূর পৃথিবীর\nনরম পায়ের তলে যেন কত কুমারীর বুকের নিঃশ্বাস\nকথা কয় — তাহাদের শান — হাত খেলা করে — তাদের খোঁপায় এলো ফাঁস\nখুলে যায় — ধূসর শাড়ির গন্ধে আসে তারা — অনেক নিবিড়পুরোনো প্রাণের কথা কয়ে যায় — হৃদয়ের বেদনার কথা –\nসান্ত্বনার নিভৃত নরম কথা — মাঠের চাঁদের গল্প করে –\nআকাশের নক্ষত্রের কথা কয়; — শিশিরের শীত সরলতা\nতাহাদের ভালো লাগে, — কুয়াশারে ভালো লাগে চোখের উপরে;\nগরম বৃষ্টির ফোঁটা ভালো লাগে; শীত রাতে — পেঁচার নম্রতা;\nভালো লাগে এই যে অশ্বথ পাতা আমপাতা সারারাত ঝরে।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/ghasher-buke-theke/",
   "sort_order": 122,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 53,
+      "page_end": 53,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

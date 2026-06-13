@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-055",
   "poet_id": "jibanananda-das",
-  "phase_id": "posthumous-manuscript",
+  "phase_id": "mahaprithibi-timir",
   "title_bn": "উদয়াস্ত",
   "body_bn": "সূর্যের উদয় সহসা সমস্ত নদী\nচমকিত ক'রে ফেলে- অকস্মাৎ দ্যাখা দিয়ে-\nচ'লে যায়; হাড়ের ভিতরে মেঘেদের\nঅন্ধকার; স্তম্ভিত বন্ধুর মতো ভোর\nএইখানে সাধু রাত্রির হাত ধ'রে\nতাকে শ্রেয়তর চালানির মূল জেনে\nনিখিলের- মৃত মাংসের স্তুপ\nচারিদিকে; তার মাঝে ধন্বন্তরি, কালনেমি\nকিছু চায়;\nদুস্তর চাদর গায়ে অন্ধ বাতাসের।\nসূর্য তবু- সূর্য যেন জ্যোতি\nপ্রতিবিম্ব রেখে গেছে তরবারে- ভাঁড়ের হৃদয়ে,\nধর্মোশোকের মনে।করজোড়ে ভাবে তারা;\nঝলিছে সারস শব ঢের\nবৈতরনী তরঙ্গের দিকে ভেসে যেতে- যেতে\nলোকোত্তর সূর্যের আমোদে।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "অগ্রন্থিত",
-  "source_year": null,
+  "source_edition": "মহাপৃথিবী",
+  "source_year": 1944,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/udoyasto/",
   "sort_order": 55,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "মহাপৃথিবী",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1944,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 64,
+      "page_end": 64,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

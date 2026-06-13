@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-286",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "যে শালিখ মরে যায় কুয়াশায়",
   "body_bn": "যে শালিখ মরে যায় কুয়াশায়-সে তো আর ফিরে নাহি আসে:\nকাঞ্চনমালা যে কবে ঝরে গেছে;-বনে আজো কলমীর ফুল\nফুটে যায়-সে তবু ফেরে না, হায়;-বিশালাক্ষ্মী: সেও তো রাতুল\nচরণ মুছিয়া নিয়া চলে গেছে;-মাঝপথে জলের উচ্ছ্বাসে\nবাধা পেয়ে নদীরা মজিয়া গেছে দিকে দিকে-শ্মশানের পাশে\nআর তারা আসে নাকো; সুন্দরীর বনে বাঘ ভিজে জুল-জুল\nচোখ তুলে চেয়ে থাকে-কতো পাটরানীদের গাঢ় এলোচুল\nএই গৌড় বাংলায়-পড়ে আছে তাহার পায়ের তলে ঘাসেজানে সে কি! দেখে নাকি তারাবনে পড়ে আছে বিচূর্ণ দেউল,\nবিশুষ্ক পদ্মের দীঘি-ফোঁপড়া মহলা ঘাট, হাজার মহাল\nমৃত সব রূপসীরা; বুকে আজ ভেরেন্ডার ফুলে ভীমরুল\nগান গায়-পাশ দিয়ে খল্‌ খল্‌ খল্‌ খল্‌ বয়ে যায় খাল,\nতবু ঘুম ভাঙে নাকো-একবার ঘুমালে কে উঠে আসে আর\nযদিও ডুকারি যায় শঙ্খচিল-মর্মরিয়া মরে গো মাদার।",
   "tags": [
@@ -9,10 +9,26 @@
     "ফিরে-আসা",
     "বাংলা"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/je-shaliks-morey-jai-kuashai/",
   "sort_order": 286,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 27,
+      "page_end": 27,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

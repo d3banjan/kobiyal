@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-319",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "সন্ধ্যা হয়",
   "body_bn": "সন্ধ্যা হয় — চারিদিকে মৃদু নীরবতা\nকুটা মুখে নিয়ে এক শালিখ যেতেছে উড়ে চুপে;\nগোরুর গাড়িটি যায় মেঠো পথ বেড়ে ধীরে ধীরে;\nআঙিনা ভরিয়া আছে সোনালি খড়ের ঘন স্তূপে;পৃথিবীর সব ঘুঘু ডাকিতেছে হিজলের বনে;\nপৃথিবীর সব রূপ লেগে আছে ঘাসে;\nপৃথিবীর সব প্রেম আমাদের দু;জনার মনে;\nআকাশ ছড়ায়ে আছে শান্তি হয়ে আকাশে আকাশে।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/sandhya-hoi/",
   "sort_order": 319,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 68,
+      "page_end": 68,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

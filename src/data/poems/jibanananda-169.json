@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-169",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "দূর পৃথিবীর গন্ধে ভরে ওঠে",
   "body_bn": "দূর পৃথিবীর গন্ধে ভরে ওঠে আমার এ বাঙালির মন\nআজ রাতে; একদিন মৃত্যু এসে যদি দূর নক্ষত্রের তলে\nঅচেনা ঘাসের বুকে আমারে ঘুমায়ে যেতে বলে\nতবুও সে ঘাস এই বাংলার অবিরল ঘাসের মতন\nমউরীর মৃদু গন্ধে ভরে রবে, — কিশোরীর স্তন\nপ্রথম জননী হয়ে যেমন নরম দুধে গলে\nপৃথিবীর সব দেশে–সব চেয়ে ঢের দূর নক্ষত্রের তলে\nসব পথে এই সব শানি — আছে: ঘাস — চোখ — শাদা হাত — স্তন —কোথাও আসিবে মৃত্যু — কোথাও সবুজ মৃদু ঘাস\nআমারে রাখিবে ঢেকে — ভোরে, রাতে, দু’পহরে পাখির হৃদয়\nঘাসের মতন সাধে ছেয়ে রবে রাতের আকাশ\nনক্ষত্রের নীল ফুলে ফুটে রবে — বাংলার নক্ষত্র কি নয়?\nজানি নাকো; তবুও তাদের বুকে স্থির শান্তি– শান্তি লেগে যায়;\nআকাশের বুকে তারা যেন চোখ — শাদা হাত যেন স্তন — ঘাস — |",
   "tags": [
@@ -9,10 +9,26 @@
     "ফিরে-আসা",
     "বাংলা"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/dur-prithibir-gondhey-vore-othey/",
   "sort_order": 169,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 51,
+      "page_end": 51,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }
