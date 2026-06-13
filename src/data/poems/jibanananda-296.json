@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-296",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "mahaprithibi-timir",
   "title_bn": "রিস্টওয়াচ",
   "body_bn": "কামানের ক্ষোভে চূর্ণ হ’য়ে\nআজ রাতে ঢের মেঘ হিম হ’য়ে আছে দিকে-দিকে!\nপাহাড়ের নিচে- তাহাদের কারু- কারু মণিবন্ধে ঘড়ি\nসময়ের কাঁটা হয়তো বা ধীরে-ধীরে ঘুরাতেছে;\nচাঁদের আলোর নিচে এই সব অদ্ভুত প্রহরী\nকিছুক্ষণ কথা কবে;-\nহৃদয়যন্ত্রের যেন প্রীত আকাঙ্ক্ষার মতো ন’ড়ে,\nসমুজ্জ্বল নক্ষত্রের আলো গিলে।\nজলপাই পল্লবের তলে ঝরা বিন্দু-বিন্দু শিশিরের রাশি\nদূর সমুদ্রের শব্দ\nশাদা চাদরের মতো- জনহীন- বাতাসের ধ্বনি\nদু;-এক মুহূর্ত আরো ইহাদের গড়িবে জীবনী।\nস্তিমিত- স্তিমিত আরো ক’রে দিয়ে ধীরে\nইহারা উঠিবে জেগে অফুরন্ত রৌদ্রের অনন্ত তিমিরে।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "সাতটি তারার তিমির",
+  "source_year": 1948,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/wrist-watch/",
   "sort_order": 296,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "সাতটি তারার তিমির",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1948,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 10,
+      "page_end": 11,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

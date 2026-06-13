@@ -2,11 +2,12 @@
 import { getCollection } from "astro:content";
 import Layout from "../../components/Layout.astro";
 import ThemeChip from "../../components/ThemeChip.astro";
+import { publicPoems } from "../../lib/content";
 import { S, bn, interpolate, withBase } from "../../lib/i18n";
 
 export async function getStaticPaths() {
   const tags = await getCollection("tags");
-  const poems = (await getCollection("poems")).map((entry) => entry.data);
+  const poems = publicPoems((await getCollection("poems")).map((entry) => entry.data));
   const poets = (await getCollection("poets")).map((entry) => entry.data);
 
   return tags.map((tag) => ({

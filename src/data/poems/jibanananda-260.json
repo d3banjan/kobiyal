@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-260",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "posthumous-manuscript",
   "title_bn": "মহাগোধূলি",
   "body_bn": "সোনালী খড়ের ভারে অলস গোরুর গাড়ি—বিকেলের রোদ প’ড়ে আসে\nকালো নীল হলদে পাখিরা ডানা ঝাপটায় ক্ষেতের ভাঁড়ারে,\nশাদা পথ ধুলো মাছি—ঘুম হয়ে মিশিছে আকাশে,\nঅস্ত-সূর্য গা এলিয়ে অড়র ক্ষেতের পারে-পারেশুয়ে থাকে; রক্তে তার এসেছে ঘুমের স্বাদ এখন নির্জনে;\nআসন্ন এ-ক্ষেতটিকে ভালো লাগে—চোখে অগ্নি তার\nনিভে-নিভে জেগে ওঠে;—স্নিগ্ধ কালো অঙ্গারের গন্ধ এসে মনে\nএকদিন আগুনকে দেবে নিস্তার।কোথায় চার্টার প্যাক্ট কমিশন প্ল্যান ক্ষয় হয়;\nকেন হিংসা ঈর্ষা গ্লানি ক্লান্তি ভয় রক্ত কলরবঃ\nবুদ্ধের মৃত্যুর পরে যেই তন্বী ভিক্ষুণীকে এই প্রশ্ন আমার হৃদয়\nক’রে চুপ হয়েছিল—আজও সময়ের কাছে তেমনই নীরব।",
   "tags": [
@@ -9,10 +9,26 @@
     "আকাশ",
     "মৃত্যু"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "বেলা অবেলা কালবেলা",
+  "source_year": 1961,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/mohagodhulii/",
   "sort_order": 260,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "বেলা অবেলা কালবেলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1961,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 64,
+      "page_end": 66,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

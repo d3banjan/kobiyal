@@ -5,6 +5,12 @@ export type Poem = CollectionEntry<"poems">["data"];
 export type Tag = CollectionEntry<"tags">["data"];
 export type Phase = Poet["phases"][number];
 
+const duplicatePoemIds = new Set([
+  "jibanananda-225",
+  "jibanananda-190",
+  "jibanananda-214",
+]);
+
 export function allPhases(poet: Poet): Phase[] {
   return [...poet.phases, ...(poet.strands ?? [])];
 }
@@ -24,6 +30,10 @@ function comparePoems(a: Poem, b: Poem): number {
 
 export function poemsForPoet(poems: Poem[], poetId: string): Poem[] {
   return poems.filter((poem) => poem.poet_id === poetId).sort(comparePoems);
+}
+
+export function publicPoems(poems: Poem[]): Poem[] {
+  return poems.filter((poem) => !duplicatePoemIds.has(poem.id));
 }
 
 export function poemCountForPhase(poems: Poem[], poetId: string, phaseId: string): number {

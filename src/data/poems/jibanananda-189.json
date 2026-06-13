@@ -14,5 +14,21 @@
   "source_name_bn": "বাংলাকোষ",
   "source_url": "http://kobita.banglakosh.com/archives/1224.html",
   "sort_order": 189,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "ধূসর পাণ্ডুলিপি",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1936,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 18,
+      "page_end": 19,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

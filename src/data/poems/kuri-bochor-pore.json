@@ -17,5 +17,21 @@
   "wikisource_url": "https://bn.wikisource.org/wiki/%E0%A6%9C%E0%A7%80%E0%A6%AC%E0%A6%A8%E0%A6%BE%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6_%E0%A6%A6%E0%A6%BE%E0%A6%B6%E0%A7%87%E0%A6%B0_%E0%A6%B6%E0%A7%8D%E0%A6%B0%E0%A7%87%E0%A6%B7%E0%A7%8D%E0%A6%A0_%E0%A6%95%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A6%BE/%E0%A6%95%E0%A7%81%E0%A6%B1%E0%A6%BF_%E0%A6%AC%E0%A6%9B%E0%A6%B0_%E0%A6%AA%E0%A6%B0%E0%A7%87",
   "marketplace_url": "https://www.rokomari.com/book/110543/bonolota-sen",
   "sort_order": 98,
-  "verified": true
+  "verified": true,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "বনলতা সেন",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1942,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 10,
+      "page_end": 11,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

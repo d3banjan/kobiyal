@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-321",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "mahaprithibi-timir",
   "title_bn": "সপ্তক",
   "body_bn": "এইখানে সরোজিনী শুয়ে আছে;- জানি না সে এইখানে\nশুয়ে আছে কিনা।\nঅনেক হয়েছে শোয়া;- তারপর একদিন চ’লে গেছে\nকোন দূর মেঘে।\nঅন্ধকার শেষ হ’লে যেই স্তর জেগে ওঠে আলোর আবেগেঃ\nসরোজিনী চ’লে গেল অতদূর? সিঁড়ি ছাড়া- পাখিদের\nমতো পাখা বিনা?\nহয়তো বা মৃত্তিকার জ্যামিতিক ঢেউ আজ? জ্যামিতির\nভূত বলেঃ আমি তো জানি না।\nজাফরান- আলোকের বিশুষ্কতা সন্ধ্যার আকাশে আছে লেগেঃ\nলুপ্ত বেড়ালের মতো; শূন্য চাতুরির মূঢ় হাসি নিয়ে জেগে।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "সাতটি তারার তিমির",
+  "source_year": 1948,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/shoptok/",
   "sort_order": 321,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "সাতটি তারার তিমির",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1948,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 12,
+      "page_end": 12,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

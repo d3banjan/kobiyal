@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-079",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "এখানে আকাশ নীল",
   "body_bn": "এখানে আকাশ নীল- নীলাভ আকাশ জুড়ে সজিনার ফুল\nফুটে থাকে হিম শাদা- রং তার আশ্বিনের আলোর মতন;\nআকন্দফুলের কালো ভীমরুল এইখানে করে গুঞ্জরণ\nরৌদ্রের দুপুর ভ’রে;- বারবার রোদ তার সুচিক্বণ চুল\nকাঁঠাল জামের বুকে নিঙড়ায়ে;- দহে বিলে চঞ্চল আঙুল\nবুলায়ে বুলায়ে ফেরে এইখানে জাম লিচু কাঁঠালের বন,\nধনপতি, শ্রীমন্তের, বেহুলার, লহনার ছুঁয়েছে চরণ;\nমেঠো পথে মিশে আছে কাক আর কোকিলের শরীরের ধূল,কবেকার কোকিলের জানো কি তা? যখন মুকুন্দরাম, হায়,\nলিখিতেছিলেন ব’সে দু’পহরে সাধের সে চন্ডিকামঙ্গল,\nকোকিলের ডাক শুনে লেখা তাঁর বাধা পায়- থেমে থেমে যায়;-\nঅথবা বেহুলা একা যখন চলেছে ভেঙে গাঙুড়ের জল\nসন্ধ্যার অন্ধকারে, ধানক্ষেতে, আমবনে, অস্পষ্ট শাখায়\nকোকিলের ডাক শুনে চোখে তার ফুটেছিল কুয়াশা কেবল।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/ekhaney-akash-nil/",
   "sort_order": 79,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 39,
+      "page_end": 39,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

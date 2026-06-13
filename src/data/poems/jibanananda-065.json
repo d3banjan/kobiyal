@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-065",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "এই পৃথিবীতে এক স্থান আছে",
   "body_bn": "এই পৃথিবীতে এক স্থান আছে – সবচেয়ে সুন্দর করুণ :\nসেখানে সবুজ ডাঙা ভ’রে আছে মধুকূপী ঘাসে অবিরল;\nসেখানে গাছের নাম : কাঁঠাল, অশ্বত্থ, বট, জারুল, হিজল;\nসেখানে ভোরের মেঘে নাটার রঙের মতো জাগিছে অরুণ;\nসেখানে বারুণী থাকে গঙ্গাপসাগরের বুকে, – সেখানে বরুণ\nকর্ণফুলী ধলেশ্বরী পদ্মা জলাঙ্গীরে দেয় অবিরল জল;\nসেইখানে শঙ্খচিল পানের বনের মতো হাওয়ায় চঞ্চল,\nসেইখানে লক্ষ্ণীপেঁচা ধানের গন্ধের মতো অস্ফুট, তরুণ;সেখানে লেবুর শাখা নুয়ে থাকে অন্ধকারে ঘাসের উপর;\nসুদর্শন উড়ে যায় ঘরে তার অন্ধকার সন্ধ্যার বাতাসে;\nসেখানে হলুদ শাড়ি লেগে থাকে রূপসীর শরীরের ’পর –\nশঙ্খমালা নাম তার : এ- বিশাল পৃথিবীর কোনো নদী ঘাসে\nতারে আর খুঁজে তুমি পাবে নাকো বিশালাক্ষী দিয়েছিল বর,\nতাই সে জন্মেছে নীল বাংলার ঘাস আর ধানের ভিতর।",
   "tags": [
@@ -9,10 +9,26 @@
     "বাংলা",
     "নদী"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/ai-prithibite-ak-than-achhe/",
   "sort_order": 65,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 36,
+      "page_end": 37,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

@@ -3,10 +3,11 @@ import { getCollection } from "astro:content";
 import Layout from "../components/Layout.astro";
 import PoetCard from "../components/PoetCard.astro";
 import ThemeChip from "../components/ThemeChip.astro";
+import { publicPoems } from "../lib/content";
 import { S, bn, withBase } from "../lib/i18n";
 
 const poets = (await getCollection("poets")).map((entry) => entry.data);
-const poems = (await getCollection("poems")).map((entry) => entry.data);
+const poems = publicPoems((await getCollection("poems")).map((entry) => entry.data));
 const tags = (await getCollection("tags")).map((entry) => entry.data);
 ---
 

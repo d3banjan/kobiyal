@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-380",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "banalata-sen",
   "title_bn": "হাজার বছর শুধু খেলা করে",
   "body_bn": "হাজার বছর শুধু খেলা করে অন্ধকারে জোনাকির মতো;\nচারিদিকে চিরদিন রাত্রির নিধান;\nবালির উপরে জ্যোৎস্না — দেবদারু ছায়া ইতস্তত\nবিচূর্ণ থামের মতো: দ্বারকার; — দাঁড়ায়ে রয়েছে নত, ম্লান।\nশরীরে ঘুমের ঘ্রাণ আমাদের ঘুচে — গেছে জীবনের সব লেনদেন;\n‘মনে আছে?’ শুধালো সে — শুধালাম আমি শুধু, ‘বনলতা সেন?’",
   "tags": [
@@ -9,10 +9,26 @@
     "অন্ধকার",
     "ফসল"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "বনলতা সেন",
+  "source_year": 1942,
   "source_name_bn": "বাংলার কবিতা",
   "source_url": "https://banglarkobita.com/poem/famous/963",
   "sort_order": 380,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "বনলতা সেন",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1942,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 25,
+      "page_end": 25,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

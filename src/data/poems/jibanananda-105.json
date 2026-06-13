@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-105",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "কোথাও মঠের কাছে",
   "body_bn": "কোথাও মঠের কাছে — যেইখানে ভাঙা মঠ নীল হয়ে আছে\nশ্যাওলায় — অনেক গভীর ঘাস জমে গেছে বুকের ভিতর,\nপাশে দীঘি মজে আছে — রূপালী মাছের কন্ঠে কামনার স্বর\nযেইখানে পটরানী আর তার রূপসী সখীরা শুনিয়াছে\nবহু বহু দিন আগে — যেইখানে শঙ্খমালা কাঁথা বুনিয়াছে\nসে কত শতাব্দী আগে মাছরাঙা — ঝিলমিল — কড়ি খেলা ঘর;\nকোন্‌ যেন কুহকীর ঝাঁড়ফুঁকে ডুবে গেছে সব তারপর\nএকদিন আমি যাব দু-প্রহরে সেই দূর প্রান্তরের কাছে,সেখানে মানুষ কেউ যায় নাকে — দেখা যায় বাঘিনীর ডোরা\nবেতের বনের ফাঁকে — জারুল গাছের তলে রৌদ্র পোহায়\nরূপসী মৃগীর মুখ দেখা যায়, — শাদা ভাঁট পুষ্পের তোড়া\nআলোকতার পাশে গন্ধ ঢালে দ্রোণফু বাসকের গায়;\nতবুও সেখানে আমি নিয়ে যাবো একদিন পাটকিলে ঘোড়া\nযার রূপ জন্মে — জন্মে কাঁদায়েছে আমি তারে খুঁজিব সেথায়।",
   "tags": [
@@ -9,10 +9,26 @@
     "আকাশ",
     "ফসল"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/kothaow-motther-kasey/",
   "sort_order": 105,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 40,
+      "page_end": 40,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

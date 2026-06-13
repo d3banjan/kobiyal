@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-056",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "mahaprithibi-timir",
   "title_bn": "উন্মেষ",
   "body_bn": "কোথাও নদীর পারে সময়ের বুকে-\nদাঁড়ায়ে রয়েছে আজো সাবেককালের এক স্তিমিত প্রাসাদ;\nদেয়ালে একটি ছবিঃ বিচারসাপেক্ষ ভাবে নৃসিংহ উঠেছে;\nকোথাও মঙ্গল সংঘটন হ’য়ে যাবে অচিরাৎ।নিবিড় রমণী তার জ্ঞানময় প্রেমিকের খোঁজে\nঅনেক মলিন যুগ- অনেক রক্তাক্ত যুগ সমুত্তীর্ণ ক’রে\nআজ এই সময়ের পারে এসে পুনরায় দেখে\nআবহ্মানের ভাঁড় এসেছে গাধার পিঠে চ’ড়ে।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "সময়"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "সাতটি তারার তিমির",
+  "source_year": 1948,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/unmesh/",
   "sort_order": 56,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "সাতটি তারার তিমির",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1948,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 21,
+      "page_end": 22,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

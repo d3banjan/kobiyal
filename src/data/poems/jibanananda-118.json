@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-118",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "গোলপাতা ছাউনির বুক চুমে",
   "body_bn": "গোলপাতা ছাউনির বুক চুমে নীল ধোঁয়া সকালে সন্ধ্যায়\nউড়ে যায়- মিশে যায় আমবনে কার্তিকের কুয়াশার সাথে;\nপুকুরের লাল সর ক্ষীণ ঢেউয়ে বার-বার চায় সে জড়াতে\nকরবীর কচি ডাল; চুমো খেতে চায় মাছরাঙাটির পায়;\nএক-একটি ইট ধ্বসে-ডুবজলে ডুব দিয়ে কোথায় হারায়\nভাঙা ঘাটলায় এই-আজ আর কেউ এসে চাল-ধোয়া হাতে\nবিনুনি খসায় নাকো-শুকনো পাতা সারা দিন থাকে যে গড়াতে;\nকড়ি খেলিবার ঘর মজে গিয়ে গোখুরার ফাটলে হারায়;ডাইনীর মতো হাত তুলে-তুলে ভাঁট আঁশশ্যাওড়ার বন\nবাতাসে কি কথা কয় বুঝি নাকো, -বুঝি নাকো চিল কেন কাঁদে\nপৃথিবীর কোনো পথে দেখি নই আমি, হায়, এমন বিজন\nশাদা পথ-সোঁদা পথ-বাঁশের ঘোমটা মুখে বিধবার ছাঁদে\nচলে গেছে শ্মশানের পারে বুঝি;-সন্ধ্যা সহসা কখন;\nসজিনার ডালে পেঁচা কাঁদে নিম-নিম নিম কার্তিকের চাঁদে।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/golpata-chaunir-bukey-chumey/",
   "sort_order": 118,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 30,
+      "page_end": 30,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

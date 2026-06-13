@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-081",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "এখানে প্রাণের স্রোত আসে যায়",
   "body_bn": "এখানে প্রাণের স্রোত আসে যায় — সন্ধ্যায় ঘুমায় নীরবে\nমাটির ভিটের ‘পরে — লেগে থাকে অন্ধকারে ধুলোর আঘ্রাণ\nতাহাদের চোখে — মুখে; — কদমের ডালে পেঁচা কথা কবে —\nকাঁঠালের ডাল থেকে হিজলের ডালে গিয়ে করিবে আহ্বান\nসাপমাসী পোকাটিরে… সেই দিন আঁধারে উঠিবে নড়ে ধান\nইঁদুরের ঠোঁটে — চোখে; বাদুড়ের কালো ডানা করমচা পল্লবেকুয়াশারে নিঙড়ায়ে উড়ে যাবে আরো দূর নীল কুয়াশায়,\nকেউ তাহা দেখিবে না; — সেদিন এ পাড়াগাঁর পথের বিষ্ময়\nদেখিতে পাবো না আর — ঘুমায়ে রহিবে সব; যেমন ঘুমায়\nআজ রাতে মৃত যারা; যেমন হতেছে ঘুমে ক্ষয়\nঅশ্বত্থ ঝাউয়ের পাতা চুপে — চুপে আজ রাতে, হায়;\nযেমন ঘুমায় মৃতা, — তাহার বুকের শাড়ি যেমন ঘুমায়।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "অন্ধকার"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/ekhaney-praner-srott-aashey-jai/",
   "sort_order": 81,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 49,
+      "page_end": 49,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

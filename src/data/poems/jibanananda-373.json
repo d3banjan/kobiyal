@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-373",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "mahaprithibi-timir",
   "title_bn": "স্বভাব",
   "body_bn": "যদিও আমার চোখে ঢের নদী ছিলো একদিন\nপুনরায় আমাদের দেশে ভোর হ’লে,\nতবুও একটি নদী দেখা যেতো শুধু তারপর;\nকেবল একটি নারী কুয়াশা ফুরোলে\nনদীর রেখার পার লক্ষ্য ক’রে চলে;\nসূর্যের সমস্ত গোল সোনার ভিতরে\nমানুষের শরীরের স্থিরতর মর্যাদার মতো\nতার সেই মূর্তি এসে পড়ে।\nসূর্যের সম্পূর্ণ বড় বিভোর পরিধি\nযেন তার নিজের জিনিস।\nএতদিন পরে সেইসব ফিরে পেতে\nসময়ের কাছে যদি করি সুপারিশ\nতা’হলে সে স্মৃতি দেবে সহিষ্ণু আলোয়\nদু-একটি হেমন্তের রাত্রির প্রথম প্রহরে;\nযদিও লক্ষ লোক পৃথিবীতে আজ\nআচ্ছন্ন মাছির মত মরে -\nতবুও একটি নারী ‘ভোরের নদীর\nজলের ভিতরে জল চিরদিন সূর্যের আলোয় গড়াবে’\nএ রকম দু-চারটে ভয়াবহ স্বাভাবিক কথা\nভেবে শেষ হ’য়ে গেছে একদিন সাধারণভাবে।",
   "tags": [
@@ -9,10 +9,26 @@
     "ফিরে-আসা",
     "নদী"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "সাতটি তারার তিমির",
+  "source_year": 1948,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/shovab/",
   "sort_order": 373,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "সাতটি তারার তিমির",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1948,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 31,
+      "page_end": 33,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

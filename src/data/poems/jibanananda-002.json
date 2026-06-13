@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-002",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "banalata-sen",
   "title_bn": "অইখানে সারা দিন",
   "body_bn": "ঐখানে সারা দিন উঁচু ঝাউবন খেলা করে\nহলদে সবুজ নীল রঙ্গ তার বুকে;\nপাখি মেঘ রৌদ্রের;\nতবু আজও হদয়ের গভীর অসুখে\nমানবেরা পড়ে আছে কেন।আজ অন্ধ শতাব্দীর শতচ্ছিদ্রতার\nভিতর আলোর খোঁজে যদি চলে যায়\nতবুও শাশ্বত হয়ে থাকে অন্ধকার।নতুন যুগের জন্য তবুও প্রয়ান করা ভালো।\nচিতল হরিণ ঐ শিঙ তুলে ফিকে জোছনায়\nহরিণী কে খোঁজে তবু পাবে না কখনও;\nব্যাঘ্র যুগে শুধু মৃত হরিণীর মাংস পাওয়া যায়।",
   "tags": [
@@ -9,10 +9,23 @@
     "আকাশ",
     "অন্ধকার"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "বনলতা সেন",
+  "source_year": 1942,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/oikhaney-shara-din/",
   "sort_order": 2,
-  "verified": false
+  "verified": true,
+  "marketplace_url": "https://www.rokomari.com/book/18968/bonolota-sen",
+  "book_sources": [
+    {
+      "title_bn": "বনলতা সেন",
+      "publisher_bn": "বেঙ্গল পাবলিশার্স",
+      "edition_bn": "প্রথম সংস্করণ",
+      "publication_year": 1942,
+      "page_start": 166,
+      "page_label_bn": "১৬৬",
+      "page_basis": "printed_page",
+      "note_bn": "Gemini দ্বারা ভেরিফাইড (পৃষ্ঠা ১৬৬)"
+    }
+  ]
 }

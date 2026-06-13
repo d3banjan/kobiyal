@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-008",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "banalata-sen",
   "title_bn": "অনিবার",
   "body_bn": "যেখানে রয়েছে আলো পাহাড় জলের সমবায়-\nতবুও সেখানে যদি আবিষ্কার করি প্যারাফিন\nঅনেক মাটির নীচে,- অথবা সেখানে যদি সংগ্রাম-বিলীন\nঅজস্র অস্পষ্ট মুণ্ড অনুকম্পা হৃদয়ে জাগায়,\nতাহ'লে প্রভাত এলে মনিয়া পাখিরা পিছে কি করে' বালক\nভেসে যাবে উজ্জ্বল জলবিম্বের মত হেসে?\nকি ক'রে বা নাগরিক নিজের নারীকে ভালোবেসে\nজেনে নেবে হেমন্তের সন্ধ্যার আলোকে\nগ্যাস আর নক্ষত্রের লিপ্সা থেকে জেগে\nযারা চায় তাহাদের কাছে তবু স্মিত সমন্বয়?\nমৃথেদ উপেক্ষিত পীত দেহ- বলো,- ক্ষমাময়।\nবৃত্তের মতন- এসো,- ঘুরি মোরা বঙ্কিম আবেগে।",
   "tags": [
@@ -9,10 +9,23 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "বনলতা সেন",
+  "source_year": 1942,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/onibar/",
   "sort_order": 8,
-  "verified": false
+  "verified": true,
+  "marketplace_url": "https://www.rokomari.com/book/18968/bonolota-sen",
+  "book_sources": [
+    {
+      "title_bn": "বনলতা সেন",
+      "publisher_bn": "বেঙ্গল পাবলিশার্স",
+      "edition_bn": "প্রথম সংস্করণ",
+      "publication_year": 1942,
+      "page_start": 111,
+      "page_label_bn": "১১১",
+      "page_basis": "printed_page",
+      "note_bn": "Gemini দ্বারা ভেরিফাইড (পৃষ্ঠা ১১১)"
+    }
+  ]
 }

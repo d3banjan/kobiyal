@@ -3,12 +3,12 @@ import { getCollection } from "astro:content";
 import Layout from "../../components/Layout.astro";
 import Motif from "../../components/Motif.astro";
 import PhaseTimeline from "../../components/PhaseTimeline.astro";
-import { allPhases, poemCountForPhase, poemsForPoet } from "../../lib/content";
+import { allPhases, poemCountForPhase, poemsForPoet, publicPoems } from "../../lib/content";
 import { S, bn, withBase } from "../../lib/i18n";
 
 export async function getStaticPaths() {
   const poets = await getCollection("poets");
-  const poems = (await getCollection("poems")).map((entry) => entry.data);
+  const poems = publicPoems((await getCollection("poems")).map((entry) => entry.data));
 
   return poets.map((poet) => ({
     params: { id: poet.data.id },

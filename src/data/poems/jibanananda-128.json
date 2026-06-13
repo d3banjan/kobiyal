@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-128",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "rupasi-bangla",
   "title_bn": "চলে যাব শুকনো পাতা-ছাওয়া ঘাসে",
   "body_bn": "চলে যাব শুকনো পাতা-ছাওয়া ঘাসে — জামরুল হিজলের বনে;\nতলতা বাঁশের ছিপ হাতে রবে — মাছ আমি ধরিব না কিছু; —\nদীঘির জলের গন্ধে রূপালি চিতল আর রূপসীর পিছু\nজামের গভীর পাতা — মাখা শান — নীল জলে খেলিছে গোপনে;\nআনারস ঝোপে ওই মাছরাঙা তার মাছরাঙাটির মনে\nঅস্পষ্ট আলোয় যেন মুছে যায় — সিঁদুরের মতো রাঙা লিচু\nঝড়ে পড়ে পাতা ঘাসে, — চেয়ে দেখি কিশোরী করেছে মাথা নিচু —\nএসেছে সে দুপুরের অবসরে জামরুল লিচু আহরণে —চলে যায়; নীলাম্বরী সরে যায় কোকিলের পাখনার মতো\nক্ষীরুয়ের শাখা ছুঁয়ে চালতার ডাল ছেড়ে বাঁশের পিছনে\nকোনো দূর আকাঙ্খার ক্ষেতে মাঠে চলে যায় যেন অব্যহত,\nযদি তার পিছে যাও দেখিবে সে আকন্দের করবীর বনে\nভোমরার ভয়ে ভীরু — বহু ক্ষণ পায়চারি করে আনমনে\nতারপর চলে গেল : উড়ে গেল যেন নীল ভোমরার সনে।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "ফসল"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "রূপসী বাংলা",
+  "source_year": 1957,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/choley-jabo-shukno-pata-sawoa-ghashey/",
   "sort_order": 128,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "রূপসী বাংলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1957,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 40,
+      "page_end": 41,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

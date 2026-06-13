@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-244",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "mahaprithibi-timir",
   "title_bn": "ভাষিত",
   "body_bn": "আমার এ-জীবনের ভোরবেলা থেকে-\nসে-সব ভূখণ্ড ছিলো চিরদিন কন্ঠস্থ আমার;\nএকদিন অবশেষে টের পাওয়া গেল\nআমাদের স’জনার মতো দাঁড়াবার",
   "tags": [
@@ -9,10 +9,26 @@
     "স্মৃতি",
     "সময়"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "সাতটি তারার তিমির",
+  "source_year": 1948,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/vashito/",
   "sort_order": 244,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "সাতটি তারার তিমির",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1948,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 33,
+      "page_end": 33,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }
