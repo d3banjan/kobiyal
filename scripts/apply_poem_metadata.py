@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -321,6 +322,20 @@ def has_embedded_collection_marker(poem: dict[str, Any], title_bn: str) -> bool:
     return any(line.strip() == marker for line in (poem.get("body_bn") or "").splitlines())
 
 
+def collection_reference_patterns(title_bn: str) -> list[re.Pattern[str]]:
+    escaped_title = re.escape(title_bn)
+    return [
+        re.compile(rf"\s*[\(\[]\s*{escaped_title}\s+কাব্যগ্রন্থ\s*[\)\]]\s*$"),
+        re.compile(rf"\s*(?:গ্রন্থ|কাব্যগ্রন্থ)\s*[:：-]\s*{escaped_title}\s*$"),
+    ]
+
+
+def has_embedded_collection_reference(poem: dict[str, Any], title_bn: str) -> bool:
+    body = poem.get("body_bn") or ""
+    patterns = collection_reference_patterns(title_bn)
+    return any(any(pattern.search(line.strip()) for pattern in patterns) for line in body.splitlines())
+
+
 def is_conflict_embedded_collection_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
     """Override stale editions when the stored body names the candidate book."""
 
@@ -348,6 +363,35 @@ def is_conflict_embedded_collection_candidate(row: dict[str, Any], poem: dict[st
     return float(row.get("score") or 0) >= 17
 
 
+def is_unknown_embedded_collection_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Classify unknown poems when the stored body carries a source-book marker."""
+
+    if poem.get("source_edition") != UNKNOWN_COLLECTION:
+        return False
+    if not has_embedded_collection_reference(poem, meta["title_bn"]):
+        return False
+    if row.get("status") not in {"accepted_candidate", "ambiguous", "needs_manual_review"}:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int):
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if "page_sequence_present" not in evidence:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 8:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 4:
+        return False
+
+    page_span = end - start + 1
+    return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
+
+
 def is_eligible(
     row: dict[str, Any],
     poem: dict[str, Any],
@@ -358,6 +402,7 @@ def is_eligible(
     allow_known_line_rich_candidates: bool,
     allow_unknown_exact_rich_candidates: bool,
     allow_unknown_exact_anchor_candidates: bool,
+    allow_unknown_embedded_candidates: bool,
     allow_conflict_exact_rich_candidates: bool,
     allow_conflict_embedded_candidates: bool,
 ) -> tuple[bool, str]:
@@ -388,6 +433,8 @@ def is_eligible(
             return True, "eligible_unknown_exact_rich"
         if allow_unknown_exact_anchor_candidates and is_unknown_collection_exact_anchor_candidate(row, poem, meta):
             return True, "eligible_unknown_exact_anchor"
+        if allow_unknown_embedded_candidates and is_unknown_embedded_collection_candidate(row, poem, meta):
+            return True, "eligible_unknown_embedded_collection"
         return False, "not_accepted"
     if not allow_legacy_candidates and not has_span_anchor_evidence(row):
         return False, "missing_span_anchor_evidence"
@@ -401,10 +448,22 @@ def is_eligible(
 
 def remove_embedded_collection_marker(poem: dict[str, Any], title_bn: str) -> None:
     marker = f"#{title_bn}"
+    patterns = collection_reference_patterns(title_bn)
     lines = (poem.get("body_bn") or "").splitlines()
-    filtered = [line for line in lines if line.strip() != marker]
+    filtered = []
+    for line in lines:
+        if line.strip() == marker:
+            continue
+        cleaned = line.rstrip()
+        for pattern in patterns:
+            cleaned = pattern.sub("", cleaned).rstrip()
+        filtered.append(cleaned)
     if len(filtered) != len(lines):
         poem["body_bn"] = "\n".join(filtered)
+        return
+    next_body = "\n".join(filtered)
+    if next_body != poem.get("body_bn"):
+        poem["body_bn"] = next_body
 
 
 def apply_metadata(row: dict[str, Any], poem: dict[str, Any], force_collection_update: bool = False) -> bool:
@@ -471,6 +530,11 @@ def main() -> int:
         help="Classify unknown-collection spans whose exact line anchors cover the full printed span.",
     )
     parser.add_argument(
+        "--allow-unknown-embedded-candidates",
+        action="store_true",
+        help="Classify unknown-collection spans when the poem body embeds the candidate collection as a source marker.",
+    )
+    parser.add_argument(
         "--allow-conflict-exact-rich-candidates",
         action="store_true",
         help="Override stale known collection assignments with dense exact line-anchor evidence.",
@@ -507,6 +571,7 @@ def main() -> int:
             args.allow_known_line_rich_candidates,
             args.allow_unknown_exact_rich_candidates,
             args.allow_unknown_exact_anchor_candidates,
+            args.allow_unknown_embedded_candidates,
             args.allow_conflict_exact_rich_candidates,
             args.allow_conflict_embedded_candidates,
         )
