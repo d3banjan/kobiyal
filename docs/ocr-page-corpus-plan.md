@@ -78,7 +78,7 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   Reclassifies page records from structural features only.
 
 - `scripts/repair_page_sequence.py`
-  Repairs printed page numbers using OCR candidates, optional TSV layout candidates, monotonic sequence constraints, and page-type confidence.
+Repairs printed page numbers using OCR candidates, optional TSV layout candidates, supported scan-to-printed-page offsets, monotonic sequence constraints, and page-type confidence. Offset support prevents a contents-page number from poisoning later poem pages.
 
 - `scripts/propose_poem_spans.py`
   Proposes poem-to-page spans using the repaired page corpus and current poem JSON. It emits sidecar candidates only.
@@ -100,6 +100,16 @@ The first site-facing application used `metadata_reports/poem-span-candidates.fu
 - 239 rows were not accepted candidates.
 - 11 accepted candidates were skipped because printed page start/end was missing.
 - 25 rows were skipped because the candidate book contradicted a known collection assignment.
+
+A second pass improved printed page repair from 577/728 fixed page records to 619/728 by using supported page offsets. It unlocked 9 more gated poem updates:
+
+- 2 records moved out of `সংকলন অজানা`.
+- 7 records kept their known collection and gained printed page citations.
+
+Current cumulative site-facing application:
+
+- 123 Jibanananda records have printed book citations from the gated pipeline.
+- 60 records moved out of `সংকলন অজানা`.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 

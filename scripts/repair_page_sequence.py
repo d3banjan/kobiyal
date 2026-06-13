@@ -136,14 +136,28 @@ def visible_basis(candidate: dict[str, Any]) -> str:
     return "visible_ocr_candidate"
 
 
-def repair_book(rows: list[dict[str, Any]]) -> None:
-    rows.sort(key=lambda row: int(row.get("scan_page") or 0))
-    raw_candidates: list[tuple[int, dict[str, Any]]] = []
-    for idx, row in enumerate(rows):
-        candidate = best_visible_candidate(row)
-        if candidate is not None:
-            raw_candidates.append((idx, candidate))
+def scan_page(row: dict[str, Any], fallback_idx: int) -> int:
+    value = row.get("scan_page")
+    return int(value) if isinstance(value, int) else fallback_idx + 1
 
+
+def supported_offsets(
+    rows: list[dict[str, Any]],
+    raw_candidates: list[tuple[int, dict[str, Any]]],
+) -> set[int] | None:
+    offsets: dict[int, list[int]] = defaultdict(list)
+    for idx, candidate in raw_candidates:
+        offsets[int(candidate["value"]) - scan_page(rows[idx], idx)].append(scan_page(rows[idx], idx))
+    if not offsets:
+        return None
+
+    supported = {offset for offset, scans in offsets.items() if len(scans) >= 3}
+    if not supported:
+        return None
+    return supported
+
+
+def pairwise_rejected_indices(raw_candidates: list[tuple[int, dict[str, Any]]]) -> set[int]:
     rejected_indices: set[int] = set()
     for pos, (idx, candidate) in enumerate(raw_candidates):
         prev_anchor = raw_candidates[pos - 1] if pos > 0 else None
@@ -154,12 +168,60 @@ def repair_book(rows: list[dict[str, Any]]) -> None:
             continue
         if next_anchor and value >= int(next_anchor[1]["value"]):
             rejected_indices.add(idx)
+    return rejected_indices
+
+
+def fill_contiguous_offset_runs(rows: list[dict[str, Any]], offset: int) -> None:
+    anchor_indices = [
+        idx
+        for idx, row in enumerate(rows)
+        if row.get("printed_page_basis") in {"visible_ocr_candidate", "visible_layout_candidate"}
+        and isinstance(row.get("printed_page_fixed"), int)
+        and int(row["printed_page_fixed"]) - scan_page(row, idx) == offset
+    ]
+    seen: set[int] = set()
+    for anchor_idx in anchor_indices:
+        for direction in (-1, 1):
+            idx = anchor_idx + direction
+            while 0 <= idx < len(rows):
+                row = rows[idx]
+                if row.get("page_type") not in TRUSTED_PAGE_TYPES:
+                    break
+                inferred = scan_page(row, idx) + offset
+                if inferred < 1:
+                    break
+                if row.get("printed_page_fixed") is None and idx not in seen:
+                    row["printed_page_fixed"] = inferred
+                    row["printed_page_label_bn"] = bangla_number(inferred)
+                    row["printed_page_basis"] = "sequence_offset_inferred"
+                    row["sequence_confidence"] = 0.7
+                    seen.add(idx)
+                idx += direction
+
+
+def repair_book(rows: list[dict[str, Any]]) -> None:
+    rows.sort(key=lambda row: int(row.get("scan_page") or 0))
+    raw_candidates: list[tuple[int, dict[str, Any]]] = []
+    for idx, row in enumerate(rows):
+        candidate = best_visible_candidate(row)
+        if candidate is not None:
+            raw_candidates.append((idx, candidate))
+
+    offsets = supported_offsets(rows, raw_candidates)
+    if offsets is None:
+        rejected_indices = pairwise_rejected_indices(raw_candidates)
+    else:
+        rejected_indices = {
+            idx
+            for idx, candidate in raw_candidates
+            if int(candidate["value"]) - scan_page(rows[idx], idx) not in offsets
+        }
 
     for idx, row in enumerate(rows):
         flags = set(row.get("flags") or [])
         candidate = best_visible_candidate(row)
         if idx in rejected_indices:
-            flags.add("nonmonotonic_printed_page_candidate")
+            flags.add("offset_outlier_printed_page_candidate" if offsets is not None else "nonmonotonic_printed_page_candidate")
             row["printed_page_fixed"] = None
             row["printed_page_label_bn"] = None
             row["printed_page_basis"] = "suspect_visible_candidate"
@@ -179,6 +241,12 @@ def repair_book(rows: list[dict[str, Any]]) -> None:
             if row.get("page_type") in TRUSTED_PAGE_TYPES:
                 flags.add("missing_printed_page_candidate")
         row["flags"] = sorted(flags)
+
+    if offsets is not None:
+        for row in rows:
+            row["supported_printed_page_offsets"] = sorted(offsets)
+        for offset in sorted(offsets):
+            fill_contiguous_offset_runs(rows, offset)
 
     anchors = [
         (idx, int(row["printed_page_fixed"]))
