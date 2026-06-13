@@ -101,6 +101,14 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
 - `scripts/apply_poem_metadata.py`
   Applies only gated span candidates to poem JSON. A row must be an accepted candidate, have printed page start/end, include deterministic span-anchor evidence, and either match the poem's known collection or fill `সংকলন অজানা`. It does not mark poems as text-verified. Legacy broad-token candidate reports require the explicit `--allow-legacy-candidates` override.
 
+- `scripts/ocr_lexicon_audit.py`
+  Builds a Bengali token lexicon from the current Jibanananda poem JSON and
+  compares OCR page tokens against it. The output is a sidecar suspicion report
+  with repeated unknown OCR forms, page contexts, and likely corrections from
+  OCR-equivalence keys or edit similarity. This is a diagnostic gate only: it
+  can prioritize pages for correction and help grow OCR equivalence classes, but
+  it must not rewrite poem text or page corpus rows without separate review.
+
 All long-running page and poem loops use `tqdm` progress bars when run through `uv`.
 
 ## Current gated application
@@ -132,9 +140,24 @@ Remaining `সংকলন অজানা` poems stay in the metadata backlog u
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 
+## Current lexicon audit
+
+The first non-mutating dictionary-style pass is implemented in
+`scripts/ocr_lexicon_audit.py`. A smoke run with
+`uv run python scripts/ocr_lexicon_audit.py --no-progress --top 80` built a
+13,053-token Jibanananda poem lexicon from the current JSON files and scanned
+626 poem/text pages from `page-corpus.full.repaired.layout.jsonl`.
+
+The report is written to the ignored sidecar file
+`metadata_reports/ocr-lexicon-audit.current.json`. It surfaces repeated OCR
+forms with suggested corrections, for example `আঁম` -> `আমি`, `যাঁদ` -> `যদি`,
+`পাঁথবীর` -> `পৃথিবীর`, and `শাঁশরের` -> `শিশিরের`. This is useful for ranking
+pages and expanding OCR equivalence classes, but it is not yet a text-correction
+gate and must not automatically rewrite poem bodies.
+
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.

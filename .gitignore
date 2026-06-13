@@ -14,3 +14,4 @@ test-results/
 downloads/
 .ocr-cache/
 metadata_reports/*.jsonl
+metadata_reports/*.json
