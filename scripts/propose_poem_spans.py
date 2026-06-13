@@ -144,10 +144,50 @@ def page_text(row: dict[str, Any]) -> str:
     )
 
 
+def page_match_lines(row: dict[str, Any]) -> list[str]:
+    lines: list[str] = []
+    profile_text = "\n".join(
+        profile.get("text") or "" for profile in row.get("ocr_profiles") or []
+    )
+    for source in [
+        row.get("normalized_match_text") or "",
+        row.get("raw_ocr") or "",
+        row.get("raw_pdftotext") or "",
+        profile_text,
+    ]:
+        for line in source.splitlines():
+            normalized = normalize(line)
+            if normalized:
+                lines.append(normalized)
+    return lines
+
+
+def strip_standalone_digits(text: str) -> str:
+    return re.sub(r"(^|\s)[0-9]+(?=\s|$)", " ", text).strip()
+
+
+def title_heading_match(title: str, page: dict[str, Any]) -> bool:
+    if not title:
+        return False
+    title_tokens = title.split()
+    if not title_tokens:
+        return False
+    for line in page.get("_match_lines") or page_match_lines(page):
+        line = strip_standalone_digits(line)
+        if line == title:
+            return True
+        line_tokens = line.split()
+        if len(title_tokens) > 1 and line_tokens[: len(title_tokens)] == title_tokens:
+            if len(line_tokens) <= len(title_tokens) + 2:
+                return True
+    return False
+
+
 def prepare_page(row: dict[str, Any]) -> dict[str, Any]:
     match_text = page_text(row)
     row["_match_text"] = match_text
     row["_tokens"] = tokens(match_text)
+    row["_match_lines"] = page_match_lines(row)
     return row
 
 
@@ -197,9 +237,12 @@ def score_page(
     evidence: list[str] = []
     score = 0.0
 
-    if title and title in text:
+    if title_heading_match(title, page):
         score += 12.0
         evidence.append("title_match")
+    elif title and title in text:
+        score += 2.0
+        evidence.append("title_phrase_match")
 
     if lines:
         if lines[0] and lines[0] in text:
@@ -269,7 +312,7 @@ def anchor_summary(
         return None
 
     text = page_text(page)
-    title_match = bool(title and title in text)
+    title_match = title_heading_match(title, page)
     matches = line_anchor_matches(line_norms, page, token_df, book_page_count)
     exact_count = sum(1 for match in matches if match["kind"] == "exact")
     fuzzy_count = len(matches) - exact_count

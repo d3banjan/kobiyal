@@ -97,6 +97,7 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
     collection, such as `mahaprithibi-appendix-copy` for `মহাপৃথিবী`, via the
     explicit `--include-logical-aliases` review flag;
   - score candidate pages by title, first/last line, body-token overlap, and repaired printed-page availability;
+  - treat title evidence as heading-aware: exact normalized title lines count as `title_match`, while title phrases embedded in poem body text are downgraded to `title_phrase_match`;
   - derive the span from clustered title/line anchors rather than broad adjacent token overlap;
   - reject title-only anchors, which are unsafe for short titles like `তুমি`;
   - trim sparse pre-title anchor pages only when they are repeated-line/refrain
