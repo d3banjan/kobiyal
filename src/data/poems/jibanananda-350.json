@@ -14,5 +14,21 @@
   "source_name_bn": "বাংলা পোয়েমস",
   "source_url": "https://banglapoems.wordpress.com/2012/10/11/%e0%a6%b8%e0%a7%82%e0%a6%b0%e0%a7%8d%e0%a6%af-%e0%a6%a8%e0%a6%95%e0%a7%8d%e0%a6%b7%e0%a6%a4%e0%a7%8d%e0%a6%b0-%e0%a6%a8%e0%a6%be%e0%a6%b0%e0%a7%80-3-%e0%a6%ac%e0%a7%87%e0%a6%b2%e0%a6%be-%e0%a6%85/",
   "sort_order": 350,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "বেলা অবেলা কালবেলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1961,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 20,
+      "page_end": 20,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

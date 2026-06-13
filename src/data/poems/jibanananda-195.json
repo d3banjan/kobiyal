@@ -14,5 +14,21 @@
   "source_name_bn": "বাংলার কবিতা",
   "source_url": "https://banglarkobita.com/poem/famous/969",
   "sort_order": 195,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "বনলতা সেন",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1942,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 29,
+      "page_end": 29,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }
