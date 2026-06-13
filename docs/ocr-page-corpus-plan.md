@@ -279,6 +279,13 @@ the equivalence keys find real likely typos, but they also collapse valid
 poetic words such as `কোণে`, `ভোলো`, `ভেলা`, and `শোণ` into common alternatives.
 Use this report to queue manual/printed-source checks, not bulk text rewrites.
 
+The poem-body quality report also records leading dash structure across all
+Jibanananda poem JSON files. A single leading ASCII hyphen is treated by the site
+renderer as an imported stanza-break marker. Long all-hyphen divider lines are
+hidden. Multi-hyphen starts such as `---ব’ লে...` and leading Bengali em dashes
+are preserved as text and surfaced in the report for review, because those are
+more likely to be punctuation than stanza separators.
+
 ## Test plan
 
 - `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py`

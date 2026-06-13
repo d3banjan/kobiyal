@@ -28,6 +28,10 @@ WESTERN_ALNUM_RE = re.compile(r"[A-Za-z0-9]")
 INLINE_DIGIT_RE = re.compile(r"[\u09E6-\u09EF0-9]")
 STANDALONE_DIGIT_LINE_RE = re.compile(r"^[\u09E6-\u09EF0-9]+$")
 REPLACEMENT_CHAR_RE = re.compile(r"[�□■▪]")
+DASH_DIVIDER_LINE_RE = re.compile(r"^-{5,}$")
+SINGLE_LEADING_STANZA_DASH_RE = re.compile(r"^-(?!-)\s*\S")
+MULTI_LEADING_DASH_RE = re.compile(r"^--+\S")
+LEADING_EM_DASH_RE = re.compile(r"^—\s*\S")
 
 OCR_EQUIVALENCES = [
     ["ি", "ী"],
@@ -338,6 +342,14 @@ def poem_quality_report(
                 checks.append(("section_number_line", "info", True))
             elif INLINE_DIGIT_RE.search(line):
                 checks.append(("inline_digit", "review", True))
+            if DASH_DIVIDER_LINE_RE.match(stripped):
+                checks.append(("dash_divider_line", "info", True))
+            elif SINGLE_LEADING_STANZA_DASH_RE.match(stripped):
+                checks.append(("leading_stanza_dash", "info", True))
+            elif MULTI_LEADING_DASH_RE.match(stripped):
+                checks.append(("multi_leading_dash", "review", True))
+            elif LEADING_EM_DASH_RE.match(stripped):
+                checks.append(("leading_em_dash", "info", True))
 
             for kind, severity, matched in checks:
                 if not matched:

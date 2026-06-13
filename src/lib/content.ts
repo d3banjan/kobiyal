@@ -70,7 +70,8 @@ const standaloneSectionMarkerPattern = new RegExp(`^${banglaDigitPattern}+$`);
 const wrappedSectionMarkerPattern = new RegExp(`^(.*?)\\s*।।\\s*(${banglaDigitPattern}{1,2})\\s*।।\\s*$`);
 const trailingBareMarkerPattern = new RegExp(`^(.*?)([।!?;:,]?)\\s*(?<!${banglaDigitPattern})(${banglaDigitPattern})\\s*([!।?])?\\s*$`);
 const sourceNotePattern = /^(?:(দেশ|কবিতা),?\s+.*[০-৯]{3,4}|গ্রন্থ\s*:\s*\S.*)$/;
-const leadingStanzaBreakPattern = /^-+\s*(.*)$/;
+const dashDividerPattern = /^-{5,}$/;
+const leadingStanzaBreakPattern = /^-(?!-)\s*(.*)$/;
 
 function stripTrailingBareMarker(line: string): string {
   const match = line.match(trailingBareMarkerPattern);
@@ -99,6 +100,11 @@ export function verseBlocks(body: string): VerseBlock[] {
     const currentLines: string[] = [];
 
     for (const rawLine of stanza) {
+      if (dashDividerPattern.test(rawLine.trim())) {
+        pushStanza(blocks, currentLines);
+        continue;
+      }
+
       const { startsNewStanza, line } = normalizeLeadingStanzaBreak(rawLine);
       if (startsNewStanza) {
         pushStanza(blocks, currentLines);
