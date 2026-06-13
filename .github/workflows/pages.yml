@@ -26,6 +26,11 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Build
         run: GITHUB_PAGES=true bun run build
+      - name: Verify generated metadata
+        run: |
+          grep -q "বেলা অবেলা কালবেলা" dist/poems/jibanananda-070/index.html
+          grep -q $'\u09eb\u09ea-\u09eb\u09eb' dist/poems/jibanananda-070/index.html
+          ! grep -q "#বেলা অবেলা কালবেলা" dist/poems/jibanananda-070/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
