@@ -10,6 +10,7 @@ import argparse
 import glob
 import json
 import re
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -39,6 +40,12 @@ OCR_EQUIVALENCES = [
     ["ৎ", "ত"],
     ["।", "|", "১"],
 ]
+
+TRUSTED_PAGE_TYPES = {
+    "normal_poem_page",
+    "poem_or_text_page",
+    "poem_start_or_short_page",
+}
 
 
 def normalize(text: str) -> str:
@@ -109,6 +116,16 @@ def prepare_page(row: dict[str, Any]) -> dict[str, Any]:
     return row
 
 
+def book_token_document_frequency(pages_by_book: dict[str, list[dict[str, Any]]]) -> dict[str, Counter[str]]:
+    by_book: dict[str, Counter[str]] = {}
+    for book_id, pages in pages_by_book.items():
+        counter: Counter[str] = Counter()
+        for page in pages:
+            counter.update(page.get("_tokens") or tokens(page_text(page)))
+        by_book[book_id] = counter
+    return by_book
+
+
 def candidate_books(poem: dict[str, Any], all_books: bool) -> set[str]:
     if all_books:
         return set(COLLECTION_TO_BOOK_ID.values())
@@ -157,27 +174,193 @@ def score_page(
     return score, sorted(set(evidence))
 
 
-def adjacent_span(best: dict[str, Any], pages: list[dict[str, Any]], poem_tokens: set[str]) -> tuple[int, int]:
-    index_by_scan = {int(row["scan_page"]): idx for idx, row in enumerate(pages)}
-    start = end = int(best["scan_page"])
-    best_idx = index_by_scan[start]
+def line_anchor_matches(
+    line_norms: list[str],
+    page: dict[str, Any],
+    token_df: Counter[str],
+    book_page_count: int,
+) -> list[dict[str, Any]]:
+    text = page_text(page)
+    page_tokens = page.get("_tokens") or tokens(text)
+    matches: list[dict[str, Any]] = []
+    distinctive_limit = max(3, int(book_page_count * 0.08))
+
+    for line_index, line in enumerate(line_norms):
+        if not line:
+            continue
+        if line in text:
+            matches.append({"line_index": line_index, "kind": "exact"})
+            continue
+
+        line_tokens = tokens(line)
+        if len(line_tokens) < 4:
+            continue
+        overlap = line_tokens & page_tokens
+        coverage = len(overlap) / len(line_tokens)
+        distinctive = {token for token in line_tokens if token_df[token] <= distinctive_limit}
+        distinctive_overlap = distinctive & page_tokens
+        if coverage >= 0.82 and (
+            not distinctive or len(distinctive_overlap) >= min(2, len(distinctive))
+        ):
+            matches.append({"line_index": line_index, "kind": "fuzzy"})
+
+    return matches
+
+
+def anchor_summary(
+    title: str,
+    line_norms: list[str],
+    page: dict[str, Any],
+    token_df: Counter[str],
+    book_page_count: int,
+) -> dict[str, Any] | None:
+    if page.get("page_type") not in TRUSTED_PAGE_TYPES:
+        return None
+
+    text = page_text(page)
+    title_match = bool(title and title in text)
+    matches = line_anchor_matches(line_norms, page, token_df, book_page_count)
+    exact_count = sum(1 for match in matches if match["kind"] == "exact")
+    fuzzy_count = len(matches) - exact_count
+    terminal_indexes = {0, len(line_norms) - 1} if line_norms else set()
+    terminal_exact = any(
+        match["kind"] == "exact" and match["line_index"] in terminal_indexes for match in matches
+    )
+
+    is_anchor = (
+        (title_match and bool(matches))
+        or exact_count >= 2
+        or terminal_exact
+        or (exact_count >= 1 and fuzzy_count >= 2)
+        or fuzzy_count >= 4
+    )
+    if not is_anchor:
+        return None
+
+    return {
+        "scan_page": int(page["scan_page"]),
+        "printed_page": page.get("printed_page_fixed"),
+        "title_match": title_match,
+        "line_match_count": len(matches),
+        "exact_line_match_count": exact_count,
+        "fuzzy_line_match_count": fuzzy_count,
+        "line_indexes": [match["line_index"] for match in matches],
+        "exact_line_indexes": [
+            match["line_index"] for match in matches if match["kind"] == "exact"
+        ],
+    }
+
+
+def anchored_span(
+    best: dict[str, Any],
+    pages: list[dict[str, Any]],
+    title: str,
+    line_norms: list[str],
+    token_df: Counter[str],
+) -> tuple[int, int, dict[str, Any]]:
+    best_scan = int(best["scan_page"])
+    summary_by_scan: dict[int, dict[str, Any]] = {}
+    weak_matches_by_scan: dict[int, list[dict[str, Any]]] = {}
+    for page in pages:
+        scan = int(page["scan_page"])
+        summary = anchor_summary(title, line_norms, page, token_df, len(pages))
+        if summary is not None:
+            summary_by_scan[scan] = summary
+        elif page.get("page_type") in TRUSTED_PAGE_TYPES:
+            weak_matches_by_scan[scan] = line_anchor_matches(line_norms, page, token_df, len(pages))
+
+    anchors = sorted(summary_by_scan.values(), key=lambda anchor: anchor["scan_page"])
+
+    if not anchors:
+        return (
+            best_scan,
+            best_scan,
+            {
+                "basis": "best_page_no_line_anchor",
+                "best_scan_page": best_scan,
+                "anchor_count": 0,
+                "anchor_scan_pages": [],
+                "line_match_count": 0,
+                "exact_line_match_count": 0,
+            },
+        )
+
+    anchors.sort(key=lambda anchor: anchor["scan_page"])
+    seed_index = min(
+        range(len(anchors)),
+        key=lambda idx: (abs(anchors[idx]["scan_page"] - best_scan), anchors[idx]["scan_page"]),
+    )
+    left = right = seed_index
+    while left > 0 and anchors[left]["scan_page"] - anchors[left - 1]["scan_page"] <= 2:
+        left -= 1
+    while right + 1 < len(anchors) and anchors[right + 1]["scan_page"] - anchors[right]["scan_page"] <= 2:
+        right += 1
+
+    cluster = anchors[left : right + 1]
+    cluster_scans = {anchor["scan_page"] for anchor in cluster}
+    line_indexes = [
+        line_index
+        for anchor in cluster
+        for line_index in anchor.get("line_indexes", [])
+    ]
+    min_line_index = min(line_indexes) if line_indexes else None
+    max_line_index = max(line_indexes) if line_indexes else None
+    start_scan = min(anchor["scan_page"] for anchor in cluster)
+    end_scan = max(anchor["scan_page"] for anchor in cluster)
+    continuation_scans: list[int] = []
+
+    def continuation_indexes(scan: int, direction: int) -> list[int]:
+        matches = weak_matches_by_scan.get(scan, [])
+        if not matches:
+            return []
+        indexes = [match["line_index"] for match in matches]
+        exact_indexes = [match["line_index"] for match in matches if match["kind"] == "exact"]
+        if direction > 0:
+            if max_line_index is None:
+                return []
+            continuing = [index for index in indexes if index >= max_line_index - 1]
+        else:
+            if min_line_index is None:
+                return []
+            continuing = [index for index in indexes if index <= min_line_index + 1]
+
+        exact_continuing = [index for index in exact_indexes if index in continuing]
+        if len(continuing) >= 2 or exact_continuing:
+            return continuing
+        return []
 
     for direction in (-1, 1):
-        idx = best_idx + direction
-        while 0 <= idx < len(pages):
-            row = pages[idx]
-            if row.get("page_type") in {"front_matter", "publisher_page", "critical_prose_page", "blank_or_near_blank"}:
+        while True:
+            next_scan = start_scan - 1 if direction < 0 else end_scan + 1
+            if next_scan in cluster_scans:
                 break
-            page_tokens = row.get("_tokens") or tokens(page_text(row))
-            overlap = len(poem_tokens & page_tokens)
-            coverage = overlap / len(poem_tokens) if poem_tokens else 0
-            if overlap < 12 or coverage < 0.12:
+            page = next((row for row in pages if int(row["scan_page"]) == next_scan), None)
+            if page is None or page.get("page_type") not in TRUSTED_PAGE_TYPES:
                 break
-            scan_page = int(row["scan_page"])
-            start = min(start, scan_page)
-            end = max(end, scan_page)
-            idx += direction
-    return start, end
+            indexes = continuation_indexes(next_scan, direction)
+            if not indexes:
+                break
+            continuation_scans.append(next_scan)
+            if direction < 0:
+                start_scan = next_scan
+                min_line_index = min(indexes)
+            else:
+                end_scan = next_scan
+                max_line_index = max(indexes)
+
+    return (
+        start_scan,
+        end_scan,
+        {
+            "basis": "line_anchor_cluster",
+            "best_scan_page": best_scan,
+            "anchor_count": len(cluster),
+            "anchor_scan_pages": [anchor["scan_page"] for anchor in cluster],
+            "continuation_scan_pages": sorted(continuation_scans),
+            "line_match_count": sum(anchor["line_match_count"] for anchor in cluster),
+            "exact_line_match_count": sum(anchor["exact_line_match_count"] for anchor in cluster),
+        },
+    )
 
 
 def printed_range(pages_by_scan: dict[int, dict[str, Any]], start: int, end: int) -> tuple[int | None, int | None]:
@@ -204,6 +387,7 @@ def main() -> int:
         pages_by_book.setdefault(page.get("book_id", "unknown"), []).append(page)
     for book_pages in pages_by_book.values():
         book_pages.sort(key=lambda row: int(row.get("scan_page") or 0))
+    token_df_by_book = book_token_document_frequency(pages_by_book)
 
     poems = load_poems(Path(args.poems_dir), args.limit)
     poem_iter = poems
@@ -249,21 +433,50 @@ def main() -> int:
         best_score, best_evidence, best_page = candidates[0]
         book_pages = pages_by_book.get(best_page["book_id"], [])
         pages_by_scan = {int(row["scan_page"]): row for row in book_pages}
-        span_start, span_end = adjacent_span(best_page, book_pages, poem_token_set)
+        span_start, span_end, span_info = anchored_span(
+            best_page,
+            book_pages,
+            title_norm,
+            line_norms,
+            token_df_by_book.get(best_page["book_id"], Counter()),
+        )
         printed_start, printed_end = printed_range(pages_by_scan, span_start, span_end)
         runner_up_gap = best_score - candidates[1][0] if len(candidates) > 1 else None
         strong_line_or_body = bool(
             {"first_line_match", "last_line_match", "high_body_coverage"} & set(best_evidence)
         )
+        has_span_anchor = (
+            span_info.get("anchor_count", 0) > 0
+            and (
+                span_info.get("exact_line_match_count", 0) > 0
+                or span_info.get("line_match_count", 0) >= 2
+            )
+        )
         status = "needs_manual_review"
         if (
+            has_span_anchor
+            and
             best_score >= 18
             and "title_match" in best_evidence
             and strong_line_or_body
             and (runner_up_gap is None or runner_up_gap >= 4)
         ):
             status = "accepted_candidate"
-        elif best_score >= 24 and strong_line_or_body and (runner_up_gap is None or runner_up_gap >= 6):
+        elif (
+            has_span_anchor
+            and best_score >= 24
+            and strong_line_or_body
+            and (runner_up_gap is None or runner_up_gap >= 6)
+        ):
+            status = "accepted_candidate"
+        elif (
+            has_span_anchor
+            and best_score >= 24
+            and "high_body_coverage" in best_evidence
+            and span_info.get("line_match_count", 0) >= 12
+            and span_info.get("exact_line_match_count", 0) >= 6
+            and (runner_up_gap is None or runner_up_gap >= 4)
+        ):
             status = "accepted_candidate"
 
         if runner_up_gap is not None and runner_up_gap < 4:
@@ -283,6 +496,13 @@ def main() -> int:
                 "printed_page_end": printed_end,
                 "score": round(best_score, 3),
                 "evidence": best_evidence,
+                "span_basis": span_info["basis"],
+                "best_pdf_page": span_info["best_scan_page"],
+                "span_anchor_count": span_info["anchor_count"],
+                "span_anchor_scan_pages": span_info["anchor_scan_pages"],
+                "span_continuation_scan_pages": span_info.get("continuation_scan_pages", []),
+                "span_line_match_count": span_info["line_match_count"],
+                "span_exact_line_match_count": span_info["exact_line_match_count"],
                 "status": status,
                 "runner_up_count": max(0, len(candidates) - 1),
                 "runner_up_gap": round(runner_up_gap, 3) if runner_up_gap is not None else None,

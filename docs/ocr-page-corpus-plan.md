@@ -11,7 +11,7 @@ Build a page-first OCR and alignment pipeline for the Jibanananda Das scans. The
 - Generated artifacts live under `metadata_reports/` and cache directories, not in poem JSON.
 - Page classification should use structure first: layout, density, page-number placement, header/footer occupancy, and title/body geometry.
 - OCR correction should be dataset-specific and conservative. Repeated OCR mistakes can form equivalence classes, but promotion to corrected text requires a separate review gate.
-- Gemini or other vision models are fallback verifiers for ambiguous cases, not the primary extraction path.
+- The production alignment path must not require AI. Gemini or other vision models may be used only as ad-hoc manual review aids for ambiguous records; their output is not a runtime dependency and should not bypass deterministic gates.
 
 ## Pipeline
 
@@ -39,6 +39,8 @@ page-corpus.jsonl
 page-corpus.repaired.jsonl
   |
   +-- propose_poem_spans.py
+  |     deterministic title/line anchors
+  |     ordered continuation pages only
   |
   v
 poem-span-candidates.jsonl
@@ -81,13 +83,20 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
 Repairs printed page numbers using OCR candidates, optional TSV layout candidates, supported scan-to-printed-page offsets, monotonic sequence constraints, and page-type confidence. Offset support prevents a contents-page number from poisoning later poem pages.
 
 - `scripts/propose_poem_spans.py`
-  Proposes poem-to-page spans using the repaired page corpus and current poem JSON. It emits sidecar candidates only.
+  Proposes poem-to-page spans using the repaired page corpus and current poem JSON. It emits sidecar candidates only. The current algorithm is deterministic:
+
+  - normalize Bengali text with known OCR equivalence classes;
+  - score candidate pages by title, first/last line, body-token overlap, and repaired printed-page availability;
+  - derive the span from clustered title/line anchors rather than broad adjacent token overlap;
+  - reject title-only anchors, which are unsafe for short titles like `তুমি`;
+  - include adjacent continuation pages only when matched line indexes continue in poem order;
+  - leave ambiguous, weak, or collection-conflicting records for manual review.
 
 - `scripts/extract_page_layout.py`
   Extracts Tesseract TSV geometry from cached page images. This adds structure-first page-number evidence and body/header/footer placement summaries without overwriting raw OCR.
 
 - `scripts/apply_poem_metadata.py`
-  Applies only gated span candidates to poem JSON. A row must be an accepted candidate, have printed page start/end, and either match the poem's known collection or fill `সংকলন অজানা`. It does not mark poems as text-verified.
+  Applies only gated span candidates to poem JSON. A row must be an accepted candidate, have printed page start/end, include deterministic span-anchor evidence, and either match the poem's known collection or fill `সংকলন অজানা`. It does not mark poems as text-verified. Legacy broad-token candidate reports require the explicit `--allow-legacy-candidates` override.
 
 All long-running page and poem loops use `tqdm` progress bars when run through `uv`.
 
@@ -112,6 +121,8 @@ Current cumulative site-facing application:
 - 60 records moved out of `সংকলন অজানা`.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
+
+The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 
 ## Test plan
 

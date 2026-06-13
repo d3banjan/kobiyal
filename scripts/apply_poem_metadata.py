@@ -85,13 +85,33 @@ def book_source(row: dict[str, Any], meta: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def is_eligible(row: dict[str, Any], poem: dict[str, Any]) -> tuple[bool, str]:
+def has_span_anchor_evidence(row: dict[str, Any]) -> bool:
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+    if int(row.get("span_anchor_count") or 0) <= 0:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) <= 0 and int(row.get("span_line_match_count") or 0) < 2:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int):
+        return False
+    page_span = end - start + 1
+    if page_span >= 5 and int(row.get("span_anchor_count") or 0) < page_span:
+        return False
+    return True
+
+
+def is_eligible(row: dict[str, Any], poem: dict[str, Any], allow_legacy_candidates: bool) -> tuple[bool, str]:
     if poem.get("poet_id") != "jibanananda-das":
         return False, "not_jibanananda"
     if row.get("status") != "accepted_candidate":
         return False, "not_accepted"
     if not isinstance(row.get("printed_page_start"), int) or not isinstance(row.get("printed_page_end"), int):
         return False, "missing_printed_page"
+    if not allow_legacy_candidates and not has_span_anchor_evidence(row):
+        return False, "missing_span_anchor_evidence"
 
     meta = BOOK_META.get(row.get("candidate_book_id"))
     if not meta:
@@ -131,6 +151,11 @@ def main() -> int:
     parser.add_argument("--candidates", default="metadata_reports/poem-span-candidates.full.layout.normal.jsonl")
     parser.add_argument("--poems-dir", default="src/data/poems")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--allow-legacy-candidates",
+        action="store_true",
+        help="Allow accepted candidates that do not include deterministic span-anchor evidence.",
+    )
     args = parser.parse_args()
 
     poems_dir = Path(args.poems_dir)
@@ -148,7 +173,7 @@ def main() -> int:
             continue
 
         poem = read_json(path)
-        eligible, reason = is_eligible(row, poem)
+        eligible, reason = is_eligible(row, poem, args.allow_legacy_candidates)
         summary[reason] = summary.get(reason, 0) + 1
         if not eligible:
             continue
