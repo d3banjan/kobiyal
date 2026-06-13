@@ -132,6 +132,28 @@ def has_existing_book_source(poem: dict[str, Any], title_bn: str) -> bool:
     )
 
 
+def existing_book_source(poem: dict[str, Any], title_bn: str) -> dict[str, Any] | None:
+    for source in poem.get("book_sources") or []:
+        if (
+            source.get("role") == "primary"
+            and source.get("title_bn") == title_bn
+            and isinstance(source.get("page_start"), int)
+            and isinstance(source.get("page_end"), int)
+        ):
+            return source
+    return None
+
+
+def has_existing_page_range_conflict(row: dict[str, Any], poem: dict[str, Any], title_bn: str) -> bool:
+    source = existing_book_source(poem, title_bn)
+    if source is None:
+        return False
+    return (
+        source["page_start"] != row.get("printed_page_start")
+        or source["page_end"] != row.get("printed_page_end")
+    )
+
+
 def is_known_collection_review_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
     """Allow a narrower review gate for poems already assigned to this book.
 
@@ -937,6 +959,11 @@ def main() -> int:
         action="store_true",
         help="Override stale known collection assignments when the poem body embeds the candidate collection marker.",
     )
+    parser.add_argument(
+        "--allow-existing-page-overwrite",
+        action="store_true",
+        help="Allow a candidate to replace an existing printed primary page range for the same book.",
+    )
     args = parser.parse_args()
 
     poems_dir = Path(args.poems_dir)
@@ -977,14 +1004,24 @@ def main() -> int:
             args.allow_conflict_exact_rich_candidates,
             args.allow_conflict_embedded_candidates,
         )
-        summary[reason] = summary.get(reason, 0) + 1
         if not eligible:
+            summary[reason] = summary.get(reason, 0) + 1
             continue
 
         force_collection_update = reason in {
             "eligible_conflict_exact_rich",
             "eligible_conflict_embedded_collection",
         }
+        meta = BOOK_META[row["candidate_book_id"]]
+        if (
+            not args.allow_existing_page_overwrite
+            and not force_collection_update
+            and has_existing_page_range_conflict(row, poem, meta["title_bn"])
+        ):
+            summary["existing_page_range_conflict"] = summary.get("existing_page_range_conflict", 0) + 1
+            continue
+
+        summary[reason] = summary.get(reason, 0) + 1
         if apply_metadata(row, poem, force_collection_update):
             changed.append(filename)
             if not args.dry_run:

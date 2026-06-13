@@ -110,7 +110,10 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   before writing `book_sources`, so a `mahaprithibi-appendix-copy` candidate is
   cited as `মহাপৃথিবী`. Alias candidates fill missing citations only during
   bulk application; they do not overwrite an existing primary citation for the
-  same collection.
+  same collection. Existing printed primary page ranges are protected by
+  default; replacing a page range requires the explicit
+  `--allow-existing-page-overwrite` flag after review against the printed
+  source.
 
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
