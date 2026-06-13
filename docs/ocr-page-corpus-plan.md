@@ -144,6 +144,19 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   same reviewed-exclusion file as the metadata-gap reporter, so checked
   false-positive phrase hits do not keep reappearing in the review queue.
 
+- `scripts/fuzzy_line_audit.py`
+  Builds a review-only fuzzy line report for remaining printed-page gaps after
+  exact line and phrase-window matching are exhausted. It uses a NumPy vector
+  prefilter over hashed character shingle embeddings, then runs detailed
+  line-level scoring only on the selected pages. The embedding uses full weight
+  for exact character shingles, half weight for OCR class-normalized shingles,
+  and higher weights for longer contiguous shingles (`3,5,8` by default), so it
+  rewards both OCR-equivalent character classes and contiguous regions rather
+  than scattered character overlap. Candidate windows are capped to short
+  printed-page spans and report the longest consecutive run of matched poem
+  lines. This report is not an apply source; fuzzy-only candidates must still be
+  checked against printed-page evidence before writing poem metadata.
+
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
   compares OCR page tokens against it. The output is a sidecar suspicion report
@@ -285,6 +298,12 @@ the equivalence keys find real likely typos, but they also collapse valid
 poetic words such as `কোণে`, `ভোলো`, `ভেলা`, and `শোণ` into common alternatives.
 Use this report to queue manual/printed-source checks, not bulk text rewrites.
 
+The first fuzzy-line audit over the remaining 103 public printed-page gaps ran
+in about 25 seconds with the cached NumPy vector prefilter. It generated a broad
+review queue, but most high-scoring rows are fuzzy-only with no exact line
+anchors. Treat those rows as prioritization hints for printed-source inspection,
+not as citation evidence.
+
 The poem-body quality report also records leading dash structure across all
 Jibanananda poem JSON files. A single leading ASCII hyphen is treated by the site
 renderer as an imported stanza-break marker. Long all-hyphen divider lines are
@@ -294,7 +313,7 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/fuzzy_line_audit.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.

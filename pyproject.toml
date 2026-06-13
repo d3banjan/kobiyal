@@ -3,6 +3,7 @@ name = "kobiyal-tools"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
+    "numpy>=2.4.6",
     "pillow>=12.2.0",
     "tqdm>=4.68.2",
 ]
