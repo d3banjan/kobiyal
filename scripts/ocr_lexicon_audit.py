@@ -222,6 +222,43 @@ def close_suggestions(
     ]
 
 
+def substitution_candidate(
+    token: str,
+    count: int,
+    suggestions: list[dict[str, Any]],
+    min_count: int,
+    min_lexicon_count: int,
+    min_score: float,
+    dominance_ratio: float,
+) -> dict[str, Any] | None:
+    if count < min_count or not suggestions:
+        return None
+
+    first = suggestions[0]
+    first_score = float(first["score"])
+    first_count = int(first["lexicon_count"])
+    if first_score < min_score or first_count < min_lexicon_count:
+        return None
+    if first["token"] == token:
+        return None
+
+    if len(suggestions) > 1:
+        second = suggestions[1]
+        second_score = float(second["score"])
+        second_count = int(second["lexicon_count"])
+        if second_score == first_score and first_count < int(second_count * dominance_ratio):
+            return None
+
+    return {
+        "from": token,
+        "to": first["token"],
+        "count": count,
+        "score": first_score,
+        "lexicon_count": first_count,
+        "basis": first["basis"],
+    }
+
+
 def audit_pages(
     pages: list[dict[str, Any]],
     lexicon: Counter[str],
@@ -304,6 +341,14 @@ def main() -> int:
     parser.add_argument("--top", type=int, default=200)
     parser.add_argument("--max-examples", type=int, default=4)
     parser.add_argument("--max-suggestions", type=int, default=5)
+    parser.add_argument("--substitution-min-count", type=int, default=8)
+    parser.add_argument("--substitution-min-lexicon-count", type=int, default=20)
+    parser.add_argument("--substitution-min-score", type=float, default=0.94)
+    parser.add_argument("--substitution-dominance-ratio", type=float, default=2.0)
+    parser.add_argument(
+        "--substitutions-output",
+        default="metadata_reports/ocr-lexicon-substitutions.current.json",
+    )
     parser.add_argument("--book-id", default=None)
     parser.add_argument(
         "--page-types",
@@ -341,6 +386,13 @@ def main() -> int:
     suspicious_tokens = []
     for token, count in suspicious_counts.most_common(args.top):
         meta = token_meta[token]
+        suggestions = close_suggestions(
+            token,
+            lexicon,
+            by_key,
+            by_loose_key,
+            args.max_suggestions,
+        )
         suspicious_tokens.append(
             {
                 "token": token,
@@ -349,15 +401,32 @@ def main() -> int:
                 "books": dict(meta["books"].most_common()),
                 "pages": meta["pages"],
                 "contexts": meta["contexts"],
-                "suggestions": close_suggestions(
-                    token,
-                    lexicon,
-                    by_key,
-                    by_loose_key,
-                    args.max_suggestions,
-                ),
+                "suggestions": suggestions,
             }
         )
+
+    substitution_candidates = []
+    for token, count in suspicious_counts.most_common():
+        if count < args.substitution_min_count:
+            break
+        suggestions = close_suggestions(
+            token,
+            lexicon,
+            by_key,
+            by_loose_key,
+            args.max_suggestions,
+        )
+        candidate = substitution_candidate(
+            token,
+            count,
+            suggestions,
+            args.substitution_min_count,
+            args.substitution_min_lexicon_count,
+            args.substitution_min_score,
+            args.substitution_dominance_ratio,
+        )
+        if candidate is not None:
+            substitution_candidates.append(candidate)
 
     worst_pages = sorted(
         page_reports,
@@ -377,14 +446,34 @@ def main() -> int:
             "unique_suspicious_tokens": len(suspicious_counts),
             "suspicious_token_instances": sum(suspicious_counts.values()),
             "min_len": args.min_len,
+            "substitution_candidate_count": len(substitution_candidates),
         },
         "suspicious_tokens": suspicious_tokens,
+        "substitution_candidates": substitution_candidates,
         "worst_pages": worst_pages,
     }
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    substitutions_output = Path(args.substitutions_output)
+    substitutions_output.parent.mkdir(parents=True, exist_ok=True)
+    substitutions_output.write_text(
+        json.dumps(
+            {
+                "summary": report["summary"],
+                "substitutions": {
+                    item["from"]: item["to"] for item in substitution_candidates
+                },
+                "candidates": substitution_candidates,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     print(json.dumps(report["summary"], ensure_ascii=False, indent=2))
     return 0
 

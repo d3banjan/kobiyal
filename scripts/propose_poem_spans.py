@@ -20,6 +20,8 @@ except ImportError:  # pragma: no cover - fallback for direct python without uv.
     tqdm = None
 
 BANGLA_TO_ASCII = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
+WORD_RE = re.compile(r"[\u0980-\u09FF]+")
+OCR_SUBSTITUTIONS: dict[str, str] = {}
 
 COLLECTION_TO_BOOK_ID = {
     "ধূসর পাণ্ডুলিপি": "dhusar-pandulipi",
@@ -53,6 +55,8 @@ def normalize(text: str) -> str:
     text = (text or "").replace("\u200b", "").replace("\u200c", "").replace("\u200d", "")
     text = text.translate(BANGLA_TO_ASCII)
     text = re.sub(r"[^\u0980-\u09FF0-9\s]+", " ", text)
+    if OCR_SUBSTITUTIONS:
+        text = WORD_RE.sub(lambda match: OCR_SUBSTITUTIONS.get(match.group(0), match.group(0)), text)
     for group in OCR_EQUIVALENCES:
         canonical = group[0]
         for variant in group[1:]:
@@ -71,6 +75,28 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
             if line.strip():
                 rows.append(json.loads(line))
     return rows
+
+
+def load_ocr_substitutions(path: Path | None) -> dict[str, str]:
+    if path is None:
+        return {}
+    if not path.exists():
+        raise FileNotFoundError(path)
+    with path.open(encoding="utf-8") as f:
+        payload = json.load(f)
+    if isinstance(payload, dict) and isinstance(payload.get("substitutions"), dict):
+        return {
+            str(source): str(target)
+            for source, target in payload["substitutions"].items()
+            if source and target and source != target
+        }
+    if isinstance(payload, dict):
+        return {
+            str(source): str(target)
+            for source, target in payload.items()
+            if source and target and source != target
+        }
+    raise ValueError(f"Unsupported substitutions file shape: {path}")
 
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -378,8 +404,16 @@ def main() -> int:
     parser.add_argument("--limit", type=int)
     parser.add_argument("--all-books", action="store_true", help="Search all primary books for every poem.")
     parser.add_argument("--min-score", type=float, default=10.0)
+    parser.add_argument(
+        "--ocr-substitutions",
+        default=None,
+        help="Optional JSON substitution map from scripts/ocr_lexicon_audit.py for matching only.",
+    )
     parser.add_argument("--no-progress", action="store_true", help="Disable tqdm progress bar.")
     args = parser.parse_args()
+
+    global OCR_SUBSTITUTIONS
+    OCR_SUBSTITUTIONS = load_ocr_substitutions(Path(args.ocr_substitutions) if args.ocr_substitutions else None)
 
     pages = read_jsonl(Path(args.page_corpus))
     pages_by_book: dict[str, list[dict[str, Any]]] = {}

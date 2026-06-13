@@ -89,6 +89,7 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   Proposes poem-to-page spans using the repaired page corpus and current poem JSON. It emits sidecar candidates only. Accepted candidates require deterministic title/line anchors and a repaired printed page range; a match without printed book page numbers remains a manual-review candidate because the website citation must name printed pages rather than PDF scan pages. The current algorithm is deterministic:
 
   - normalize Bengali text with known OCR equivalence classes;
+  - optionally apply a generated OCR substitution map for matching only;
   - score candidate pages by title, first/last line, body-token overlap, and repaired printed-page availability;
   - derive the span from clustered title/line anchors rather than broad adjacent token overlap;
   - reject title-only anchors, which are unsafe for short titles like `তুমি`;
@@ -105,9 +106,12 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
   compares OCR page tokens against it. The output is a sidecar suspicion report
   with repeated unknown OCR forms, page contexts, and likely corrections from
-  OCR-equivalence keys or edit similarity. This is a diagnostic gate only: it
-  can prioritize pages for correction and help grow OCR equivalence classes, but
-  it must not rewrite poem text or page corpus rows without separate review.
+  OCR-equivalence keys or edit similarity. It also exports a conservative
+  sidecar substitution map for `propose_poem_spans.py --ocr-substitutions`.
+  This is a matching-only gate: it can prioritize pages, help grow OCR
+  equivalence classes, and recover page-span evidence hidden by repeated OCR
+  errors, but it must not rewrite poem text or page corpus rows without separate
+  review.
 
 All long-running page and poem loops use `tqdm` progress bars when run through `uv`.
 
@@ -143,17 +147,23 @@ The next deterministic pass replaces broad adjacent-token span expansion with li
 ## Current lexicon audit
 
 The first non-mutating dictionary-style pass is implemented in
-`scripts/ocr_lexicon_audit.py`. A smoke run with
-`uv run python scripts/ocr_lexicon_audit.py --no-progress --top 80` built a
-13,053-token Jibanananda poem lexicon from the current JSON files and scanned
-626 poem/text pages from `page-corpus.full.repaired.layout.jsonl`.
+`scripts/ocr_lexicon_audit.py`. A run with
+`uv run python scripts/ocr_lexicon_audit.py --no-progress --top 500` built a
+13,053-token Jibanananda poem lexicon from the current JSON files, scanned 626
+poem/text pages from `page-corpus.full.repaired.layout.jsonl`, and exported a
+matching-only substitution map.
 
 The report is written to the ignored sidecar file
-`metadata_reports/ocr-lexicon-audit.current.json`. It surfaces repeated OCR
-forms with suggested corrections, for example `আঁম` -> `আমি`, `যাঁদ` -> `যদি`,
-`পাঁথবীর` -> `পৃথিবীর`, and `শাঁশরের` -> `শিশিরের`. This is useful for ranking
-pages and expanding OCR equivalence classes, but it is not yet a text-correction
-gate and must not automatically rewrite poem bodies.
+`metadata_reports/ocr-lexicon-audit.current.json`; the substitution map is
+written to `metadata_reports/ocr-lexicon-substitutions.current.json`. It surfaces
+repeated OCR forms with suggested corrections, for example `আঁম` -> `আমি`,
+`যাঁদ` -> `যদি`, `পাঁথবীর` -> `পৃথিবীর`, and `শাঁশরের` -> `শিশিরের`. Feeding
+that map into span proposal changed the report from 144 to 158 accepted
+candidates and reduced `no_candidate` records from 69 to 59. Against the current
+site data, the only gated JSON change was `সুচেতনা`: its printed citation moves
+from `বনলতা সেন`, page 28, to pages 27-28 after the page-27 OCR is normalized
+enough to reveal the opening stanza. This is not a text-correction gate and must
+not automatically rewrite poem bodies.
 
 ## Test plan
 
