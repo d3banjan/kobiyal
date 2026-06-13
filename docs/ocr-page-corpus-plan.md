@@ -124,7 +124,8 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   that still lack printed book page citations. It joins the current poem JSON
   with a span-candidate report, excludes hidden duplicate imports, and ranks
   gaps into buckets such as `manual_collection_review`,
-  `needs_printed_page_sequence`, `weak_text_anchor`, and `no_candidate`. This is
+  `needs_printed_page_sequence`, `weak_text_anchor`,
+  `token_or_title_only_candidate`, and `no_candidate`. This is
   the handoff list for printed-source review; it does not apply metadata. It
   also reads `src/data/metadata-review-exclusions.json`, a committed audit trail
   of candidate-specific false positives. Reviewed exclusions remain in the
@@ -245,7 +246,7 @@ and `সন্ধ্যা হয়ে আসে`, plus the current scan-corpus
 that the listed candidate evidence is insufficient and must not be applied
 without stronger printed-page proof. After this pass, the all-books gap report
 has no unresolved candidate with line-anchor evidence; the remaining unresolved
-rows are title/body-token-only matches or no-candidate records.
+rows are `token_or_title_only_candidate` matches or no-candidate records.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 

@@ -128,7 +128,9 @@ def review_bucket(poem: dict[str, Any], row: dict[str, Any] | None) -> str:
     if not isinstance(row.get("printed_page_start"), int) or not isinstance(row.get("printed_page_end"), int):
         return "needs_printed_page_sequence"
     if row.get("span_basis") != "line_anchor_cluster":
-        return "weak_text_anchor"
+        return "token_or_title_only_candidate"
+    if int(row.get("span_anchor_count") or 0) == 0:
+        return "token_or_title_only_candidate"
     if int(row.get("span_exact_line_match_count") or 0) >= 3:
         if poem.get("source_edition") == UNKNOWN_COLLECTION:
             return "manual_collection_review"
@@ -198,7 +200,7 @@ def build_report(
     missing.sort(
         key=lambda item: (
             item["review_bucket"].startswith("reviewed_"),
-            item["review_bucket"] in {"no_candidate", "weak_text_anchor"},
+            item["review_bucket"] in {"no_candidate", "token_or_title_only_candidate"},
             -int(item["evidence_score"]),
             item["source_edition"] or "",
             item["title_bn"] or "",
