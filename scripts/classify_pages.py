@@ -12,6 +12,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from logical_sections import apply_logical_section
+
 
 def normalize(text: str) -> str:
     text = re.sub(r"[\s\u200b\u200c\u200d]+", "", text or "")
@@ -81,6 +83,7 @@ def main() -> int:
         previous = row.get("page_type")
         current = classify(row)
         row["page_type"] = current
+        apply_logical_section(row)
         flags = set(row.get("flags") or [])
         if previous and previous != current:
             flags.add(f"page_type_changed:{previous}->{current}")

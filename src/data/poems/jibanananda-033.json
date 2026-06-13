@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-033",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "posthumous-manuscript",
   "title_bn": "আজকে রাতে",
   "body_bn": "আজকে রাতে তোমায় কাছে আমার কাছে পেলে কথা\nবলা যেত; চারিদিকে হিজল শিরীষ নক্ষত্র ঘাস হাওয়ার প্রান্তর।\nকিন্তু যেই নীট নিয়মে ভাবনা আবেগ ভাব\nবিশুদ্ধ হয় বিষয় ও তার যুক্তির ভিতর;\nআমিও সেই ফলাফলের ভিতরে থেকে গিয়ে\nদেখেছি ভারত লন্ডন রোম নিউইয়র্ক চীন\nআজকে রাতের ইতিহাস ও মৃত ম্যামথ সব\nনিবিড় নিয়মাধীন।\nকোথায় তুমি রয়েছ কোন পাশার দান হাতে;\nকী কাজ খুঁজে; সকল অনুশীলন ভালো নয়;\nগভীরভাবে জেনেছি যে-সব সকাল বিকাল নদী নক্ষত্রকে\nতারই ভিতর প্রবীণ গল্প নিহিত হয়ে রয়।",
   "tags": [
@@ -9,10 +9,26 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "বেলা অবেলা কালবেলা",
+  "source_year": 1961,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/aajke-ratey/",
   "sort_order": 33,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "বেলা অবেলা কালবেলা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1961,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 66,
+      "page_end": 67,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }

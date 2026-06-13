@@ -76,6 +76,8 @@ def merge_layout_candidates(
         if not book_id or not isinstance(scan_page, int):
             continue
         additions = layout_candidates.get((book_id, scan_page), [])
+        if not additions and row.get("physical_book_id"):
+            additions = layout_candidates.get((row["physical_book_id"], scan_page), [])
         if not additions:
             continue
 

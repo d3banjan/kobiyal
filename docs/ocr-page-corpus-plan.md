@@ -79,6 +79,9 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
 - `scripts/classify_pages.py`
   Reclassifies page records from structural features only. Pages that begin with a contents marker (`সূচ...` or OCR-damaged `সুচ...`) are treated as front matter even when they have many long table-of-contents lines.
 
+- `scripts/logical_sections.py`
+  Retags logical collection sections inside shared physical scan files. For example, `2015.300502.Jibnananda-Dasher.pdf` contains a later `ঝরা পালক` section; rows keep `physical_book_id` for cached images/layout, while `book_id` becomes the collection identity used for matching and citations.
+
 - `scripts/repair_page_sequence.py`
   Repairs printed page numbers using OCR candidates, optional TSV layout candidates, supported scan-to-printed-page offsets, monotonic sequence constraints, and page-type confidence. Offset support prevents a contents-page number from poisoning later poem pages.
 

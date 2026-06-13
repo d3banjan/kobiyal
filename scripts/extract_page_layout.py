@@ -255,15 +255,17 @@ def build_layout_record(
     psm: int,
 ) -> dict[str, Any]:
     book_id = page["book_id"]
+    physical_book_id = page.get("physical_book_id") or book_id
     scan_page = int(page["scan_page"])
-    image_path = image_root / book_id / f"page-{scan_page:04d}.png"
-    tsv_path = tsv_root / book_id / f"page-{scan_page:04d}.tsv"
+    image_path = image_root / physical_book_id / f"page-{scan_page:04d}.png"
+    tsv_path = tsv_root / physical_book_id / f"page-{scan_page:04d}.tsv"
     flags = []
     if not image_path.exists():
         flags.append("missing_page_image")
         return {
             "record_id": page.get("record_id"),
             "book_id": book_id,
+            "physical_book_id": physical_book_id,
             "collection_bn": page.get("collection_bn"),
             "pdf_file": page.get("pdf_file"),
             "scan_page": scan_page,
@@ -283,6 +285,7 @@ def build_layout_record(
     return {
         "record_id": page.get("record_id"),
         "book_id": book_id,
+        "physical_book_id": physical_book_id,
         "collection_bn": page.get("collection_bn"),
         "pdf_file": page.get("pdf_file"),
         "scan_page": scan_page,

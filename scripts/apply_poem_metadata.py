@@ -20,6 +20,11 @@ BOOK_META = {
         "publication_year": 1936,
         "phase_id": "dhusar-pandulipi",
     },
+    "jhara-palak": {
+        "title_bn": "ঝরা পালক",
+        "publication_year": 1927,
+        "phase_id": "jhara-palak",
+    },
     "banalata-sen": {
         "title_bn": "বনলতা সেন",
         "publication_year": 1942,

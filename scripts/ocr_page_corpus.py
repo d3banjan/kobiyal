@@ -18,6 +18,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from logical_sections import apply_logical_section
+
 try:
     from tqdm import tqdm
 except ImportError:  # pragma: no cover - fallback for direct python without uv.
@@ -411,7 +413,7 @@ def build_record(
     page_type = classify_page(features, merged, candidates)
     normalized = normalize_for_match(merged)
 
-    return {
+    record = {
         "record_id": stable_id(book_id, scan_page),
         "book_id": book_id,
         "collection_bn": meta["collection_bn"],
@@ -436,6 +438,7 @@ def build_record(
         "correction_status": "raw",
         "flags": [],
     }
+    return apply_logical_section(record)
 
 
 def iter_page_numbers(total: int, start: int | None, end: int | None, limit: int | None) -> list[int]:

@@ -23,6 +23,7 @@ BANGLA_TO_ASCII = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
 
 COLLECTION_TO_BOOK_ID = {
     "ধূসর পাণ্ডুলিপি": "dhusar-pandulipi",
+    "ঝরা পালক": "jhara-palak",
     "বনলতা সেন": "banalata-sen",
     "সাতটি তারার তিমির": "satti-tarar-timir",
     "বেলা অবেলা কালবেলা": "bela-abela-kalabela",
