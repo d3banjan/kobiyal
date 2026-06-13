@@ -24,6 +24,10 @@ except ImportError:  # pragma: no cover - fallback for direct python without uv.
 BANGLA_TO_ASCII = str.maketrans("০১২৩৪৫৬৭৮৯", "0123456789")
 WORD_RE = re.compile(r"[\u0980-\u09FF]+")
 DIGIT_RE = re.compile(r"^[\u09E6-\u09EF0-9]+$")
+WESTERN_ALNUM_RE = re.compile(r"[A-Za-z0-9]")
+INLINE_DIGIT_RE = re.compile(r"[\u09E6-\u09EF0-9]")
+STANDALONE_DIGIT_LINE_RE = re.compile(r"^[\u09E6-\u09EF0-9]+$")
+REPLACEMENT_CHAR_RE = re.compile(r"[�□■▪]")
 
 OCR_EQUIVALENCES = [
     ["ি", "ী"],
@@ -108,6 +112,16 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
     return rows
 
 
+def load_jibanananda_poems(poems_dir: Path) -> list[tuple[Path, dict[str, Any]]]:
+    poems = []
+    for path in sorted(glob.glob(str(poems_dir / "*.json"))):
+        poem = read_json(Path(path))
+        if poem.get("poet_id") != "jibanananda-das":
+            continue
+        poems.append((Path(path), poem))
+    return poems
+
+
 def progress(iterable, **kwargs):
     if tqdm is not None:
         return tqdm(iterable, **kwargs)
@@ -119,10 +133,7 @@ def build_lexicon(
     min_len: int,
 ) -> tuple[Counter[str], dict[str, Counter[str]], dict[str, Counter[str]]]:
     lexicon: Counter[str] = Counter()
-    for path in sorted(glob.glob(str(poems_dir / "*.json"))):
-        poem = read_json(Path(path))
-        if poem.get("poet_id") != "jibanananda-das":
-            continue
+    for _, poem in load_jibanananda_poems(poems_dir):
         text = "\n".join(
             part
             for part in [
@@ -174,25 +185,37 @@ def close_suggestions(
     by_key: dict[str, Counter[str]],
     by_loose_key: dict[str, Counter[str]],
     max_suggestions: int,
+    exclude_counts: Counter[str] | None = None,
+    allow_edit_similarity: bool = True,
 ) -> list[dict[str, Any]]:
     exact_key_matches = by_key.get(token_key(token), Counter())
     suggestions: list[tuple[float, str, int, str]] = []
 
+    def effective_count(candidate: str, count: int) -> int:
+        if exclude_counts is None:
+            return count
+        return max(0, count - exclude_counts.get(candidate, 0))
+
     for candidate, count in exact_key_matches.most_common(max_suggestions * 2):
-        if candidate != token:
-            suggestions.append((1.0, candidate, count, "ocr_equivalence"))
+        usable_count = effective_count(candidate, count)
+        if candidate != token and usable_count > 0:
+            suggestions.append((1.0, candidate, usable_count, "ocr_equivalence"))
 
     loose = loose_key(token)
     if len(suggestions) < max_suggestions and len(loose) >= 2:
         for candidate, count in by_loose_key.get(loose, Counter()).most_common(max_suggestions * 2):
-            if candidate != token:
-                suggestions.append((0.94, candidate, count, "loose_vowel_key"))
+            usable_count = effective_count(candidate, count)
+            if candidate != token and usable_count > 0:
+                suggestions.append((0.94, candidate, usable_count, "loose_vowel_key"))
 
-    if len(suggestions) < max_suggestions:
+    if len(suggestions) < max_suggestions and allow_edit_similarity:
         first = token[:1]
         token_len = len(token)
         for candidate, count in lexicon.most_common():
             if candidate == token:
+                continue
+            usable_count = effective_count(candidate, count)
+            if usable_count <= 0:
                 continue
             if first and candidate[:1] != first:
                 continue
@@ -200,7 +223,7 @@ def close_suggestions(
                 continue
             ratio = SequenceMatcher(None, token, candidate).ratio()
             if ratio >= 0.78:
-                suggestions.append((ratio, candidate, count, "edit_similarity"))
+                suggestions.append((ratio, candidate, usable_count, "edit_similarity"))
             if len(suggestions) >= max_suggestions * 6:
                 break
 
@@ -256,6 +279,149 @@ def substitution_candidate(
         "score": first_score,
         "lexicon_count": first_count,
         "basis": first["basis"],
+    }
+
+
+def poem_text_for_lexicon(poem: dict[str, Any]) -> str:
+    return "\n".join(
+        part
+        for part in [
+            poem.get("title_bn") or "",
+            poem.get("body_bn") or "",
+            poem.get("source_edition") or "",
+        ]
+        if part
+    )
+
+
+def line_contexts_for_token(text: str, token: str, max_examples: int) -> list[dict[str, Any]]:
+    contexts = []
+    for line_no, line in enumerate(text.splitlines(), start=1):
+        if token not in line:
+            continue
+        contexts.append({"line_no": line_no, "line": normalize_spacing(line)})
+        if len(contexts) >= max_examples:
+            break
+    return contexts
+
+
+def poem_quality_report(
+    poems: list[tuple[Path, dict[str, Any]]],
+    lexicon: Counter[str],
+    by_key: dict[str, Counter[str]],
+    by_loose_key: dict[str, Counter[str]],
+    min_len: int,
+    max_suggestions: int,
+    max_examples: int,
+    top: int,
+    min_score: float,
+    min_lexicon_count: int,
+    dominance_ratio: float,
+) -> dict[str, Any]:
+    issues: list[dict[str, Any]] = []
+    token_candidates: list[dict[str, Any]] = []
+    issue_counts: Counter[str] = Counter()
+
+    for path, poem in poems:
+        body = poem.get("body_bn") or ""
+        file_counts = Counter(words(poem_text_for_lexicon(poem), min_len))
+        for line_no, line in enumerate(body.splitlines(), start=1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+
+            checks = [
+                ("western_alnum", "review", WESTERN_ALNUM_RE.search(line)),
+                ("replacement_char", "review", REPLACEMENT_CHAR_RE.search(line)),
+            ]
+            if STANDALONE_DIGIT_LINE_RE.match(stripped):
+                checks.append(("section_number_line", "info", True))
+            elif INLINE_DIGIT_RE.search(line):
+                checks.append(("inline_digit", "review", True))
+
+            for kind, severity, matched in checks:
+                if not matched:
+                    continue
+                issue_counts[kind] += 1
+                issues.append(
+                    {
+                        "kind": kind,
+                        "severity": severity,
+                        "filename": path.name,
+                        "poem_id": poem.get("id"),
+                        "title_bn": poem.get("title_bn"),
+                        "line_no": line_no,
+                        "line": normalize_spacing(line),
+                    }
+                )
+
+        body_counts = Counter(words(body, min_len))
+        for token, count in body_counts.items():
+            # If the same exact spelling appears elsewhere in the corpus, do not
+            # flag it as a site-text correction candidate.
+            if lexicon[token] - file_counts.get(token, 0) > 0:
+                continue
+            suggestions = close_suggestions(
+                token,
+                lexicon,
+                by_key,
+                by_loose_key,
+                max_suggestions,
+                exclude_counts=file_counts,
+                allow_edit_similarity=False,
+            )
+            if not suggestions:
+                continue
+
+            first = suggestions[0]
+            if float(first["score"]) < min_score or int(first["lexicon_count"]) < min_lexicon_count:
+                continue
+            second = suggestions[1] if len(suggestions) > 1 else None
+            second_count = int(second["lexicon_count"]) if second else 0
+            is_high_priority = (
+                second is None
+                or int(first["lexicon_count"]) >= max(1, second_count) * dominance_ratio
+            )
+            token_candidates.append(
+                {
+                    "token": token,
+                    "count_in_poem": count,
+                    "review_priority": "high" if is_high_priority else "normal",
+                    "filename": path.name,
+                    "poem_id": poem.get("id"),
+                    "title_bn": poem.get("title_bn"),
+                    "suggestions": suggestions,
+                    "contexts": line_contexts_for_token(body, token, max_examples),
+                }
+            )
+
+    token_candidates.sort(
+        key=lambda row: (
+            row["review_priority"] != "high",
+            -float(row["suggestions"][0]["score"]),
+            -int(row["suggestions"][0]["lexicon_count"]),
+            row["filename"],
+            row["token"],
+        )
+    )
+    issues.sort(key=lambda row: (row["severity"] != "review", row["filename"], row["line_no"], row["kind"]))
+
+    return {
+        "summary": {
+            "poem_count": len(poems),
+            "issue_count": len(issues),
+            "issue_counts": dict(issue_counts.most_common()),
+            "token_candidate_count": len(token_candidates),
+            "high_priority_token_candidate_count": sum(
+                1 for row in token_candidates if row["review_priority"] == "high"
+            ),
+            "min_score": min_score,
+            "min_lexicon_count": min_lexicon_count,
+            "dominance_ratio": dominance_ratio,
+            "note": "Review-only report; it does not mutate poem JSON.",
+        },
+        "issues": issues[:top],
+        "token_candidates": token_candidates[:top],
     }
 
 
@@ -349,6 +515,15 @@ def main() -> int:
         "--substitutions-output",
         default="metadata_reports/ocr-lexicon-substitutions.current.json",
     )
+    parser.add_argument(
+        "--poem-quality-output",
+        default="metadata_reports/poem-text-quality.current.json",
+        help="Review-only site poem-body quality report.",
+    )
+    parser.add_argument("--no-poem-quality", action="store_true")
+    parser.add_argument("--poem-quality-min-score", type=float, default=0.94)
+    parser.add_argument("--poem-quality-min-lexicon-count", type=int, default=3)
+    parser.add_argument("--poem-quality-dominance-ratio", type=float, default=3.0)
     parser.add_argument("--book-id", default=None)
     parser.add_argument(
         "--page-types",
@@ -363,6 +538,7 @@ def main() -> int:
         tqdm = None
 
     page_types = {item.strip() for item in args.page_types.split(",") if item.strip()}
+    poems = load_jibanananda_poems(Path(args.poems_dir))
     lexicon, by_key, by_loose_key = build_lexicon(Path(args.poems_dir), args.min_len)
     pages = read_jsonl(Path(args.page_corpus))
     suspicious_counts, token_meta, page_reports = audit_pages(
@@ -452,6 +628,35 @@ def main() -> int:
         "substitution_candidates": substitution_candidates,
         "worst_pages": worst_pages,
     }
+
+    if not args.no_poem_quality:
+        quality_report = poem_quality_report(
+            poems,
+            lexicon,
+            by_key,
+            by_loose_key,
+            args.min_len,
+            args.max_suggestions,
+            args.max_examples,
+            args.top,
+            args.poem_quality_min_score,
+            args.poem_quality_min_lexicon_count,
+            args.poem_quality_dominance_ratio,
+        )
+        quality_output = Path(args.poem_quality_output)
+        quality_output.parent.mkdir(parents=True, exist_ok=True)
+        quality_output.write_text(
+            json.dumps(quality_report, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        report["summary"]["poem_quality_output"] = str(quality_output)
+        report["summary"]["poem_quality_token_candidate_count"] = quality_report["summary"][
+            "token_candidate_count"
+        ]
+        report["summary"]["poem_quality_high_priority_token_candidate_count"] = quality_report[
+            "summary"
+        ]["high_priority_token_candidate_count"]
+        report["summary"]["poem_quality_issue_count"] = quality_report["summary"]["issue_count"]
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

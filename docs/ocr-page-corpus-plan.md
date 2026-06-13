@@ -118,10 +118,15 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   with repeated unknown OCR forms, page contexts, and likely corrections from
   OCR-equivalence keys or edit similarity. It also exports a conservative
   sidecar substitution map for `propose_poem_spans.py --ocr-substitutions`.
-  This is a matching-only gate: it can prioritize pages, help grow OCR
+  It also writes `metadata_reports/poem-text-quality.current.json`, a
+  review-only pass over the live poem bodies. That report distinguishes
+  standalone Bengali digit lines, which are usually poem section markers, from
+  inline digits or replacement characters that need review. Site poem pages now
+  render those standalone digit stanzas as quiet section markers. This is still
+  a matching/review gate only: it can prioritize pages, help grow OCR
   equivalence classes, and recover page-span evidence hidden by repeated OCR
   errors, but it must not rewrite poem text or page corpus rows without separate
-  review.
+  source review.
 
 All long-running page and poem loops use `tqdm` progress bars when run through `uv`.
 
@@ -204,6 +209,14 @@ site data, the only gated JSON change was `সুচেতনা`: its printed c
 from `বনলতা সেন`, page 28, to pages 27-28 after the page-27 OCR is normalized
 enough to reveal the opening stanza. This is not a text-correction gate and must
 not automatically rewrite poem bodies.
+
+The same audit now writes a poem-body quality report. A current run finds 50
+digit-related lines: 42 are standalone Bengali section-number stanzas and 8 are
+inline digits that should be reviewed as possible source notes, footnote
+markers, or OCR artifacts. The dictionary-style token candidates remain noisy:
+the equivalence keys find real likely typos, but they also collapse valid
+poetic words such as `কোণে`, `ভোলো`, `ভেলা`, and `শোণ` into common alternatives.
+Use this report to queue manual/printed-source checks, not bulk text rewrites.
 
 ## Test plan
 

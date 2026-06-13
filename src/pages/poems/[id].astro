@@ -25,6 +25,7 @@ export async function getStaticPaths() {
 
 const { poem, poet, phase } = Astro.props;
 const stanzas = splitStanzas(poem.body_bn);
+const sectionMarkerPattern = /^[০-৯]+$/;
 ---
 
 <Layout title={poem.title_bn} active="poets" description={`${poet.name_bn} · ${poem.source_edition}`}>
@@ -37,7 +38,7 @@ const stanzas = splitStanzas(poem.body_bn);
         {!poem.verified && <span class="verify-badge">{S.poem.unverified_note}</span>}
         <div class="stanzas">
           {stanzas.map((stanza) => (
-            <p>
+            <p class:list={{ "poem-section-marker": stanza.length === 1 && sectionMarkerPattern.test(stanza[0]) }}>
               {stanza.map((line, index) => (
                 <>
                   {line}
