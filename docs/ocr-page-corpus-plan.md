@@ -118,10 +118,12 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 - 2 records moved out of `সংকলন অজানা`.
 - 7 records kept their known collection and gained printed page citations.
 
-Current cumulative site-facing application:
+Current cumulative site-facing metadata state:
 
-- 123 Jibanananda records have printed book citations from the gated pipeline.
-- 60 records moved out of `সংকলন অজানা`.
+- 262 of 389 Jibanananda records have printed book citations.
+- 254 of 380 public/non-suppressed Jibanananda records have printed book citations.
+- 98 records still have `সংকলন অজানা` as the collection.
+- 100 records still lack `source_year`.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 
