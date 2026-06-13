@@ -348,6 +348,26 @@ def anchored_span(
         right += 1
 
     cluster = anchors[left : right + 1]
+    title_anchor_scans = [
+        anchor["scan_page"]
+        for anchor in cluster
+        if anchor.get("title_match") and 0 in set(anchor.get("line_indexes") or [])
+    ]
+    if title_anchor_scans:
+        first_title_scan = min(title_anchor_scans)
+        leading_anchors = [
+            anchor for anchor in cluster if anchor["scan_page"] < first_title_scan
+        ]
+        leading_is_sparse_refrain = bool(leading_anchors) and all(
+            int(anchor.get("line_match_count") or 0) <= 3
+            and not ({0, 1} & set(anchor.get("line_indexes") or []))
+            for anchor in leading_anchors
+        )
+        if leading_is_sparse_refrain:
+            cluster = [
+                anchor for anchor in cluster if anchor["scan_page"] >= first_title_scan
+            ]
+
     cluster_scans = {anchor["scan_page"] for anchor in cluster}
     line_indexes = [
         line_index

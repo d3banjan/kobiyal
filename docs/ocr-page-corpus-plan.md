@@ -96,6 +96,8 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   - score candidate pages by title, first/last line, body-token overlap, and repaired printed-page availability;
   - derive the span from clustered title/line anchors rather than broad adjacent token overlap;
   - reject title-only anchors, which are unsafe for short titles like `তুমি`;
+  - trim sparse pre-title anchor pages only when they are repeated-line/refrain
+    matches with no opening-line evidence before a title/opening-line anchor;
   - include adjacent continuation pages only when matched line indexes continue in poem order;
   - leave ambiguous, weak, or collection-conflicting records for manual review.
 
@@ -164,6 +166,13 @@ evidence on pages 164-168, while `হে হৃদয়` uses the stronger prim
 evidence on pages 67-68. The pass also marked
 `চারিদিকে শান্ত বাতি` as a public duplicate fragment because the page corpus
 shows it is a stanza inside the already imported `সেইদিন এই মাঠ...` poem.
+
+A reviewed span-tightening pass fixed `মেঠো চাঁদ` in `ধূসর পাণ্ডুলিপি` from
+pages 15-17 to pages 16-17. Page 15 is the end of the previous poem; pages 16-17
+carry the visible `মাঠের গল্প` / `মেঠো চাঁদ` start and continuation. The
+generator now guards this case by trimming only sparse repeated-line anchors
+that precede a title/opening-line page, while keeping dense OCR-damaged starts
+such as `ডাকিয়া কহিল মোরে রাজার দুলাল` on their first printed page.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 
