@@ -4,6 +4,10 @@ export type Poet = CollectionEntry<"poets">["data"];
 export type Poem = CollectionEntry<"poems">["data"];
 export type Tag = CollectionEntry<"tags">["data"];
 export type Phase = Poet["phases"][number];
+export type VerseBlock =
+  | { kind: "stanza"; lines: string[] }
+  | { kind: "section-marker"; marker: string }
+  | { kind: "source-note"; text: string };
 
 const duplicatePoemIds = new Set([
   "jibanananda-225",
@@ -61,6 +65,67 @@ export function splitStanzas(body: string): string[][] {
     .filter((stanza) => stanza.length > 0);
 }
 
+const banglaDigitPattern = "[০-৯]";
+const standaloneSectionMarkerPattern = new RegExp(`^${banglaDigitPattern}+$`);
+const wrappedSectionMarkerPattern = new RegExp(`^(.*?)\\s*।।\\s*(${banglaDigitPattern}{1,2})\\s*।।\\s*$`);
+const trailingBareMarkerPattern = new RegExp(`^(.*?)([।!?;:,]?)\\s*(?<!${banglaDigitPattern})(${banglaDigitPattern})\\s*([!।?])?\\s*$`);
+const sourceNotePattern = /^(দেশ|কবিতা),?\s+.*[০-৯]{3,4}$/;
+
+function stripTrailingBareMarker(line: string): string {
+  const match = line.match(trailingBareMarkerPattern);
+  if (!match) return line;
+  const [, before, precedingPunctuation, , followingPunctuation] = match;
+  return `${before}${precedingPunctuation}${followingPunctuation ?? ""}`.trim();
+}
+
+function pushStanza(blocks: VerseBlock[], lines: string[]) {
+  if (lines.length > 0) {
+    blocks.push({ kind: "stanza", lines: [...lines] });
+    lines.length = 0;
+  }
+}
+
+export function verseBlocks(body: string): VerseBlock[] {
+  const blocks: VerseBlock[] = [];
+
+  for (const stanza of splitStanzas(body)) {
+    const currentLines: string[] = [];
+
+    for (const line of stanza) {
+      if (standaloneSectionMarkerPattern.test(line)) {
+        pushStanza(blocks, currentLines);
+        blocks.push({ kind: "section-marker", marker: line });
+        continue;
+      }
+
+      if (sourceNotePattern.test(line)) {
+        pushStanza(blocks, currentLines);
+        blocks.push({ kind: "source-note", text: line });
+        continue;
+      }
+
+      const wrappedMarker = line.match(wrappedSectionMarkerPattern);
+      if (wrappedMarker) {
+        const cleanedLine = wrappedMarker[1].trim();
+        if (cleanedLine) currentLines.push(cleanedLine);
+        pushStanza(blocks, currentLines);
+        blocks.push({ kind: "section-marker", marker: wrappedMarker[2] });
+        continue;
+      }
+
+      const cleanedLine = stripTrailingBareMarker(line);
+      if (cleanedLine) currentLines.push(cleanedLine);
+    }
+
+    pushStanza(blocks, currentLines);
+  }
+
+  return blocks;
+}
+
 export function firstLines(body: string, count = 3): string[] {
-  return splitStanzas(body).flat().slice(0, count);
+  return verseBlocks(body)
+    .filter((block): block is Extract<VerseBlock, { kind: "stanza" }> => block.kind === "stanza")
+    .flatMap((block) => block.lines)
+    .slice(0, count);
 }

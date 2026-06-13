@@ -825,6 +825,13 @@ svg {
   padding-block: var(--space-2);
 }
 
+.stanzas .poem-source-note {
+  color: var(--phase-ink-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+}
+
 .attribution {
   border-top: var(--hairline) solid var(--phase-hairline);
   color: var(--phase-ink-muted);

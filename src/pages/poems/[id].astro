@@ -5,7 +5,7 @@ import Layout from "../../components/Layout.astro";
 import Motif from "../../components/Motif.astro";
 import ShareTool from "../../components/ShareTool.astro";
 import ThemeChip from "../../components/ThemeChip.astro";
-import { findPhase, publicPoems, splitStanzas } from "../../lib/content";
+import { findPhase, publicPoems, verseBlocks } from "../../lib/content";
 import { S, withBase } from "../../lib/i18n";
 
 export async function getStaticPaths() {
@@ -24,8 +24,7 @@ export async function getStaticPaths() {
 }
 
 const { poem, poet, phase } = Astro.props;
-const stanzas = splitStanzas(poem.body_bn);
-const sectionMarkerPattern = /^[০-৯]+$/;
+const blocks = verseBlocks(poem.body_bn);
 ---
 
 <Layout title={poem.title_bn} active="poets" description={`${poet.name_bn} · ${poem.source_edition}`}>
@@ -37,16 +36,24 @@ const sectionMarkerPattern = /^[০-৯]+$/;
         <h1>{poem.title_bn}</h1>
         {!poem.verified && <span class="verify-badge">{S.poem.unverified_note}</span>}
         <div class="stanzas">
-          {stanzas.map((stanza) => (
-            <p class:list={{ "poem-section-marker": stanza.length === 1 && sectionMarkerPattern.test(stanza[0]) }}>
-              {stanza.map((line, index) => (
-                <>
-                  {line}
-                  {index < stanza.length - 1 && <br />}
-                </>
-              ))}
-            </p>
-          ))}
+          {blocks.map((block) => {
+            if (block.kind === "section-marker") {
+              return <p class="poem-section-marker">{block.marker}</p>;
+            }
+            if (block.kind === "source-note") {
+              return <p class="poem-source-note">{block.text}</p>;
+            }
+            return (
+              <p>
+                {block.lines.map((line, index) => (
+                  <>
+                    {line}
+                    {index < block.lines.length - 1 && <br />}
+                  </>
+                ))}
+              </p>
+            );
+          })}
         </div>
       </div>
       <AttributionBlock poet={poet} poem={poem} />
