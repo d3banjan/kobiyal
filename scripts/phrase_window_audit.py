@@ -20,6 +20,8 @@ try:
 except ImportError:  # pragma: no cover - fallback for direct python without uv.
     tqdm = None
 
+DEFAULT_REVIEW_EXCLUSIONS = "src/data/metadata-review-exclusions.json"
+
 
 def progress_iter(iterable, **kwargs):
     if tqdm is not None:
@@ -45,6 +47,34 @@ def duplicate_ids(path: Path) -> set[str]:
     if not path.exists():
         return set()
     return set(re.findall(r'"(jibanananda-[^"]+)"', path.read_text(encoding="utf-8")))
+
+
+def load_review_exclusions(path: Path) -> dict[str, list[dict[str, Any]]]:
+    if not path.exists():
+        return {}
+    data = read_json(path)
+    exclusions: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in data.get("items") or []:
+        filename = item.get("filename")
+        if filename:
+            exclusions[str(filename)].append(item)
+    return exclusions
+
+
+def matches_review_exclusion(
+    filename: str,
+    best_page: dict[str, Any],
+    review_exclusions: dict[str, list[dict[str, Any]]],
+) -> bool:
+    for item in review_exclusions.get(filename, []):
+        if item.get("candidate_book_id") != best_page.get("candidate_book_id"):
+            continue
+        expected_start = item.get("candidate_page_start")
+        expected_end = item.get("candidate_page_end")
+        page = best_page.get("printed_page")
+        if expected_start == page and expected_end == page:
+            return True
+    return False
 
 
 def has_primary_printed_pages(poem: dict[str, Any]) -> bool:
@@ -204,6 +234,11 @@ def main() -> int:
     parser.add_argument("--include-untrusted-pages", action="store_true")
     parser.add_argument("--all-books", action="store_true")
     parser.add_argument("--include-logical-aliases", action="store_true")
+    parser.add_argument(
+        "--review-exclusions",
+        default=DEFAULT_REVIEW_EXCLUSIONS,
+        help="Reviewed false-positive candidates to suppress from the phrase queue.",
+    )
     parser.add_argument("--no-progress", action="store_true")
     args = parser.parse_args()
 
@@ -221,6 +256,7 @@ def main() -> int:
     )
 
     duplicates = duplicate_ids(Path(args.duplicates_source))
+    review_exclusions = load_review_exclusions(Path(args.review_exclusions))
     poems = load_public_jibanananda_poems(Path(args.poems_dir), duplicates)
     poem_iter = poems
     if not args.no_progress:
@@ -275,6 +311,8 @@ def main() -> int:
         )
         if not page_hits or int(page_hits[0].get("score") or 0) < args.min_score:
             continue
+        if matches_review_exclusion(filename, page_hits[0], review_exclusions):
+            continue
         rows.append(
             {
                 "filename": filename,
@@ -303,6 +341,7 @@ def main() -> int:
             "include_existing_pages": args.include_existing_pages,
             "all_books": args.all_books,
             "include_logical_aliases": args.include_logical_aliases,
+            "review_exclusions": args.review_exclusions,
         },
         "matches": rows,
     }

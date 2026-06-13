@@ -143,6 +143,28 @@
       "review_bucket": "reviewed_insufficient_scan_evidence",
       "reason": "not_found_in_current_scan_corpus",
       "note_bn": "বর্তমান সাতটি তারার তিমির পেজ কর্পাসে শিরোনাম বা স্বতন্ত্র পঙ্‌ক্তি নির্ভরযোগ্যভাবে পাওয়া যায়নি। মুদ্রিত পৃষ্ঠা না দেখে বই-সূত্র থেকে পৃষ্ঠা বানানো যাবে না।"
+    },
+    {
+      "filename": "jibanananda-084.json",
+      "poem_id": "jibanananda-084",
+      "title_bn": "কত দিন ঘাসে আর মাঠে",
+      "candidate_book_id": "dhusar-pandulipi-copy",
+      "candidate_page_start": 35,
+      "candidate_page_end": 35,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "phrase_overlap_wrong_poem",
+      "note_bn": "ধূসর পাণ্ডুলিপি কপি পৃষ্ঠা ৩৫-এ 'পঁচিশ বছর পরে' কবিতার ধারাবাহিক অংশে হলদে তৃণ/পাতায় শুকনো ডাঁটের বাক্যাংশ আছে। আমদানি করা 'কত দিন ঘাসে আর মাঠে' কবিতার শিরোনাম ও মূল চড়াই-শরীর সেখানে নেই, তাই phrase-window মিল গ্রহণযোগ্য নয়।"
+    },
+    {
+      "filename": "jibanananda-054.json",
+      "poem_id": "jibanananda-054",
+      "title_bn": "উদয়াস্ত",
+      "candidate_book_id": "satti-tarar-timir",
+      "candidate_page_start": 27,
+      "candidate_page_end": 27,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "opening_phrase_overlap_wrong_poem",
+      "note_bn": "সাতটি তারার তিমির পৃষ্ঠা ২৭-এ মুদ্রিত কবিতা 'বিভিন্ন কোরাস'। 'পৃথিবীতে ঢের দিন বেঁচে থেকে' ধরনের opening phrase মেলে, কিন্তু 'উদয়াস্ত' শিরোনাম বা আমদানি করা কবিতার শরীর নির্ভরযোগ্যভাবে মেলে না।"
     }
   ]
 }
