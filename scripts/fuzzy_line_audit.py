@@ -19,11 +19,6 @@ from typing import Any
 import propose_poem_spans as spans
 
 try:
-    import numpy as np
-except ImportError:  # pragma: no cover - script can still use the Python fallback.
-    np = None
-
-try:
     from tqdm import tqdm
 except ImportError:  # pragma: no cover - fallback for direct python without uv.
     tqdm = None
@@ -299,6 +294,18 @@ def line_gram_union(line_rows: list[dict[str, Any]], class_mode: bool = False) -
     return grams
 
 
+def representative_line_rows(line_rows: list[dict[str, Any]], max_lines: int) -> list[dict[str, Any]]:
+    if max_lines <= 0 or len(line_rows) <= max_lines:
+        return line_rows
+    if max_lines == 1:
+        return [line_rows[0]]
+    indexes = {
+        round(index * (len(line_rows) - 1) / (max_lines - 1))
+        for index in range(max_lines)
+    }
+    return [line_rows[index] for index in sorted(indexes)]
+
+
 def parse_int_list(raw: str) -> list[int]:
     values = sorted({int(part) for part in raw.split(",") if part.strip()})
     if not values:
@@ -310,36 +317,64 @@ def feature_index(feature: str, dimensions: int) -> int:
     return zlib.crc32(feature.encode("utf-8")) % dimensions
 
 
-def add_embedding_features(
-    vector: Any,
+def iter_embedding_features(
     text: str,
     dimensions: int,
     ngram_sizes: list[int],
     class_mode: bool,
     base_weight: float,
-) -> None:
+):
     min_size = min(ngram_sizes)
     prefix = "class:" if class_mode else "exact:"
     for size in ngram_sizes:
         size_weight = size / min_size
         weight = base_weight * size_weight
         for gram in set(ngram_sequence(text, size, class_mode=class_mode)):
-            vector[feature_index(f"{prefix}{size}:{gram}", dimensions)] += weight
+            yield feature_index(f"{prefix}{size}:{gram}", dimensions), weight
 
 
-def text_embedding(text: str, dimensions: int, ngram_sizes: list[int]) -> Any:
-    if np is None:
-        return None
-    vector = np.zeros(dimensions, dtype=np.float32)
-    add_embedding_features(vector, text, dimensions, ngram_sizes, class_mode=False, base_weight=1.0)
-    add_embedding_features(vector, text, dimensions, ngram_sizes, class_mode=True, base_weight=0.5)
-    return vector
+def sparse_embedding_features(text: str, dimensions: int, ngram_sizes: list[int]) -> dict[int, float]:
+    features: Counter[int] = Counter()
+    for index, weight in iter_embedding_features(
+        text,
+        dimensions,
+        ngram_sizes,
+        class_mode=False,
+        base_weight=1.0,
+    ):
+        features[index] += weight
+    for index, weight in iter_embedding_features(
+        text,
+        dimensions,
+        ngram_sizes,
+        class_mode=True,
+        base_weight=0.5,
+    ):
+        features[index] += weight
+    return dict(features)
 
 
-def embedding_norm(vector: Any) -> float:
-    if np is None or vector is None:
-        return 0.0
-    return float(np.linalg.norm(vector))
+def sparse_embedding_norm(features: dict[int, float]) -> float:
+    return sum(weight * weight for weight in features.values()) ** 0.5
+
+
+def attach_region_embeddings(
+    windows: list[dict[str, Any]],
+    dimensions: int,
+    ngram_sizes: list[int],
+) -> None:
+    for window in windows:
+        features = sparse_embedding_features(window["text"], dimensions, ngram_sizes)
+        window["embedding_features"] = features
+        window["embedding_norm"] = sparse_embedding_norm(features)
+
+
+def region_embedding_index(windows: list[dict[str, Any]]) -> dict[int, list[tuple[int, float]]]:
+    index: dict[int, list[tuple[int, float]]] = defaultdict(list)
+    for window_index, window in enumerate(windows):
+        for feature, weight in (window.get("embedding_features") or {}).items():
+            index[int(feature)].append((window_index, float(weight)))
+    return dict(index)
 
 
 def prepare_pages(
@@ -367,43 +402,34 @@ def prepare_pages(
         )
         row["_region_exact_index"] = region_inverted_index(row["_region_windows"], "exact_grams")
         row["_region_class_index"] = region_inverted_index(row["_region_windows"], "class_grams")
-        if use_vector_prefilter and np is not None:
-            vector = text_embedding(spans.page_text(row), embedding_dimensions, embedding_ngram_sizes)
-            row["_embedding"] = vector
-            row["_embedding_norm"] = embedding_norm(vector)
         rows.append(row)
     return rows
 
 
-def build_embedding_indexes(pages_by_book: dict[str, list[dict[str, Any]]]) -> dict[str, dict[str, Any]]:
-    if np is None:
-        return {}
-    indexes: dict[str, dict[str, Any]] = {}
-    for book_id, pages in pages_by_book.items():
-        rows = [
-            (page, page.get("_embedding"), float(page.get("_embedding_norm") or 0))
-            for page in pages
-            if page.get("_embedding") is not None and float(page.get("_embedding_norm") or 0) > 0
-        ]
-        if not rows:
-            continue
-        indexes[book_id] = {
-            "pages": [row[0] for row in rows],
-            "matrix": np.vstack([row[1] for row in rows]),
-            "norms": np.array([row[2] for row in rows], dtype=np.float32),
-        }
-    return indexes
+def ensure_region_embedding_index(
+    page: dict[str, Any],
+    embedding_dimensions: int,
+    embedding_ngram_sizes: list[int],
+) -> None:
+    if page.get("_region_embedding_index") is not None:
+        return
+    attach_region_embeddings(page.get("_region_windows") or [], embedding_dimensions, embedding_ngram_sizes)
+    page["_region_embedding_index"] = region_embedding_index(page.get("_region_windows") or [])
 
 
 def page_candidate_pool(
     line_rows: list[dict[str, Any]],
     allowed_books: set[str],
     pages_by_book: dict[str, list[dict[str, Any]]],
-    embedding_indexes: dict[str, dict[str, Any]],
+    ngram_size: int,
     embedding_dimensions: int,
     embedding_ngram_sizes: list[int],
     vector_top_pages: int,
+    vector_page_prefilter_multiplier: int,
     min_vector_score: float,
+    min_candidate_lines: int,
+    vector_top_regions_per_line: int,
+    vector_max_lines: int,
     use_vector_prefilter: bool,
 ) -> list[dict[str, Any]]:
     allowed_pages = [
@@ -411,32 +437,107 @@ def page_candidate_pool(
         for book_id in allowed_books
         for page in pages_by_book.get(book_id, [])
     ]
-    if not use_vector_prefilter or np is None:
+    if not use_vector_prefilter:
         return [{**page, "_vector_score": None} for page in allowed_pages]
-    poem_text = "\n".join(line["raw"] for line in line_rows)
-    poem_vector = text_embedding(poem_text, embedding_dimensions, embedding_ngram_sizes)
-    poem_norm = embedding_norm(poem_vector)
-    if poem_vector is None or poem_norm == 0:
+
+    poem_exact_grams = line_gram_union(line_rows)
+    poem_class_grams = line_gram_union(line_rows, class_mode=True)
+    minimum_page_prefilter = min_candidate_lines * ngram_size
+    page_prefiltered = []
+    for page in allowed_pages:
+        exact_prefilter = len(poem_exact_grams & (page.get("_char_ngrams") or set()))
+        class_prefilter = len(poem_class_grams & (page.get("_class_ngrams") or set()))
+        weighted_prefilter = exact_prefilter + (0.5 * max(0, class_prefilter - exact_prefilter))
+        if exact_prefilter + class_prefilter < minimum_page_prefilter:
+            continue
+        page_prefiltered.append((weighted_prefilter, exact_prefilter, class_prefilter, page))
+    if not page_prefiltered:
+        return []
+    page_prefiltered.sort(key=lambda item: item[:3], reverse=True)
+    page_prefilter_limit = max(vector_top_pages, vector_top_pages * max(1, vector_page_prefilter_multiplier))
+    allowed_pages = [page for *_scores, page in page_prefiltered[:page_prefilter_limit]]
+
+    vector_lines = representative_line_rows(line_rows, vector_max_lines)
+    line_embeddings = []
+    for line in vector_lines:
+        features = sparse_embedding_features(line["normalized"], embedding_dimensions, embedding_ngram_sizes)
+        norm = sparse_embedding_norm(features)
+        if norm > 0:
+            line_embeddings.append({**line, "embedding_features": features, "embedding_norm": norm})
+
+    if not line_embeddings:
         return [{**page, "_vector_score": None} for page in allowed_pages]
 
     scored_pages = []
-    for book_id in allowed_books:
-        index = embedding_indexes.get(book_id)
-        if not index:
+    required_hits = min(min_candidate_lines, len(line_embeddings))
+    for page in allowed_pages:
+        ensure_region_embedding_index(page, embedding_dimensions, embedding_ngram_sizes)
+        region_index = page.get("_region_embedding_index") or {}
+        windows = page.get("_region_windows") or []
+        if not region_index or not windows:
             continue
-        scores = (index["matrix"] @ poem_vector) / (index["norms"] * poem_norm)
-        order = np.argsort(scores)[::-1]
-        for offset in order[:vector_top_pages]:
-            score = float(scores[int(offset)])
-            if score < min_vector_score:
+        line_hits = []
+        for line in line_embeddings:
+            region_scores: Counter[int] = Counter()
+            for feature, line_weight in line["embedding_features"].items():
+                for window_index, window_weight in region_index.get(feature, []):
+                    region_scores[window_index] += float(line_weight) * float(window_weight)
+            ranked_regions = []
+            for window_index, dot_product in region_scores.items():
+                window = windows[window_index]
+                window_norm = float(window.get("embedding_norm") or 0)
+                if window_norm <= 0:
+                    continue
+                score = float(dot_product) / (float(line["embedding_norm"]) * window_norm)
+                if score >= min_vector_score:
+                    ranked_regions.append((score, window_index, window))
+            if not ranked_regions:
                 continue
-            scored_pages.append((score, index["pages"][int(offset)]))
+            ranked_regions.sort(
+                key=lambda item: (
+                    item[0],
+                    -int(item[2].get("line_end", 0)) + int(item[2].get("line_start", 0)),
+                ),
+                reverse=True,
+            )
+            best_score, best_window_index, best_window = ranked_regions[:vector_top_regions_per_line][0]
+            line_hits.append(
+                {
+                    "line_index": int(line["line_index"]),
+                    "score": best_score,
+                    "window_index": int(best_window_index),
+                    "page_line_start": int(best_window.get("line_start") or 0),
+                    "page_line_end": int(best_window.get("line_end") or 0),
+                }
+            )
+        if len(line_hits) < required_hits:
+            continue
+        line_indexes = sorted({hit["line_index"] for hit in line_hits})
+        hit_scores = sorted((float(hit["score"]) for hit in line_hits), reverse=True)
+        ordered_region_run = longest_ordered_vector_region_run(line_hits)
+        line_run = longest_consecutive_run(line_indexes)
+        page_score = sum(hit_scores[:required_hits]) / max(1, required_hits)
+        scored_pages.append(
+            (
+                ordered_region_run,
+                line_run,
+                len(line_hits),
+                page_score,
+                {
+                    **page,
+                    "_vector_score": round(page_score, 4),
+                    "_vector_line_hits": len(line_hits),
+                    "_vector_longest_line_run": line_run,
+                    "_vector_ordered_region_run": ordered_region_run,
+                },
+            )
+        )
     if not scored_pages:
         return [{**page, "_vector_score": None} for page in allowed_pages]
 
     selected = []
-    for score, page in sorted(scored_pages, key=lambda item: item[0], reverse=True)[:vector_top_pages]:
-        selected.append({**page, "_vector_score": round(score, 4)})
+    for *_, page in sorted(scored_pages, key=lambda item: item[:4], reverse=True)[:vector_top_pages]:
+        selected.append(page)
     return selected
 
 
@@ -570,6 +671,39 @@ def longest_consecutive_run(values: list[int]) -> int:
             current = 1
         previous = value
     return best
+
+
+def longest_ordered_vector_region_run(line_hits: list[dict[str, Any]]) -> int:
+    events = []
+    for hit in line_hits:
+        events.append(
+            {
+                "line_index": int(hit["line_index"]),
+                "position": (
+                    int(hit.get("page_line_start") or 0),
+                    int(hit.get("page_line_end") or 0),
+                    int(hit.get("window_index") or 0),
+                ),
+            }
+        )
+    events.sort(key=lambda item: (item["line_index"], item["position"]))
+    best = 0
+    for start, event in enumerate(events):
+        current = 1
+        last_line = event["line_index"]
+        last_position = event["position"]
+        for next_event in events[start + 1 :]:
+            if next_event["line_index"] == last_line:
+                continue
+            if next_event["line_index"] != last_line + 1:
+                break
+            if next_event["position"] < last_position:
+                continue
+            current += 1
+            best = max(best, current)
+            last_line = next_event["line_index"]
+            last_position = next_event["position"]
+    return max(best, 1 if events else 0)
 
 
 def summarize_group(group: list[dict[str, Any]]) -> dict[str, Any]:
@@ -720,7 +854,10 @@ def main() -> int:
         default="3,5,8",
         help="Comma-separated contiguous shingle sizes used by the vector prefilter.",
     )
-    parser.add_argument("--vector-top-pages", type=int, default=24)
+    parser.add_argument("--vector-top-pages", type=int, default=8)
+    parser.add_argument("--vector-page-prefilter-multiplier", type=int, default=2)
+    parser.add_argument("--vector-top-regions-per-line", type=int, default=2)
+    parser.add_argument("--vector-max-lines", type=int, default=6)
     parser.add_argument("--min-vector-score", type=float, default=0.03)
     parser.add_argument("--max-candidate-span-pages", type=int, default=4)
     parser.add_argument("--max-region-lines", type=int, default=DEFAULT_MAX_REGION_LINES)
@@ -756,8 +893,6 @@ def main() -> int:
     pages_by_book: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for page in pages:
         pages_by_book[str(page.get("book_id") or "")].append(page)
-    embedding_indexes = build_embedding_indexes(pages_by_book) if use_vector_prefilter else {}
-
     duplicates = duplicate_ids(Path(args.duplicates_source))
     poems = load_public_gap_poems(Path(args.poems_dir), duplicates)
     review_exclusions = load_review_exclusions(Path(args.review_exclusions))
@@ -789,11 +924,15 @@ def main() -> int:
             line_rows,
             allowed_books,
             pages_by_book,
-            embedding_indexes,
+            args.ngram_size,
             args.embedding_dimensions,
             embedding_ngram_sizes,
             args.vector_top_pages,
+            args.vector_page_prefilter_multiplier,
             args.min_vector_score,
+            args.min_candidate_lines,
+            args.vector_top_regions_per_line,
+            args.vector_max_lines,
             use_vector_prefilter,
         )
         for page in candidate_pages:
@@ -818,6 +957,9 @@ def main() -> int:
                     "printed_page": page.get("printed_page_fixed"),
                     "page_type": page.get("page_type"),
                     "vector_score": page.get("_vector_score"),
+                    "vector_line_hits": page.get("_vector_line_hits"),
+                    "vector_longest_line_run": page.get("_vector_longest_line_run"),
+                    "vector_ordered_region_run": page.get("_vector_ordered_region_run"),
                     "matches": matches,
                     "line_indexes": [match["line_index"] for match in matches],
                     "exact_line_match_count": sum(1 for match in matches if match["kind"] == "exact"),
@@ -883,11 +1025,15 @@ def main() -> int:
             "matched_poem_count": len(rows),
             "status_counts": dict(Counter(row["status"] for row in rows).most_common()),
             "ngram_size": args.ngram_size,
-            "vector_prefilter": use_vector_prefilter and np is not None,
+            "vector_prefilter": use_vector_prefilter,
             "embedding_dimensions": args.embedding_dimensions,
             "embedding_ngram_sizes": embedding_ngram_sizes,
             "vector_top_pages": args.vector_top_pages,
+            "vector_page_prefilter_multiplier": args.vector_page_prefilter_multiplier,
+            "vector_top_regions_per_line": args.vector_top_regions_per_line,
+            "vector_max_lines": args.vector_max_lines,
             "min_vector_score": args.min_vector_score,
+            "vector_scope": "contiguous_ocr_region_windows",
             "max_candidate_span_pages": args.max_candidate_span_pages,
             "max_region_lines": args.max_region_lines,
             "max_region_chars": args.max_region_chars,

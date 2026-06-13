@@ -146,19 +146,19 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
 
 - `scripts/fuzzy_line_audit.py`
   Builds a review-only fuzzy line report for remaining printed-page gaps after
-  exact line and phrase-window matching are exhausted. It uses a NumPy vector
-  prefilter over hashed character shingle embeddings, then runs detailed
-  line-level scoring only on selected local OCR line windows. The embedding uses
-  full weight for exact character shingles, half weight for OCR class-normalized
+  exact line and phrase-window matching are exhausted. Its vector prefilter is
+  now local-region aware: it first shortlists pages with cheap exact/class
+  shingle overlap, then compares representative poem lines against sparse
+  hashed embeddings for contiguous OCR windows only. The embedding uses full
+  weight for exact character shingles, half weight for OCR class-normalized
   shingles, and higher weights for longer contiguous shingles (`3,5,8` by
-  default). The detailed pass then requires a poem line to match one local OCR
-  region, not a bag of trigrams scattered across a full page. Each page caches
-  inverted indexes from exact/class shingles to region windows, so the expensive
-  contiguous score only runs on the top matching regions. Candidate windows are
-  capped to short printed-page spans and report the longest consecutive run of
-  matched poem lines. This report is not an apply source; fuzzy-only candidates
-  must still be checked against printed-page evidence before writing poem
-  metadata.
+  default). Region embeddings are built lazily from per-page inverted indexes,
+  so the expensive vector dots do not run over every OCR window in the corpus.
+  The detailed pass still requires each accepted poem line to match one local
+  OCR region and reports the longest consecutive run of matched poem lines.
+  Candidate windows are capped to short printed-page spans. This report is not
+  an apply source; fuzzy-only candidates must still be checked against
+  printed-page evidence before writing poem metadata.
 
 - `scripts/ordered_region_audit.py`
   Builds a review-only ordered-token report for the remaining printed-page
@@ -314,13 +314,15 @@ poetic words such as `কোণে`, `ভোলো`, `ভেলা`, and `শো
 Use this report to queue manual/printed-source checks, not bulk text rewrites.
 
 The initial page-wide fuzzy-line audit over the remaining 103 public
-printed-page gaps ran in about 25 seconds, but it generated a broad false-positive
-queue: many high-scoring rows were fuzzy-only and drew character shingles from
-unrelated regions of the same page. The current local-region pass is slower
-(about one minute at `--vector-top-pages 24`) but collapses that queue to three
-weak fuzzy rows with zero exact anchors. Treat those rows as negative evidence
-for automatic application: they may help tune OCR, but they are not citation
-evidence.
+printed-page gaps ran in about 25 seconds, but it generated a broad
+false-positive queue: many high-scoring rows were fuzzy-only and drew character
+shingles from unrelated regions of the same page. The region-aware embedding
+pass uses narrower review defaults (`--vector-top-pages 8`,
+`--vector-page-prefilter-multiplier 2`, `--vector-max-lines 6`) and completed a
+current full run in about 85 seconds including page-window setup. It found zero
+matched poems. Treat this as negative evidence for automatic fuzzy application:
+the remaining gaps need better OCR/source extraction or manual printed-source
+review rather than looser fuzzy citation writes.
 
 The ordered-region audit confirms the same result from a stricter angle. Its
 default gate found zero candidates. A permissive diagnostic run found three weak
