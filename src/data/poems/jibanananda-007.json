@@ -18,6 +18,7 @@
   "marketplace_url": "https://www.rokomari.com/book/83339/satti-tarar-timir",
   "book_sources": [
     {
+      "role": "primary",
       "title_bn": "সাতটি তারার তিমির",
       "publisher_bn": "বেঙ্গল পাবলিশার্স",
       "edition_bn": "প্রথম সংস্করণ",

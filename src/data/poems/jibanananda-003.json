@@ -18,6 +18,7 @@
   "marketplace_url": "https://www.rokomari.com/book/18974/dhusor-pandulipi",
   "book_sources": [
     {
+      "role": "primary",
       "title_bn": "ধূসর পাণ্ডুলিপি",
       "publisher_bn": "সিগনেট প্রেস",
       "edition_bn": "প্রথম সংস্করণ",

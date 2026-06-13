@@ -18,6 +18,7 @@
   "marketplace_url": "https://www.rokomari.com/book/83344/bela-abela-kalabela",
   "book_sources": [
     {
+      "role": "primary",
       "title_bn": "বেলা অবেলা কালবেলা",
       "publisher_bn": "নিউস্ক্রিপ্ট",
       "edition_bn": "প্রথম সংস্করণ",
