@@ -160,6 +160,18 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   must still be checked against printed-page evidence before writing poem
   metadata.
 
+- `scripts/ordered_region_audit.py`
+  Builds a review-only ordered-token report for the remaining printed-page
+  gaps. It compares poem lines against local OCR line windows using token order,
+  exact/class-normalized token overlap, longest common subsequence, and longest
+  contiguous token runs. This is a stricter deterministic second opinion for
+  whether fuzzy-looking matches preserve poem order inside the page. The current
+  default gate found no rows; a permissive run
+  (`--min-line-score 0.62 --min-candidate-lines 2`) found only three
+  `weak_ordered_review` rows, all with ordered runs of one and no citation-grade
+  page span. Its output is a triage sidecar only and must not be applied without
+  exact ordered anchors and printed-page verification.
+
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
   compares OCR page tokens against it. The output is a sidecar suspicion report
@@ -198,8 +210,8 @@ Current cumulative site-facing metadata state:
 - 279 of 389 Jibanananda records have printed book citations.
 - 270 of 373 public/non-duplicate Jibanananda records have printed book citations.
 - 103 public/non-duplicate Jibanananda records still lack printed book citations.
-- 93 public/non-duplicate records still have `সংকলন অজানা` as the collection.
-- 95 public/non-duplicate records still lack `source_year`.
+- 85 public/non-duplicate records still have `সংকলন অজানা` as the collection.
+- 89 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
   parenthesized `সূর্য নক্ষত্র নারী` fragments and the alternate `সেই দিন এই
   মাঠ` import whose cited `রূপসী বাংলা` counterpart remains listed, plus the
@@ -310,6 +322,12 @@ weak fuzzy rows with zero exact anchors. Treat those rows as negative evidence
 for automatic application: they may help tune OCR, but they are not citation
 evidence.
 
+The ordered-region audit confirms the same result from a stricter angle. Its
+default gate found zero candidates. A permissive diagnostic run found three weak
+rows (`কত দিন ঘাসে আর মাঠে`, `গল্পে আমি পড়িয়াছি কাঞ্চী কাশী বিদিশার কথা`,
+and `সে`), but each had only one ordered run and matched common local phrases
+rather than a stable poem span. No poem JSON should be updated from these rows.
+
 The poem-body quality report also records leading dash structure across all
 Jibanananda poem JSON files. A single leading ASCII hyphen is treated by the site
 renderer as an imported stanza-break marker. Long all-hyphen divider lines are
@@ -319,7 +337,7 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/fuzzy_line_audit.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.
