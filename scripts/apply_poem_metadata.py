@@ -253,6 +253,35 @@ def is_unknown_collection_exact_rich_candidate(row: dict[str, Any], poem: dict[s
     return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
 
 
+def is_unknown_collection_exact_anchor_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Promote unknown-collection spans where exact anchors cover the span."""
+
+    if row.get("status") not in {"ambiguous", "needs_manual_review"}:
+        return False
+    if poem.get("source_edition") != UNKNOWN_COLLECTION:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int):
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if "page_sequence_present" not in evidence:
+        return False
+    if float(row.get("score") or 0) < 17:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 20:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 20:
+        return False
+
+    page_span = end - start + 1
+    return int(row.get("span_anchor_count") or 0) >= page_span
+
+
 def is_eligible(
     row: dict[str, Any],
     poem: dict[str, Any],
@@ -262,6 +291,7 @@ def is_eligible(
     allow_known_exact_rich_candidates: bool,
     allow_known_line_rich_candidates: bool,
     allow_unknown_exact_rich_candidates: bool,
+    allow_unknown_exact_anchor_candidates: bool,
 ) -> tuple[bool, str]:
     if poem.get("poet_id") != "jibanananda-das":
         return False, "not_jibanananda"
@@ -283,6 +313,8 @@ def is_eligible(
             return True, "eligible_known_line_rich"
         if allow_unknown_exact_rich_candidates and is_unknown_collection_exact_rich_candidate(row, poem, meta):
             return True, "eligible_unknown_exact_rich"
+        if allow_unknown_exact_anchor_candidates and is_unknown_collection_exact_anchor_candidate(row, poem, meta):
+            return True, "eligible_unknown_exact_anchor"
         return False, "not_accepted"
     if not allow_legacy_candidates and not has_span_anchor_evidence(row):
         return False, "missing_span_anchor_evidence"
@@ -351,6 +383,11 @@ def main() -> int:
         action="store_true",
         help="Classify unknown-collection review/ambiguous spans with dense exact line anchors.",
     )
+    parser.add_argument(
+        "--allow-unknown-exact-anchor-candidates",
+        action="store_true",
+        help="Classify unknown-collection spans whose exact line anchors cover the full printed span.",
+    )
     args = parser.parse_args()
 
     poems_dir = Path(args.poems_dir)
@@ -377,6 +414,7 @@ def main() -> int:
             args.allow_known_exact_rich_candidates,
             args.allow_known_line_rich_candidates,
             args.allow_unknown_exact_rich_candidates,
+            args.allow_unknown_exact_anchor_candidates,
         )
         summary[reason] = summary.get(reason, 0) + 1
         if not eligible:
