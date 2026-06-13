@@ -223,6 +223,35 @@ def is_known_collection_line_rich_candidate(row: dict[str, Any], poem: dict[str,
     return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
 
 
+def is_known_collection_fuzzy_rich_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Promote same-book spans with dense fuzzy line coverage and some exact anchors."""
+
+    if row.get("status") not in {"ambiguous", "needs_manual_review"}:
+        return False
+    if poem.get("source_edition") != meta["title_bn"]:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int):
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if not {"title_match", "high_body_coverage", "page_sequence_present"} <= evidence:
+        return False
+    if float(row.get("score") or 0) < 24:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 18:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 2:
+        return False
+
+    page_span = end - start + 1
+    return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
+
+
 def is_unknown_collection_exact_rich_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
     """Promote unknown-collection spans only when exact line evidence is dense."""
 
@@ -400,6 +429,7 @@ def is_eligible(
     allow_known_ambiguous_candidates: bool,
     allow_known_exact_rich_candidates: bool,
     allow_known_line_rich_candidates: bool,
+    allow_known_fuzzy_rich_candidates: bool,
     allow_unknown_exact_rich_candidates: bool,
     allow_unknown_exact_anchor_candidates: bool,
     allow_unknown_embedded_candidates: bool,
@@ -429,6 +459,8 @@ def is_eligible(
             return True, "eligible_known_exact_rich"
         if allow_known_line_rich_candidates and is_known_collection_line_rich_candidate(row, poem, meta):
             return True, "eligible_known_line_rich"
+        if allow_known_fuzzy_rich_candidates and is_known_collection_fuzzy_rich_candidate(row, poem, meta):
+            return True, "eligible_known_fuzzy_rich"
         if allow_unknown_exact_rich_candidates and is_unknown_collection_exact_rich_candidate(row, poem, meta):
             return True, "eligible_unknown_exact_rich"
         if allow_unknown_exact_anchor_candidates and is_unknown_collection_exact_anchor_candidate(row, poem, meta):
@@ -520,6 +552,11 @@ def main() -> int:
         help="Apply same-book review/ambiguous spans with multiple exact line anchors.",
     )
     parser.add_argument(
+        "--allow-known-fuzzy-rich-candidates",
+        action="store_true",
+        help="Apply same-book review/ambiguous spans with dense fuzzy line coverage and some exact anchors.",
+    )
+    parser.add_argument(
         "--allow-unknown-exact-rich-candidates",
         action="store_true",
         help="Classify unknown-collection review/ambiguous spans with dense exact line anchors.",
@@ -569,6 +606,7 @@ def main() -> int:
             args.allow_known_ambiguous_candidates,
             args.allow_known_exact_rich_candidates,
             args.allow_known_line_rich_candidates,
+            args.allow_known_fuzzy_rich_candidates,
             args.allow_unknown_exact_rich_candidates,
             args.allow_unknown_exact_anchor_candidates,
             args.allow_unknown_embedded_candidates,
