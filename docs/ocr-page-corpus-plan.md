@@ -372,8 +372,8 @@ Current cumulative site-facing metadata state:
 - 280 of 389 Jibanananda records have printed book citations.
 - 267 of 369 public/non-duplicate Jibanananda records have printed book citations.
 - 102 public/non-duplicate Jibanananda records still lack printed book citations.
-- 82 public/non-duplicate records still have `সংকলন অজানা` as the collection.
-- 89 public/non-duplicate records still lack `source_year`.
+- 79 public/non-duplicate records still have `সংকলন অজানা` as the collection.
+- 86 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
   parenthesized `সূর্য নক্ষত্র নারী` fragments and the alternate `সেই দিন এই
   মাঠ` import whose cited `রূপসী বাংলা` counterpart remains listed, plus the
@@ -383,10 +383,11 @@ Current cumulative site-facing metadata state:
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 
 The enhanced gap report now separates known-source failures. In the current
-sidecar run, 11 known-source gaps cite editions not mapped to a current OCR book
-corpus (`আলোপৃথিবী`, `অগ্রন্থিত কবিতা`, or `অপ্রকাশিত কবিতা`). Seven known-source gaps do target scanned collections, but six have
-only weak same-source OCR support and one has token-only support; none has title
-or exact-line evidence strong enough for automatic page citation.
+sidecar run, 14 known-source gaps cite editions not mapped to a current OCR book
+corpus (`আলোপৃথিবী`, `অগ্রন্থিত কবিতা`, or `অপ্রকাশিত কবিতা`). Nine known-source
+gaps do target scanned collections, but seven have only weak same-source OCR
+support and two have no current scan support; none has title or exact-line
+evidence strong enough for automatic page citation.
 
 An embedded-source marker pass classified three unknown rows as
 `অগ্রন্থিত কবিতা`: `কোহিনূর`, `বর্ষ-আবাহন`, and `ভোর হয়`. The source-note
@@ -397,6 +398,15 @@ do not prove a book page. The same audit surfaced one unresolved conflict:
 with a `সাতটি তারার তিমির কাব্যগ্রন্থ` marker. That marker is not used to
 rewrite the poem's source edition without printed-source evidence; it remains a
 separate original-collection/text-cleanup review item.
+
+A secondary online-source marker pass classified three more unknown rows as
+`আলোপৃথিবী`: `কার্তিক-অঘ্রাণ ১৯৪৬`, `জার্মানীর রাত্রিপথেঃ ১৯৪৫`, and
+`ভোর ও ছয়টি বমারঃ ১৯৪২`. The existing Bangla-Kobita source pages explicitly
+show `কাব্যগ্রন্থ - আলোপৃথিবী`; this was used only for source edition, source
+year, and phase. No printed-page citation was added, because the linked online
+pages do not prove a book page number and the `আলোপৃথিবী` OCR corpus is still
+absent. The remaining title-date/source-year gap is `কার্ত্তিকের ভোর- ১৩৫০`,
+whose online page did not show a collection marker in the fetched HTML.
 
 A follow-up auxiliary pass generated a scratch `শ্রেষ্ঠ কবিতা` corpus from the
 approved project downloads using `pdftotext` only, then repaired its printed
@@ -588,7 +598,7 @@ should be updated from the current TOC report.
 The main metadata gap report now separates source-year, primary printed
 book-year, and composition-date debt from page-citation debt. The current report
 has 102 missing printed-page citations, 102 missing primary printed book years,
-89 missing editorial source years, and 369 missing composition dates. The
+86 missing editorial source years, and 369 missing composition dates. The
 primary printed book-year count matches the missing printed-page count, which
 means every current primary printed-page citation already carries a cited-book
 publication year; the remaining book-year debt is really page-citation debt.
