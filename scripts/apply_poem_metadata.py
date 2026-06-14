@@ -720,6 +720,8 @@ def is_conflict_exact_rich_candidate(row: dict[str, Any], poem: dict[str, Any], 
     current_edition = poem.get("source_edition")
     if current_edition in {UNKNOWN_COLLECTION, meta["title_bn"]}:
         return False
+    if row.get("candidate_book_id") in BOOK_ALIASES:
+        return False
     if row.get("status") not in {"accepted_candidate", "ambiguous", "needs_manual_review"}:
         return False
 
@@ -759,6 +761,8 @@ def is_conflict_accepted_candidate(row: dict[str, Any], poem: dict[str, Any], me
 
     current_edition = poem.get("source_edition")
     if current_edition in {UNKNOWN_COLLECTION, meta["title_bn"]}:
+        return False
+    if row.get("candidate_book_id") in BOOK_ALIASES:
         return False
     if row.get("status") != "accepted_candidate":
         return False
@@ -805,6 +809,8 @@ def is_outside_range_conflict_candidate(
 
     current_edition = poem.get("source_edition")
     if current_edition in {UNKNOWN_COLLECTION, meta["title_bn"]}:
+        return False
+    if row.get("candidate_book_id") in BOOK_ALIASES:
         return False
     if not source_pages_outside_corpus(poem, str(current_edition or ""), page_context):
         return False
@@ -908,6 +914,8 @@ def is_conflict_embedded_collection_candidate(row: dict[str, Any], poem: dict[st
 
     current_edition = poem.get("source_edition")
     if current_edition in {UNKNOWN_COLLECTION, meta["title_bn"]}:
+        return False
+    if row.get("candidate_book_id") in BOOK_ALIASES:
         return False
     if not has_embedded_collection_marker(poem, meta["title_bn"]):
         return False

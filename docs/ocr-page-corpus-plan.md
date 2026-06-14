@@ -133,6 +133,9 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   gate requires `--page-corpus`, verifies that the replacement printed pages
   exist in the exact candidate scan, and only rewrites citations whose current
   printed page range is outside the repaired corpus range for the named source.
+  Logical alias/copy-section evidence is deliberately excluded from gates that
+  force a source-edition change; aliases may only repair same-book page
+  citations through the explicit alias-repair path.
   The default apply scope skips duplicate-hidden poem imports listed in
   `src/lib/content.ts`; use
   `--include-duplicates` only for a deliberate duplicate-cleanup pass.
