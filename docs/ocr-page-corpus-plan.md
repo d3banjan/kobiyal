@@ -207,6 +207,17 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   token coverage, 14 cite pages outside the current OCR corpus range for that
   book, and 3 are weak current citations that need manual source review.
 
+- `scripts/citation_repair_audit.py`
+  Builds a stricter review-only report for repairing existing printed-page
+  citations. It joins the citation consistency report with current span
+  candidates, but only promotes a repair as automatic when the candidate comes
+  from the same exact source-book ID as the existing citation. Logical
+  copy/appendix sections, such as `rupasi-bangla-copy`, are reported as
+  alternate page evidence rather than overwrite candidates, because their page
+  numbers can follow a different physical book convention than the linked poem
+  page source. This protects the requirement that citations use the printed page
+  number in the book being linked, not merely any scan where the poem appears.
+
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
   compares OCR page tokens against it. The output is a sidecar suspicion report

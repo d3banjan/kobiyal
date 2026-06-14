@@ -247,8 +247,11 @@ def accepted_candidate_conflict(
         return None
     if start == source.get("page_start") and end == source.get("page_end"):
         return None
+    candidate_book_id = str(row.get("candidate_book_id") or "")
     return {
-        "candidate_book_id": row.get("candidate_book_id"),
+        "candidate_book_id": candidate_book_id,
+        "candidate_canonical_book_id": candidate_book,
+        "candidate_is_alias": candidate_book_id != source_book,
         "candidate_page_start": start,
         "candidate_page_end": end,
         "candidate_status": row.get("status"),
@@ -384,8 +387,9 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         )
         conflict = row.get("accepted_candidate_conflict")
         if conflict:
+            conflict_label = "accepted alias candidate" if conflict.get("candidate_is_alias") else "accepted candidate"
             evidence_label += (
-                f"; accepted candidate {conflict.get('candidate_book_id')} "
+                f"; {conflict_label} {conflict.get('candidate_book_id')} "
                 f"{conflict.get('candidate_page_start')}-{conflict.get('candidate_page_end')}"
             )
         lines.append(
