@@ -149,10 +149,13 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   sidecars. It parses TOC title/page pairs, follows repaired printed page
   numbers back to the logical collection section inside shared physical scans,
   and compares entries against remaining poem-title gaps with OCR-equivalence
-  normalization. It guards duplicate local titles: title-only evidence cannot
-  become apply-grade when another public poem with the same title already has
-  stronger page evidence. This is a possible future apply source only if a row
-  has a unique title, verified page sequence, and no known-collection conflict.
+  normalization. It also compares TOC entries against the first substantial
+  poem-body lines, because some printed contents use opening lines while the
+  imported JSON title uses a later/common short title. It guards duplicate local
+  titles: title-only evidence cannot become apply-grade when another public poem
+  with the same title already has stronger page evidence. This is a possible
+  future apply source only if a row has a unique title or strong known-source
+  opening-line match, verified page sequence, and no known-collection conflict.
 
 - `scripts/fuzzy_line_audit.py`
   Builds a review-only fuzzy line report for remaining printed-page gaps after
@@ -356,8 +359,11 @@ including continuation TOC pages and logical sections in the shared
 `banalata-sen` scan. The current normal-threshold run found one title hit,
 `উদয়াস্ত`, but marked it `duplicate_title_conflict`: another local
 `উদয়াস্ত` record already has stronger line-anchor evidence, so a TOC title
-alone cannot identify which imported body should receive the citation. No poem
-JSON should be updated from the current TOC report.
+alone cannot identify which imported body should receive the citation. A
+follow-up run also compared TOC entries with each poem's first substantial body
+lines. At the normal threshold it still found no additional rows; at a lower
+diagnostic threshold it produced only weak title matches and one missing-page
+sequence row. No poem JSON should be updated from the current TOC report.
 
 The citation consistency audit distinguishes absent scan coverage from
 potentially wrong citations. In the current run, 14 rows are

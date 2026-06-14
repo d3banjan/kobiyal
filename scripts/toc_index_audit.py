@@ -198,6 +198,72 @@ def title_similarity(expected: str, candidate: str) -> dict[str, Any]:
     }
 
 
+def poem_match_surfaces(poem: dict[str, Any], max_body_lines: int, min_body_chars: int) -> list[dict[str, Any]]:
+    surfaces = [
+        {
+            "basis": "title",
+            "text": str(poem.get("title_bn") or ""),
+            "line_index": None,
+        }
+    ]
+    seen = {compact_title(str(poem.get("title_bn") or ""))}
+    body = str(poem.get("body_bn") or "")
+    for line_index, raw_line in enumerate(body.splitlines()):
+        normalized = spans.normalize(raw_line)
+        compact = re.sub(r"\s+", "", normalized)
+        if len(compact) < min_body_chars:
+            continue
+        if compact in seen:
+            continue
+        seen.add(compact)
+        surfaces.append(
+            {
+                "basis": "body_line",
+                "text": raw_line.strip(),
+                "line_index": line_index,
+            }
+        )
+        if len([item for item in surfaces if item["basis"] == "body_line"]) >= max_body_lines:
+            break
+    return surfaces
+
+
+def best_surface_similarity(
+    poem: dict[str, Any],
+    entry_title: str,
+    max_body_lines: int,
+    min_body_chars: int,
+) -> dict[str, Any]:
+    best: dict[str, Any] | None = None
+    for surface in poem_match_surfaces(poem, max_body_lines=max_body_lines, min_body_chars=min_body_chars):
+        similarity = title_similarity(str(surface["text"]), entry_title)
+        candidate = {
+            **similarity,
+            "match_basis": surface["basis"],
+            "matched_text": surface["text"],
+            "matched_line_index": surface["line_index"],
+        }
+        if best is None or (
+            float(candidate["score"]),
+            candidate["match_basis"] == "title",
+            float(candidate["ratio"]),
+        ) > (
+            float(best["score"]),
+            best["match_basis"] == "title",
+            float(best["ratio"]),
+        ):
+            best = candidate
+    return best or {
+        "score": 0.0,
+        "ratio": 0.0,
+        "token_f1": 0.0,
+        "containment": False,
+        "match_basis": "none",
+        "matched_text": "",
+        "matched_line_index": None,
+    }
+
+
 def toc_source_texts(row: dict[str, Any]) -> list[tuple[str, str]]:
     texts = []
     for source_name in ("raw_ocr", "raw_pdftotext"):
@@ -368,10 +434,16 @@ def candidate_status(
 
     if not has_page:
         return "needs_page_sequence"
-    if duplicate_context:
+    if duplicate_context and best.get("match_basis") == "title":
         return "duplicate_title_conflict"
     if known_conflict:
         return "known_source_conflict"
+    if best.get("match_basis") == "body_line":
+        if source_edition != UNKNOWN_COLLECTION and score >= 0.985 and gap >= 0.025:
+            return "strong_toc_line_review"
+        if source_edition != UNKNOWN_COLLECTION and score >= 0.93 and gap >= 0.04:
+            return "manual_toc_line_review"
+        return "weak_toc_line_review"
     if score >= 0.985 and gap >= 0.025:
         return "strong_toc_review"
     if score >= 0.93 and gap >= 0.04:
@@ -388,6 +460,8 @@ def build_matches(
     include_logical_aliases: bool,
     min_score: float,
     max_candidates: int,
+    max_body_lines: int,
+    min_body_chars: int,
 ) -> list[dict[str, Any]]:
     rows = []
     for filename, poem in poems:
@@ -397,7 +471,12 @@ def build_matches(
             candidate_book_id = str(entry.get("candidate_book_id") or "")
             if allowed is not None and candidate_book_id not in allowed:
                 continue
-            similarity = title_similarity(str(poem.get("title_bn") or ""), str(entry.get("entry_title") or ""))
+            similarity = best_surface_similarity(
+                poem,
+                str(entry.get("entry_title") or ""),
+                max_body_lines=max_body_lines,
+                min_body_chars=min_body_chars,
+            )
             if float(similarity["score"]) < min_score:
                 continue
             scored.append({**entry, **similarity, "title_score": similarity["score"]})
@@ -464,7 +543,7 @@ def markdown_report(rows: list[dict[str, Any]], summary: dict[str, Any], max_row
         candidate_summary = (
             f"{candidate.get('candidate_book_id')}; p.{page_label(candidate)}; "
             f"scan {candidate.get('candidate_scan_page') or '-'}; "
-            f"{candidate.get('entry_title')}"
+            f"{candidate.get('entry_title')}; {candidate.get('match_basis')}"
         )
         source = " ".join(str(part) for part in [row.get("source_edition"), row.get("source_year") or ""] if part)
         toc_line = str(candidate.get("toc_line") or "").replace("|", "\\|")
@@ -478,7 +557,7 @@ def markdown_report(rows: list[dict[str, Any]], summary: dict[str, Any], max_row
                     str(row.get("status") or ""),
                     candidate_summary.replace("|", "\\|"),
                     str(candidate.get("title_score") or ""),
-                    toc_line,
+                    f"{toc_line} / {candidate.get('matched_text') or ''}".replace("|", "\\|"),
                 ]
             )
             + " |"
@@ -498,6 +577,8 @@ def main() -> int:
     parser.add_argument("--min-score", type=float, default=0.82)
     parser.add_argument("--max-candidates", type=int, default=6)
     parser.add_argument("--max-rows", type=int, default=120)
+    parser.add_argument("--max-body-lines", type=int, default=6)
+    parser.add_argument("--min-body-chars", type=int, default=12)
     parser.add_argument("--include-logical-aliases", action="store_true")
     args = parser.parse_args()
 
@@ -524,6 +605,8 @@ def main() -> int:
         include_logical_aliases=args.include_logical_aliases,
         min_score=args.min_score,
         max_candidates=args.max_candidates,
+        max_body_lines=args.max_body_lines,
+        min_body_chars=args.min_body_chars,
     )
     summary = {
         "toc_entry_count": len(entries),
@@ -532,6 +615,8 @@ def main() -> int:
         "matched_poem_count": len(rows),
         "status_counts": dict(Counter(row["status"] for row in rows).most_common()),
         "min_score": args.min_score,
+        "max_body_lines": args.max_body_lines,
+        "min_body_chars": args.min_body_chars,
         "include_logical_aliases": args.include_logical_aliases,
         "note": "Review-only report; it does not mutate poem JSON.",
     }
