@@ -657,6 +657,48 @@ def is_conflict_exact_rich_candidate(row: dict[str, Any], poem: dict[str, Any], 
     return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
 
 
+def is_conflict_accepted_candidate(row: dict[str, Any], poem: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Override stale known editions only for accepted high-coverage spans.
+
+    This is narrower than the general conflict override. It requires the
+    deterministic span proposer to have accepted the row, and it keeps title or
+    opening-line evidence, exact line anchors, page sequence evidence, and a
+    clear runner-up gap in the same gate.
+    """
+
+    current_edition = poem.get("source_edition")
+    if current_edition in {UNKNOWN_COLLECTION, meta["title_bn"]}:
+        return False
+    if row.get("status") != "accepted_candidate":
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int) or end < start:
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if not {"high_body_coverage", "page_sequence_present"} <= evidence:
+        return False
+    if not ({"title_match", "first_line_match"} & evidence):
+        return False
+    if float(row.get("score") or 0) < 25:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 9:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 3:
+        return False
+
+    runner_up_gap = row.get("runner_up_gap")
+    if runner_up_gap is not None and float(runner_up_gap) < 4:
+        return False
+
+    page_span = end - start + 1
+    return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
+
+
 def has_embedded_collection_marker(poem: dict[str, Any], title_bn: str) -> bool:
     marker = f"#{title_bn}"
     return any(line.strip() == marker for line in (poem.get("body_bn") or "").splitlines())
@@ -753,6 +795,7 @@ def is_eligible(
     allow_unknown_single_page_ambiguous_body_candidates: bool,
     allow_unknown_embedded_candidates: bool,
     allow_conflict_exact_rich_candidates: bool,
+    allow_conflict_accepted_candidates: bool,
     allow_conflict_embedded_candidates: bool,
 ) -> tuple[bool, str]:
     if poem.get("poet_id") != "jibanananda-das":
@@ -766,6 +809,8 @@ def is_eligible(
 
     if allow_conflict_exact_rich_candidates and is_conflict_exact_rich_candidate(row, poem, meta):
         return True, "eligible_conflict_exact_rich"
+    if allow_conflict_accepted_candidates and is_conflict_accepted_candidate(row, poem, meta):
+        return True, "eligible_conflict_accepted"
     if allow_conflict_embedded_candidates and is_conflict_embedded_collection_candidate(row, poem, meta):
         return True, "eligible_conflict_embedded_collection"
     if row.get("candidate_book_id") in BOOK_ALIASES and has_existing_book_source(poem, meta["title_bn"]):
@@ -968,6 +1013,11 @@ def main() -> int:
         help="Override stale known collection assignments with dense exact line-anchor evidence.",
     )
     parser.add_argument(
+        "--allow-conflict-accepted-candidates",
+        action="store_true",
+        help="Override stale known collection assignments for accepted high-coverage all-books candidates.",
+    )
+    parser.add_argument(
         "--allow-conflict-embedded-candidates",
         action="store_true",
         help="Override stale known collection assignments when the poem body embeds the candidate collection marker.",
@@ -1019,6 +1069,7 @@ def main() -> int:
             args.allow_unknown_single_page_ambiguous_body_candidates,
             args.allow_unknown_embedded_candidates,
             args.allow_conflict_exact_rich_candidates,
+            args.allow_conflict_accepted_candidates,
             args.allow_conflict_embedded_candidates,
         )
         if not eligible:
@@ -1027,6 +1078,7 @@ def main() -> int:
 
         force_collection_update = reason in {
             "eligible_conflict_exact_rich",
+            "eligible_conflict_accepted",
             "eligible_conflict_embedded_collection",
         }
         meta = BOOK_META[row["candidate_book_id"]]

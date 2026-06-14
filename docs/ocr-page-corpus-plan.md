@@ -117,9 +117,14 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   same collection. Existing printed primary page ranges are protected by
   default; replacing a page range requires the explicit
   `--allow-existing-page-overwrite` flag after review against the printed
-  source. The default apply scope skips duplicate-hidden poem imports listed in
-  `src/lib/content.ts`; use `--include-duplicates` only for a deliberate
-  duplicate-cleanup pass.
+  source. Known collection conflicts are not overwritten by default. They can
+  be updated only with an explicit conflict flag: the accepted-candidate gate
+  requires deterministic all-books evidence, repaired printed pages, high body
+  coverage, title or opening-line evidence, exact line anchors, and a clear
+  runner-up gap before changing `source_edition`, `source_year`, `phase_id`, and
+  the primary printed-page citation together. The default apply scope skips
+  duplicate-hidden poem imports listed in `src/lib/content.ts`; use
+  `--include-duplicates` only for a deliberate duplicate-cleanup pass.
 
 - `scripts/report_metadata_gaps.py`
   Builds a review-only Markdown/JSON inventory of public Jibanananda records
@@ -227,9 +232,9 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   corpus. It checks whether the cited printed page exists in the exact source
   scan or a logical alias, then looks for title, opening-line, exact-line, and
   body-token evidence on that cited page range. It is review-only and does not
-  mutate poem JSON. The current run checks 270 existing citations: 238 are
-  supported by title/opening/exact-line evidence, 15 are supported only by broad
-  token coverage, 14 cite pages outside the current OCR corpus range for that
+  mutate poem JSON. The current run checks 270 existing citations: 230 are
+  supported by title/opening/exact-line evidence, 26 are supported only by broad
+  token coverage, 11 cite pages outside the current OCR corpus range for that
   book, and 3 are weak current citations that need manual source review.
 
 - `scripts/citation_repair_audit.py`
@@ -466,8 +471,16 @@ span candidates, it reports `changed: []`; the only previously writable row was
 already a hidden duplicate import. This is negative evidence for further
 automatic public metadata writes from the current sidecars.
 
+A later conflict-gated all-books pass corrected three stale source assignments:
+`বিস্ময়`, `যদিও দিন`, and `সারাৎসার` moved from `সাতটি তারার তিমির` to
+`বেলা অবেলা কালবেলা`, with printed pages 40-41, 63-64, and 55 respectively.
+The gate required accepted deterministic span candidates, repaired printed
+pages, high body coverage, title or opening-line evidence, exact line anchors,
+and a runner-up gap of at least 4. A repeat dry run with
+`--allow-conflict-accepted-candidates` is now idempotent.
+
 The citation consistency audit distinguishes absent scan coverage from
-potentially wrong citations. In the current run, 14 rows are
+potentially wrong citations. In the current run, 11 rows are
 `outside_corpus_range`: their cited printed pages sit outside the repaired OCR
 page range for the named book, so the audit cannot prove or disprove them from
 the current sidecars. Only 3 existing citations have in-range OCR rows but weak
