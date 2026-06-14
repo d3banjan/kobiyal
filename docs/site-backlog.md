@@ -26,6 +26,10 @@ Notes:
   `metadata_reports/source-acquisition-manifest.current.json` with a companion
   Markdown summary at `metadata_reports/source-acquisition-manifest.current.md`.
   The manifest validation and rendered printed-page attribution checks are now in CI.
+- Source URL marker audit status is now carried in the acquisition manifest:
+  63 rows were checked with no explicit collection marker, 3 have unchecked
+  BanglarKobita URLs, and 36 known-source rows need corpus/page evidence rather
+  than URL-marker classification.
 - Priority blockers:
   - `aloprithibi`: 21 uncited known-source poems.
   - `srestha-kabita`: 3 existing citations need corpus/default audit coverage.

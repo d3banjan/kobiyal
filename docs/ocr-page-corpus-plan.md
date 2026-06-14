@@ -245,6 +245,10 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   collection rows, and reviewed scan holds. It preserves candidate, source-scan,
   review-exclusion, and factor-model details for each poem, but never mutates
   poem JSON or asserts a printed page citation.
+  It also joins the source-URL marker audit for each row so unknown-source
+  records distinguish "checked but no explicit secondary marker" from
+  "not checked here"; this is triage evidence only and does not replace printed
+  source review.
 
 - `scripts/embedded_source_audit.py`
   Audits explicit source markers that were imported into poem bodies, such as a

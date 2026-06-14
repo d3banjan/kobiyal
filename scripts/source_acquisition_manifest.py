@@ -128,7 +128,36 @@ def source_scan_summary(source_scan: dict[str, Any] | None) -> dict[str, Any] | 
     }
 
 
-def item_from_missing(item: dict[str, Any], factor: dict[str, Any] | None) -> dict[str, Any]:
+def source_url_marker_rows_by_file(path: Path | None) -> dict[str, dict[str, Any]]:
+    if path is None or not path.exists():
+        return {}
+    payload = read_json(path)
+    return {str(row["filename"]): row for row in payload.get("rows") or [] if row.get("filename")}
+
+
+def source_url_marker_summary(row: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not row:
+        return None
+    summary = {
+        "status": row.get("status"),
+        "canonical_source_url": row.get("canonical_source_url"),
+    }
+    if row.get("source_edition"):
+        summary["source_edition"] = row.get("source_edition")
+    if row.get("source_year") is not None:
+        summary["source_year"] = row.get("source_year")
+    if row.get("phase_id"):
+        summary["phase_id"] = row.get("phase_id")
+    if row.get("error"):
+        summary["error"] = row.get("error")
+    return summary
+
+
+def item_from_missing(
+    item: dict[str, Any],
+    factor: dict[str, Any] | None,
+    source_url_marker: dict[str, Any] | None,
+) -> dict[str, Any]:
     review_exclusion = item.get("review_exclusion") or {}
     row = {
         "filename": item.get("filename"),
@@ -141,6 +170,7 @@ def item_from_missing(item: dict[str, Any], factor: dict[str, Any] | None) -> di
         "review_bucket": item.get("review_bucket"),
         "candidate": candidate_summary(item.get("candidate")),
         "source_scan": source_scan_summary(item.get("source_scan_review")),
+        "source_url_marker": source_url_marker_summary(source_url_marker),
         "review_exclusion": {
             "reason": review_exclusion.get("reason"),
             "note_bn": review_exclusion.get("note_bn"),
@@ -165,7 +195,9 @@ def item_from_missing(item: dict[str, Any], factor: dict[str, Any] | None) -> di
 
 
 def group_missing_items(
-    missing: list[dict[str, Any]], factors: dict[str, dict[str, Any]]
+    missing: list[dict[str, Any]],
+    factors: dict[str, dict[str, Any]],
+    source_url_markers: dict[str, dict[str, Any]],
 ) -> dict[str, list[dict[str, Any]]]:
     groups = {
         "identify_collection_before_page_citation": [],
@@ -174,7 +206,9 @@ def group_missing_items(
         "keep_excluded_until_new_scan_or_print_review": [],
     }
     for item in missing:
-        factor = factors.get(str(item.get("filename") or ""))
+        filename = str(item.get("filename") or "")
+        factor = factors.get(filename)
+        source_url_marker = source_url_markers.get(filename)
         review_bucket = str(item.get("review_bucket") or "")
         source_scan_status = str((item.get("source_scan_review") or {}).get("status") or "")
         source_edition = item.get("source_edition")
@@ -196,7 +230,7 @@ def group_missing_items(
         else:
             key = "improve_text_extraction_or_manual_page_review"
 
-        groups[key].append(item_from_missing(item, factor))
+        groups[key].append(item_from_missing(item, factor, source_url_marker))
     return groups
 
 
@@ -241,9 +275,22 @@ def group_by_source(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(grouped.values(), key=lambda row: (-int(row["count"]), row["source_edition"]))
 
 
-def build_manifest(gap_report: dict[str, Any], factors: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def source_url_marker_status_counts(groups: dict[str, list[dict[str, Any]]]) -> dict[str, int]:
+    counts: Counter[str] = Counter()
+    for items in groups.values():
+        for item in items:
+            marker = item.get("source_url_marker") or {}
+            counts[str(marker.get("status") or "not_checked")] += 1
+    return dict(counts.most_common())
+
+
+def build_manifest(
+    gap_report: dict[str, Any],
+    factors: dict[str, dict[str, Any]],
+    source_url_markers: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
     missing = list(gap_report.get("missing") or [])
-    grouped_missing = group_missing_items(missing, factors)
+    grouped_missing = group_missing_items(missing, factors, source_url_markers)
     existing_items = existing_corpus_items(gap_report)
     action_counts = Counter({key: len(value) for key, value in grouped_missing.items()})
     if existing_items:
@@ -262,10 +309,12 @@ def build_manifest(gap_report: dict[str, Any], factors: dict[str, dict[str, Any]
             "existing_citations_missing_corpus_count": len(existing_items),
             "action_counts": dict(action_counts),
             "factor_next_action_counts": dict(factor_next_action_counts),
+            "source_url_marker_status_counts": source_url_marker_status_counts(grouped_missing),
             "source_group_counts": {key: len(value) for key, value in source_groups.items()},
             "generated_from": {
                 "metadata_gap_report": "metadata_reports/metadata-gap-review.current.json",
                 "citation_factor_model": "metadata_reports/citation-factor-model.current.json",
+                "source_url_marker_audit": "metadata_reports/source-url-marker-audit.current.json",
             },
             "note": "Review/acquisition manifest only. It does not mutate poem JSON or assert page citations.",
         },
@@ -295,6 +344,7 @@ def markdown_report(manifest: dict[str, Any]) -> str:
         f"- Existing citations missing corpus coverage: {summary['existing_citations_missing_corpus_count']}",
         f"- Action counts: `{json.dumps(summary['action_counts'], ensure_ascii=False)}`",
         f"- Factor-model next actions: `{json.dumps(summary['factor_next_action_counts'], ensure_ascii=False)}`",
+        f"- Source URL marker statuses: `{json.dumps(summary['source_url_marker_status_counts'], ensure_ascii=False)}`",
         f"- Source group counts: `{json.dumps(summary['source_group_counts'], ensure_ascii=False)}`",
         "",
         "## Existing Citations Missing Corpus",
@@ -415,6 +465,13 @@ def verify_manifest(manifest_path: Path, poems_dir: Path, duplicates_source: Pat
         if int(source_group_counts.get(key, -1)) != len(source_groups or []):
             raise ValueError(f"source_group_counts[{key}] does not match manifest groups")
 
+    marker_status_counts = Counter(
+        str((item.get("source_url_marker") or {}).get("status") or "not_checked")
+        for item in missing_items
+    )
+    if dict(marker_status_counts.most_common()) != summary.get("source_url_marker_status_counts"):
+        raise ValueError("source URL marker status counts do not match manifest rows")
+
     filenames = [str(item.get("filename") or "") for item in missing_items]
     duplicates = [name for name, count in Counter(filenames).items() if count > 1]
     if duplicates:
@@ -494,6 +551,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Export source/corpus acquisition manifest.")
     parser.add_argument("--gap-report", default="metadata_reports/metadata-gap-review.current.json")
     parser.add_argument("--factor-model", default="metadata_reports/citation-factor-model.current.json")
+    parser.add_argument("--source-url-marker-audit", default="metadata_reports/source-url-marker-audit.current.json")
     parser.add_argument("--output", default="metadata_reports/source-acquisition-manifest.current.json")
     parser.add_argument("--markdown-output", default="metadata_reports/source-acquisition-manifest.current.md")
     parser.add_argument(
@@ -510,7 +568,10 @@ def main() -> int:
 
     gap_report = read_json(Path(args.gap_report))
     factors = factor_rows_by_file(Path(args.factor_model) if args.factor_model else None)
-    manifest = build_manifest(gap_report, factors)
+    source_url_markers = source_url_marker_rows_by_file(
+        Path(args.source_url_marker_audit) if args.source_url_marker_audit else None
+    )
+    manifest = build_manifest(gap_report, factors, source_url_markers)
     write_json(Path(args.output), manifest)
     Path(args.markdown_output).write_text(markdown_report(manifest), encoding="utf-8")
     print(json.dumps(manifest["summary"], ensure_ascii=False, indent=2))

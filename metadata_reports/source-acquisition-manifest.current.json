@@ -15,6 +15,11 @@
       "needs_better_text_extraction": 36,
       "keep_excluded": 14
     },
+    "source_url_marker_status_counts": {
+      "no_explicit_marker": 63,
+      "not_checked": 36,
+      "no_checked_url": 3
+    },
     "source_group_counts": {
       "identify_collection_before_page_citation": 1,
       "add_scan_or_direct_print_review": 3,
@@ -23,7 +28,8 @@
     },
     "generated_from": {
       "metadata_gap_report": "metadata_reports/metadata-gap-review.current.json",
-      "citation_factor_model": "metadata_reports/citation-factor-model.current.json"
+      "citation_factor_model": "metadata_reports/citation-factor-model.current.json",
+      "source_url_marker_audit": "metadata_reports/source-url-marker-audit.current.json"
     },
     "note": "Review/acquisition manifest only. It does not mutate poem JSON or assert page citations."
   },
@@ -100,6 +106,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_checked_url",
+              "canonical_source_url": "https://banglarkobita.com/poem/famous/444"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -148,6 +158,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_checked_url",
+              "canonical_source_url": "https://banglarkobita.com/poem/famous/440"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -196,6 +210,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/haat-prosarito/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -244,6 +262,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/koto-din-ghash-ar-mathey/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -292,6 +314,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/gotibidhi/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -340,6 +366,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/golpey-poriachi-aami-kanchi-kashi-bidishar-kotha/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -388,6 +418,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/chirodin-shohorei-thaki/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -436,6 +470,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/chetona-likhon/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -484,6 +522,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/jibon-valobeshe/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -533,6 +575,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/jhora-fosholer-gan/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -581,6 +627,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/tomra-shwopner-hatey-dhora-dao/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -629,6 +679,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/porobasi/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -677,6 +731,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/prithibi-aaj/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -724,6 +782,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/prithibii-o-shomoy/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -772,6 +834,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/paradim/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -820,6 +886,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/bangali-panjabi-marathi-gujrati/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -868,6 +938,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/robindronath/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -916,6 +990,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/ratri-mon-manobprithibi/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -964,6 +1042,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/rainkoat-kadhe-rekhe/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -1012,6 +1094,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/sondhya-hoye-asey/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -1060,6 +1146,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/shomudrochil/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -1108,6 +1198,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/shurjo-kokhon/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -1156,6 +1250,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/shurjokorojjola/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -1204,6 +1302,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/shonalii-ogniir-moto/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -1251,6 +1353,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/hotath-tomar-sathey/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -1299,6 +1405,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/hajar-borsho-agey/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -1347,6 +1457,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/haymento/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "identify_collection",
@@ -1380,6 +1494,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/oneyk-muhurto-khoy-korey/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1411,6 +1529,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/onek-ratrideen/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1442,6 +1564,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/akashey-chader-alo/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1473,6 +1599,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/aadim/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1504,6 +1634,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/ei-kii-shindhur-hawoa/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1535,6 +1669,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/ei-shotabdii-shondhiitey-mrittu/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1566,6 +1704,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/ekti-purono-kobita/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1597,6 +1739,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/kaukey-valobeshechilam/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1628,6 +1774,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/kartiker-vor-1350/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1659,6 +1809,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/kani-miche-noakkhatrera/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1690,6 +1844,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/kamon-brishty-jhorey/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1721,6 +1879,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/kothay-giese/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1752,6 +1914,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/kono-ek-bathitakey/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1783,6 +1949,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/gubrey-foring-shudhu-urey-jai-aaj/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1814,6 +1984,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/jibonshongeet/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1845,6 +2019,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/jiboney-onek-dur/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1876,6 +2054,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/tobuo-payer-chinho/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1907,6 +2089,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/tumake-bhalobeshe/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1938,6 +2124,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_checked_url",
+              "canonical_source_url": "https://banglarkobita.com/poem/famous/443"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -1969,6 +2159,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/tomai-aami-dekhesilam/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2000,6 +2194,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/dao-surjo-k-jagiye/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2031,6 +2229,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/nishoron/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2062,6 +2264,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/nirdesh/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2093,6 +2299,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/polatoka/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2124,6 +2334,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/batasher-shobdo-eshe/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2155,6 +2369,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/bikeler-aloy/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2186,6 +2404,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/mokorshongkrantir-praney/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2217,6 +2439,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/mon-mormor/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2248,6 +2474,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/morutrinojjola/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2279,6 +2509,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/majhey-majhey/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2310,6 +2544,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/rojonigondha/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2341,6 +2579,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/shotabdii-shesh/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2372,6 +2614,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/shiiter-rater-kobita/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2403,6 +2649,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/sesh-holo-jiboner-sob-lenden/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2434,6 +2684,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/shomy-muchia-faley-shob-eshey/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2465,6 +2719,10 @@
             "review_bucket": "no_candidate",
             "candidate": null,
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/haymonto-kuashai/"
+            },
             "review_exclusion": null,
             "factor_model": {
               "next_action": "needs_better_text_extraction",
@@ -2512,6 +2770,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/unissho-choutrisher/"
+            },
             "review_exclusion": {
               "reason": "weak_line_overlap_wrong_poem",
               "note_bn": "বনলতা সেন পৃষ্ঠা ২১ মুদ্রিত কবিতা 'দু'জন'। ক্ষীণ পঙ্‌ক্তি/শব্দ মিল থাকলেও শিরোনাম ও মূল শরীর মেলে না।",
@@ -2567,6 +2829,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/shara-din-trum-bus/"
+            },
             "review_exclusion": {
               "reason": "generic_line_overlap_wrong_poem",
               "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৪৬ 'হায় পাখি...' পাঠ; প্রস্তাবিত এক-পঙ্‌ক্তির মিল সাধারণ/অপ্রতুল, শিরোনাম ও শরীর মেলে না।",
@@ -2622,6 +2888,10 @@
               ]
             },
             "source_scan": null,
+            "source_url_marker": {
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://www.bangla-kobita.com/jibananandadas/udayosto/"
+            },
             "review_exclusion": {
               "reason": "duplicate_title_distinct_poem",
               "note_bn": "মহাপৃথিবী কপি পৃষ্ঠা ১২৭-এ মুদ্রিত 'উদয়াস্ত' কবিতাটি jibanananda-055-এর শরীরের সঙ্গে শিরোনাম, প্রথম পঙ্‌ক্তি, ও পঙ্‌ক্তি-প্রমাণে মেলে। jibanananda-054 একই শিরোনামের আলাদা আমদানি; কেবল TOC শিরোনাম দেখে এটিকে ওই পৃষ্ঠা দেওয়া যাবে না।",
@@ -2693,6 +2963,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -2747,6 +3018,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -2801,6 +3073,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -2855,6 +3128,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -2909,6 +3183,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -2962,6 +3237,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3016,6 +3292,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3070,6 +3347,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3125,6 +3403,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3179,6 +3458,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3232,6 +3512,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3286,6 +3567,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3325,6 +3607,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3363,6 +3646,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3401,6 +3685,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3439,6 +3724,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3477,6 +3763,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3515,6 +3802,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3553,6 +3841,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3591,6 +3880,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3645,6 +3935,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "weak_line_overlap_wrong_page",
               "note_bn": "বেলা অবেলা কালবেলা কপি পৃষ্ঠা ১৬৫ দেখা পাঠটি এই আমদানি করা কবিতার শুরু বা শরীরের সঙ্গে নির্ভরযোগ্যভাবে মেলে না।",
@@ -3712,6 +4003,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3767,6 +4059,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3821,6 +4114,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3860,6 +4154,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3898,6 +4193,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": null,
             "factor_model": {
               "next_action": "add_or_review_source_corpus",
@@ -3958,6 +4254,7 @@
               "candidate_book_ids": [],
               "best_page": null
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "title_collision_distinct_poem",
               "note_bn": "বনলতা সেন মুদ্রিত পৃষ্ঠা ১৮-তে একই শিরোনামের আলাদা কবিতা আছে, যা ইতিমধ্যে jibanananda-339 হিসেবে উদ্ধৃত। এই আমদানি করা অপ্রকাশিত পাঠের শরীর আলাদা, তাই title-only মিল গ্রহণযোগ্য নয়।",
@@ -4043,6 +4340,7 @@
                 "body_coverage": 0.3438
               }
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "body_token_overlap_wrong_poem",
               "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৬৪-তে দেখা OCR পাঠে 'সমুদ্রের জলে আমি দেহ ধুয়ে' শিরোনাম, সমুদ্র/মালাবার-প্রারম্ভ, বা ধারাবাহিক শরীর নেই। high body-token coverage সাধারণ শব্দ-সাদৃশ্য; পৃষ্ঠা-উদ্ধৃতি হিসেবে গ্রহণযোগ্য নয়।",
@@ -4115,6 +4413,7 @@
                 "body_coverage": 0.2911
               }
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "body_token_overlap_wrong_poem",
               "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৬৪-তে দেখা OCR পাঠ 'তারপর চোখ তুলে...' অংশ দিয়ে শুরু; 'ঘাটশিলা—ঘটশিলা' শিরোনাম, কলকাতা/ঘাটশিলা-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। broad body-token overlap পৃষ্ঠা-উদ্ধৃতির জন্য যথেষ্ট নয়।",
@@ -4186,6 +4485,7 @@
                 "body_coverage": 0.1784
               }
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "body_token_overlap_wrong_poem",
               "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৫৮-তে দেখা OCR পাঠ 'মাঠের আঁধার পথে শিশু...' অংশ দিয়ে শুরু; 'সোনালী ডানার শঙ্খচিল' শিরোনাম, কলকাতা/বৌবাজার-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। source-scan review-ও no-support, তাই এই candidate বাদ।",
@@ -4243,6 +4543,7 @@
                 "body_coverage": 0.3115
               }
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "not_found_in_current_scan_corpus",
               "note_bn": "বর্তমান রূপসী বাংলা পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page কেবল দুর্বল token overlap; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।",
@@ -4299,6 +4600,7 @@
                 "body_coverage": 0.2807
               }
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "not_found_in_current_scan_corpus",
               "note_bn": "বর্তমান রূপসী বাংলা পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page কেবল দুর্বল token overlap; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।",
@@ -4361,6 +4663,7 @@
                 "body_coverage": 0.2222
               }
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "not_found_in_current_scan_corpus",
               "note_bn": "বর্তমান সাতটি তারার তিমির পেজ কর্পাসে শিরোনাম বা স্বতন্ত্র পঙ্‌ক্তি নির্ভরযোগ্যভাবে পাওয়া যায়নি। মুদ্রিত পৃষ্ঠা না দেখে বই-সূত্র থেকে পৃষ্ঠা বানানো যাবে না।",
@@ -4416,6 +4719,7 @@
                 "body_coverage": 0.1519
               }
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "not_found_in_current_scan_corpus",
               "note_bn": "বর্তমান সাতটি তারার তিমির পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page no-support; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।",
@@ -4494,6 +4798,7 @@
                 "body_coverage": 0.2283
               }
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "body_token_overlap_wrong_poem",
               "note_bn": "বেলা অবেলা কালবেলা কপি পৃষ্ঠা ১৫০-তে দেখা OCR পাঠ 'দূর থেকে প্রপেলার...' অংশ দিয়ে শুরু; 'অনির্বাণ' শিরোনাম, উত্তরসাগর-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। runner-up gap শূন্য, তাই broad body-token overlap গ্রহণযোগ্য নয়।",
@@ -4559,6 +4864,7 @@
                 "body_coverage": 0.2254
               }
             },
+            "source_url_marker": null,
             "review_exclusion": {
               "reason": "not_found_in_current_scan_corpus",
               "note_bn": "বর্তমান মহাপৃথিবী পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page কেবল দুর্বল token overlap; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।",

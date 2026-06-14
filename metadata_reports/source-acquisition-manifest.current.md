@@ -10,6 +10,7 @@ This is a review/acquisition queue only. It does not create page citations.
 - Existing citations missing corpus coverage: 3
 - Action counts: `{"identify_collection_before_page_citation": 66, "add_scan_or_direct_print_review": 27, "improve_text_extraction_or_manual_page_review": 0, "keep_excluded_until_new_scan_or_print_review": 9, "add_corpus_or_regenerate_auxiliary_corpus": 3}`
 - Factor-model next actions: `{"add_or_review_source_corpus": 25, "identify_collection": 27, "needs_better_text_extraction": 36, "keep_excluded": 14}`
+- Source URL marker statuses: `{"no_explicit_marker": 63, "not_checked": 36, "no_checked_url": 3}`
 - Source group counts: `{"identify_collection_before_page_citation": 1, "add_scan_or_direct_print_review": 3, "improve_text_extraction_or_manual_page_review": 0, "keep_excluded_until_new_scan_or_print_review": 4}`
 
 ## Existing Citations Missing Corpus
