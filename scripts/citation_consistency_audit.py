@@ -149,6 +149,15 @@ def book_page_ranges(rows: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
     return ranges
 
 
+def book_row_counts(rows: list[dict[str, Any]]) -> dict[str, int]:
+    counts: Counter[str] = Counter()
+    for row in rows:
+        book_id = canonical_book_id(str(row.get("book_id") or ""))
+        if book_id:
+            counts[book_id] += 1
+    return dict(counts)
+
+
 def load_candidates(path: Path) -> dict[str, dict[str, Any]]:
     candidates = {}
     if not path.exists():
@@ -168,6 +177,7 @@ def citation_evidence(
     canonical_pages: dict[tuple[str, int], list[dict[str, Any]]],
     exact_pages: dict[tuple[str, int], list[dict[str, Any]]],
     page_ranges: dict[str, dict[str, int]],
+    row_counts: dict[str, int],
     min_line_chars: int,
 ) -> dict[str, Any]:
     start = int(source["page_start"])
@@ -195,6 +205,7 @@ def citation_evidence(
     token_overlap = len(body_token_set & page_token_set)
     body_coverage = token_overlap / max(1, len(body_token_set))
     corpus_range = page_ranges.get(canonical_source_book)
+    book_corpus_row_count = row_counts.get(canonical_source_book, 0)
     outside_corpus_range = False
     if corpus_range and not any(
         corpus_range["min"] <= page_number <= corpus_range["max"]
@@ -207,6 +218,7 @@ def citation_evidence(
         "page_end": end,
         "book_corpus_page_min": corpus_range["min"] if corpus_range else None,
         "book_corpus_page_max": corpus_range["max"] if corpus_range else None,
+        "book_corpus_row_count": book_corpus_row_count,
         "outside_corpus_range": outside_corpus_range,
         "exact_page_row_count": len(exact_rows),
         "canonical_page_row_count": len(canonical_rows),
@@ -264,6 +276,10 @@ def accepted_candidate_conflict(
 
 def row_status(evidence: dict[str, Any], conflict: dict[str, Any] | None) -> str:
     if evidence["canonical_page_row_count"] == 0:
+        if evidence.get("book_corpus_row_count", 0) == 0:
+            return "missing_book_corpus"
+        if evidence.get("book_corpus_page_min") is None or evidence.get("book_corpus_page_max") is None:
+            return "missing_printed_page_sequence"
         if evidence.get("outside_corpus_range"):
             return "outside_corpus_range"
         return "missing_page_rows"
@@ -283,6 +299,7 @@ def build_report(
     canonical_pages: dict[tuple[str, int], list[dict[str, Any]]],
     exact_pages: dict[tuple[str, int], list[dict[str, Any]]],
     page_ranges: dict[str, dict[str, int]],
+    row_counts: dict[str, int],
     candidates: dict[str, dict[str, Any]],
     min_line_chars: int,
 ) -> dict[str, Any]:
@@ -315,6 +332,7 @@ def build_report(
                 canonical_pages,
                 exact_pages,
                 page_ranges,
+                row_counts,
                 min_line_chars=min_line_chars,
             )
             conflict = accepted_candidate_conflict(filename, source, book_id, candidates)
@@ -366,6 +384,13 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         f"- Public Jibanananda poems checked: {summary['poem_count']}",
         f"- Existing primary printed-page citations checked: {summary['citation_count']}",
         f"- Status counts: `{json.dumps(summary['status_counts'], ensure_ascii=False)}`",
+        f"- Page corpus files: `{json.dumps(summary.get('page_corpus_paths', []), ensure_ascii=False)}`",
+        f"- Loaded page rows: {summary.get('loaded_page_row_count', 0)}",
+    ]
+    missing_books = summary.get("missing_book_corpus") or {}
+    if missing_books:
+        lines.append(f"- Missing source books in loaded corpus: `{json.dumps(missing_books, ensure_ascii=False)}`")
+    lines += [
         "",
         "| file | title | source | status | citation | evidence |",
         "|---|---|---|---|---|---|",
@@ -379,6 +404,7 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         evidence_label = (
             f"rows exact/canonical {evidence.get('exact_page_row_count', 0)}/"
             f"{evidence.get('canonical_page_row_count', 0)}; "
+            f"book rows {evidence.get('book_corpus_row_count', 0)}; "
             f"corpus {evidence.get('book_corpus_page_min')}-"
             f"{evidence.get('book_corpus_page_max')}; "
             f"title {evidence.get('title_match')}; "
@@ -413,6 +439,12 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Audit existing printed-page citations against OCR corpus evidence.")
     parser.add_argument("--page-corpus", default="metadata_reports/page-corpus.full.repaired.layout.jsonl")
+    parser.add_argument(
+        "--extra-page-corpus",
+        action="append",
+        default=[],
+        help="Additional page-corpus JSONL file to merge into the audit. May be passed more than once.",
+    )
     parser.add_argument("--poems-dir", default="src/data/poems")
     parser.add_argument("--duplicates-source", default="src/lib/content.ts")
     parser.add_argument("--candidates", default="metadata_reports/poem-span-candidates.current.regen.jsonl")
@@ -426,7 +458,10 @@ def main() -> int:
     spans.OCR_SUBSTITUTIONS = spans.load_ocr_substitutions(
         Path(args.ocr_substitutions) if args.ocr_substitutions else None
     )
-    pages = read_jsonl(Path(args.page_corpus))
+    page_corpus_paths = [Path(args.page_corpus), *[Path(path) for path in args.extra_page_corpus]]
+    pages = []
+    for path in page_corpus_paths:
+        pages.extend(read_jsonl(path))
     page_ranges = book_page_ranges(pages)
     poems = public_jibanananda_poems(Path(args.poems_dir), duplicate_ids(Path(args.duplicates_source)))
     report = build_report(
@@ -434,8 +469,18 @@ def main() -> int:
         canonical_pages=page_index(pages),
         exact_pages=exact_book_page_index(pages),
         page_ranges=page_ranges,
+        row_counts=book_row_counts(pages),
         candidates=load_candidates(Path(args.candidates)),
         min_line_chars=args.min_line_chars,
+    )
+    report["summary"]["page_corpus_paths"] = [str(path) for path in page_corpus_paths]
+    report["summary"]["loaded_page_row_count"] = len(pages)
+    report["summary"]["missing_book_corpus"] = dict(
+        Counter(
+            str(row.get("source_book_id"))
+            for row in report["citations"]
+            if row.get("status") == "missing_book_corpus"
+        ).most_common()
     )
     write_json(Path(args.output), report)
     markdown = markdown_report(report, args.max_rows)

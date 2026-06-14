@@ -251,11 +251,11 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   corpus. It checks whether the cited printed page exists in the exact source
   scan or a logical alias, then looks for title, opening-line, exact-line, and
   body-token evidence on that cited page range. It is review-only and does not
-  mutate poem JSON. The current committed sidecar run checks 269 existing
-  citations: 231 are supported by title/opening/exact-line evidence, 25 are
-  supported only by broad token coverage, 7 cite pages outside the current OCR
-  corpus range for that book, 3 cite pages missing from the current sidecar
-  corpus, and 3 are weak current citations that need manual source review.
+  mutate poem JSON. It accepts repeatable `--extra-page-corpus` inputs so
+  auxiliary book sidecars can be layered into review without changing the
+  default corpus file. It distinguishes a cited page that is missing from an
+  otherwise loaded source corpus (`missing_page_rows`) from a source book that
+  is absent from the loaded corpus entirely (`missing_book_corpus`).
 
 - `scripts/citation_repair_audit.py`
   Builds a stricter review-only report for repairing existing printed-page
@@ -375,8 +375,8 @@ as book-backed evidence. The same pass removed the imported
 downgraded unsupported `verified: true` flags that were not line-by-line
 proofreading evidence. After this cleanup the default citation audit has no
 `outside_corpus_range` or `weak_current_citation` rows; the remaining
-`missing_page_rows` are the three `শ্রেষ্ঠ কবিতা` rows whose auxiliary corpus is
-not present in the default sidecar file.
+`missing_book_corpus` rows are the three `শ্রেষ্ঠ কবিতা` citations whose
+auxiliary corpus is not present in the default sidecar file.
 
 A reviewed appendix pass added four `মহাপৃথিবী` citations from the `সংযোজন`
 section in the shared scan: `মনোকণিকা` pages 173-174, `সুবিনয় মুস্তফী` page
@@ -522,7 +522,7 @@ produces only weak title matches and one missing-page sequence row. No poem JSON
 should be updated from the current TOC report.
 
 The main metadata gap report now separates source-year and composition-date
-debt from page-citation debt. The current report has 100 missing printed-page
+debt from page-citation debt. The current report has 102 missing printed-page
 citations, 89 missing source years, and 369 missing composition dates. Since the
 strict composition-date audit found no authorial date/place signatures in the
 currently cited OCR spans, composition dates should not be filled until stronger
@@ -554,12 +554,14 @@ new gate rejected stale sidecar rows whose printed pages no longer exist in the
 current corpus, including `তোমাকে` page 172.
 
 The citation consistency audit distinguishes absent scan coverage from
-potentially wrong citations. In the current committed-sidecar run, 7 rows are
-`outside_corpus_range`: their cited printed pages sit outside the repaired OCR
-page range for the named book, so the audit cannot prove or disprove them from
-the current sidecars. Only 3 existing citations have in-range OCR rows but weak
-title/line/token evidence. These should be manually checked against printed
-sources before any metadata rewrite.
+potentially wrong citations. In the current default sidecar run, 264 of 267
+existing citations have current corpus support: 234 by title/opening/exact-line
+evidence and 30 by broad token coverage. The remaining three are not weak
+in-corpus citations; they are `missing_book_corpus` rows for `শ্রেষ্ঠ কবিতা`.
+Those rows need an auxiliary `srestha-kabita` page corpus to be regenerated and
+passed with `--extra-page-corpus` before the default audit can recheck them.
+The project should not read or regenerate from the local `downloads/` PDFs for
+that auxiliary corpus until explicitly permitted.
 
 A scratch regeneration of `repair_page_sequence.py` with the leading-sequence
 guard and current layout sidecar inferred only `রূপসী বাংলা` scan pages 13-14
@@ -577,7 +579,10 @@ reduced `outside_corpus_range` rows from 5 to 2. In the same review pass,
 `গভীর এরিয়েলে` was corrected from a stale `সাতটি তারার তিমির` p.163-164
 citation to `বেলা অবেলা কালবেলা` printed pages 41-42, supported by the
 `বেলা অবেলা কালবেলা` contents entry and page-local title/body OCR; the current
-default citation audit now has 1 `outside_corpus_range` row.
+default citation audit at that point had 1 `outside_corpus_range` row. A later
+cleanup removed the remaining stale unsupported citation rather than displaying
+it as book-backed evidence, so the current default audit has no
+`outside_corpus_range` rows.
 
 The poem-body quality report also records leading dash structure across all
 Jibanananda poem JSON files. A single leading ASCII hyphen is treated by the site

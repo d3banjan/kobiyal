@@ -20,7 +20,9 @@ import apply_poem_metadata as apply_meta
 
 ISSUE_STATUSES = {
     "candidate_conflict",
+    "missing_book_corpus",
     "missing_page_rows",
+    "missing_printed_page_sequence",
     "outside_corpus_range",
     "weak_current_citation",
 }
