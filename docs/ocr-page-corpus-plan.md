@@ -144,6 +144,16 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   same reviewed-exclusion file as the metadata-gap reporter, so checked
   false-positive phrase hits do not keep reappearing in the review queue.
 
+- `scripts/toc_index_audit.py`
+  Builds a review-only table-of-contents title/page report from existing OCR
+  sidecars. It parses TOC title/page pairs, follows repaired printed page
+  numbers back to the logical collection section inside shared physical scans,
+  and compares entries against remaining poem-title gaps with OCR-equivalence
+  normalization. It guards duplicate local titles: title-only evidence cannot
+  become apply-grade when another public poem with the same title already has
+  stronger page evidence. This is a possible future apply source only if a row
+  has a unique title, verified page sequence, and no known-collection conflict.
+
 - `scripts/fuzzy_line_audit.py`
   Builds a review-only fuzzy line report for remaining printed-page gaps after
   exact line and phrase-window matching are exhausted. Its vector prefilter is
@@ -330,6 +340,14 @@ rows (`কত দিন ঘাসে আর মাঠে`, `গল্পে আ�
 and `সে`), but each had only one ordered run and matched common local phrases
 rather than a stable poem span. No poem JSON should be updated from these rows.
 
+The TOC index audit parsed 233 title/page entries from the repaired corpus,
+including continuation TOC pages and logical sections in the shared
+`banalata-sen` scan. The current normal-threshold run found one title hit,
+`উদয়াস্ত`, but marked it `duplicate_title_conflict`: another local
+`উদয়াস্ত` record already has stronger line-anchor evidence, so a TOC title
+alone cannot identify which imported body should receive the citation. No poem
+JSON should be updated from the current TOC report.
+
 The poem-body quality report also records leading dash structure across all
 Jibanananda poem JSON files. A single leading ASCII hyphen is treated by the site
 renderer as an imported stanza-break marker. Long all-hyphen divider lines are
@@ -339,7 +357,7 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.
