@@ -218,7 +218,9 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   `source_corpus_backlog` section. That backlog joins missing corpora for
   already-cited poems from `citation_consistency_audit.py`, missing scans for
   uncited known-source poems such as `আলোপৃথিবী`, scanned-source rows that need
-  better extraction or manual page review, and remaining unknown-source rows.
+  better extraction or manual page review, reviewed scanned-source gaps that
+  should stay excluded until a better scan or direct printed-book review is
+  available, and remaining unknown-source rows.
   This is the preferred acquisition/review queue before adding more printed-page
   citations.
 

@@ -459,6 +459,7 @@ def source_corpus_backlog(
 
     unscanned_groups: dict[str, dict[str, Any]] = {}
     weak_groups: dict[tuple[str, str], dict[str, Any]] = {}
+    reviewed_scan_groups: dict[tuple[str, str, str], dict[str, Any]] = {}
     unknown_items = []
     for item in missing:
         edition = str(item.get("source_edition") or "")
@@ -499,6 +500,33 @@ def source_corpus_backlog(
                 }
             )
         elif status in {"source_scan_weak", "source_scan_no_support"}:
+            review_bucket = str(item.get("review_bucket") or "")
+            if review_bucket.startswith("reviewed_"):
+                key = (edition, status, review_bucket)
+                row = reviewed_scan_groups.setdefault(
+                    key,
+                    {
+                        "kind": "reviewed_scanned_source_gap",
+                        "action": "keep_excluded_until_new_scan_or_print_review",
+                        "source_edition": edition,
+                        "book_id": source_book_id_hint(edition),
+                        "status": status,
+                        "review_bucket": review_bucket,
+                        "count": 0,
+                        "items": [],
+                    },
+                )
+                row["count"] += 1
+                row["items"].append(
+                    {
+                        "filename": item.get("filename"),
+                        "poem_id": item.get("poem_id"),
+                        "title_bn": item.get("title_bn"),
+                        "source_url": item.get("source_url"),
+                        "source_scan": source_scan_summary(review),
+                    }
+                )
+                continue
             key = (edition, status)
             row = weak_groups.setdefault(
                 key,
@@ -524,6 +552,7 @@ def source_corpus_backlog(
             )
 
     rows.extend(unscanned_groups.values())
+    rows.extend(reviewed_scan_groups.values())
     rows.extend(weak_groups.values())
     unknown_count = sum(1 for item in missing if item.get("source_edition") == UNKNOWN_COLLECTION)
     if unknown_count:
@@ -542,7 +571,8 @@ def source_corpus_backlog(
         "missing_corpus_for_existing_citations": 0,
         "missing_source_corpus_for_uncited_poems": 1,
         "scanned_source_needs_better_extraction": 2,
-        "unknown_source_collection": 3,
+        "reviewed_scanned_source_gap": 3,
+        "unknown_source_collection": 4,
     }
     return sorted(rows, key=lambda row: (priority.get(str(row["kind"]), 99), -int(row["count"]), row.get("source_edition") or ""))
 
