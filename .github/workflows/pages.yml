@@ -1,8 +1,5 @@
 name: Deploy GitHub Pages
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 on:
   push:
     branches: [main]
@@ -22,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
       - name: Install
@@ -35,7 +32,7 @@ jobs:
           grep -q $'\u09eb\u09ea-\u09eb\u09eb' dist/poems/jibanananda-070/index.html
           ! grep -q "#বেলা অবেলা কালবেলা" dist/poems/jibanananda-070/index.html
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -48,4 +45,4 @@ jobs:
     steps:
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
