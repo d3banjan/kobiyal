@@ -92,9 +92,11 @@ posterior-style citation triage
 This is not yet a calibrated probabilistic model. The current implementation is
 a transparent factor ledger: OCR fidelity, geometry, page-sequence repair,
 source priors, candidate competition, text anchors, and human review each become
-named evidence factors. Later Bayesian calibration can reuse those same factors
-without changing the production rule that poem JSON is updated only by explicit
-apply gates.
+named evidence factors. The factor report records the base probability and the
+posterior after each transformation stage, so a row can be inspected as a
+sequence of updates rather than a single fuzzy score. Later Bayesian calibration
+can reuse those same factors without changing the production rule that poem JSON
+is updated only by explicit apply gates.
 
 ## Page corpus contract
 
@@ -220,9 +222,11 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   from named pipeline factors: source priors, page-sequence repair, candidate
   span basis, exact/title/opening-line evidence, runner-up separation,
   source-corpus coverage, and reviewed exclusions. Its `posterior_like` score is
-  heuristic triage, not an apply gate. The output separates rows that need
-  better extraction, source identification, source-corpus review, stronger text
-  anchors, or continued exclusion.
+  heuristic triage, not an apply gate. Each row also includes `stage_updates`,
+  which show the posterior before and after every transformation stage, plus
+  aggregate stage delta totals in the report summary. The output separates rows
+  that need better extraction, source identification, source-corpus review,
+  stronger text anchors, or continued exclusion.
 
 - `scripts/embedded_source_audit.py`
   Audits explicit source markers that were imported into poem bodies, such as a

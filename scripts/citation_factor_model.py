@@ -20,6 +20,7 @@ import apply_poem_metadata as apply_meta
 
 
 UNKNOWN_COLLECTION = "সংকলন অজানা"
+INITIAL_LOG_ODDS = -3.0
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -34,6 +35,10 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
 
 def sigmoid(log_odds: float) -> float:
     return 1 / (1 + math.exp(-log_odds))
+
+
+def rounded_posterior(log_odds: float) -> float:
+    return round(sigmoid(log_odds), 4)
 
 
 def canonical_book_id(book_id: str | None) -> str | None:
@@ -70,6 +75,30 @@ def add_factor(
     )
 
 
+def stage_updates(factors: list[dict[str, Any]], initial_log_odds: float) -> list[dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for factor in factors:
+        grouped.setdefault(str(factor["stage"]), []).append(factor)
+
+    updates = []
+    current = initial_log_odds
+    for stage, stage_factors in grouped.items():
+        before = current
+        delta = sum(float(factor["weight"]) for factor in stage_factors)
+        current += delta
+        updates.append(
+            {
+                "stage": stage,
+                "factor_count": len(stage_factors),
+                "delta_log_odds": round(delta, 3),
+                "posterior_before": rounded_posterior(before),
+                "posterior_after": rounded_posterior(current),
+                "factors": [factor["name"] for factor in stage_factors],
+            }
+        )
+    return updates
+
+
 def candidate_book_alignment(source_edition: str | None, candidate_book_id: str | None) -> str:
     if not candidate_book_id:
         return "no_candidate_book"
@@ -91,7 +120,7 @@ def score_item(item: dict[str, Any]) -> dict[str, Any]:
     source_edition = item.get("source_edition")
     candidate_book = candidate.get("candidate_book_id")
     factors: list[dict[str, Any]] = []
-    log_odds = -3.0
+    log_odds = INITIAL_LOG_ODDS
 
     if review_exclusion:
         add_factor(
@@ -293,6 +322,7 @@ def score_item(item: dict[str, Any]) -> dict[str, Any]:
         log_odds += float(factor["weight"])
 
     blockers = blockers_for(item, alignment=alignment)
+    updates = stage_updates(factors, INITIAL_LOG_ODDS)
     return {
         "filename": item.get("filename"),
         "poem_id": item.get("poem_id"),
@@ -302,11 +332,15 @@ def score_item(item: dict[str, Any]) -> dict[str, Any]:
         "candidate_book_id": candidate_book,
         "printed_page_start": page_start,
         "printed_page_end": page_end,
-        "posterior_like": round(sigmoid(log_odds), 4),
+        "base_log_odds": INITIAL_LOG_ODDS,
+        "base_posterior_like": rounded_posterior(INITIAL_LOG_ODDS),
+        "posterior_like": rounded_posterior(log_odds),
         "log_odds": round(log_odds, 3),
         "review_bucket": item.get("review_bucket"),
         "next_action": next_action(item, blockers=blockers, posterior=sigmoid(log_odds), alignment=alignment),
         "blockers": blockers,
+        "stage_updates": updates,
+        "stage_deltas": {update["stage"]: update["delta_log_odds"] for update in updates},
         "factors": factors,
     }
 
@@ -362,6 +396,7 @@ def markdown_report(payload: dict[str, Any], max_rows: int) -> str:
         f"- Input gaps: {payload['summary']['input_gap_count']}",
         f"- Rows scored: {payload['summary']['scored_count']}",
         f"- Next actions: `{json.dumps(payload['summary']['next_action_counts'], ensure_ascii=False)}`",
+        f"- Stage deltas: `{json.dumps(payload['summary']['stage_delta_totals'], ensure_ascii=False)}`",
         "",
         "| file | title | posterior | candidate | next action | blockers | top factors |",
         "|---|---|---:|---|---|---|---|",
@@ -406,11 +441,26 @@ def main() -> int:
     gap_report = read_json(Path(args.gap_report))
     rows = [score_item(item) for item in gap_report.get("missing") or []]
     rows.sort(key=lambda row: (-float(row["posterior_like"]), row.get("filename") or ""))
+    stage_delta_totals: Counter[str] = Counter()
+    stage_positive_counts: Counter[str] = Counter()
+    stage_negative_counts: Counter[str] = Counter()
+    for row in rows:
+        for update in row.get("stage_updates") or []:
+            stage = str(update["stage"])
+            delta = float(update["delta_log_odds"])
+            stage_delta_totals[stage] += delta
+            if delta > 0:
+                stage_positive_counts[stage] += 1
+            elif delta < 0:
+                stage_negative_counts[stage] += 1
     payload = {
         "summary": {
             "input_gap_count": len(gap_report.get("missing") or []),
             "scored_count": len(rows),
             "next_action_counts": dict(Counter(str(row["next_action"]) for row in rows).most_common()),
+            "stage_delta_totals": {stage: round(delta, 3) for stage, delta in stage_delta_totals.most_common()},
+            "stage_positive_counts": dict(stage_positive_counts.most_common()),
+            "stage_negative_counts": dict(stage_negative_counts.most_common()),
             "note": "Review-only factor ledger. Posterior-like scores are heuristic and do not mutate poem JSON.",
         },
         "rows": rows,
