@@ -184,22 +184,28 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   deliberately local-region aware: the page-wide exact/class shingle overlap is
   only a cheap recall gate and is never citation evidence. Candidate scoring
   compares representative poem lines against sparse hashed embeddings for
-  contiguous OCR windows only. Each embedding has two feature channels: exact
-  contiguous character shingles at full weight, and OCR class-normalized
-  contiguous character shingles at half weight. Longer contiguous shingles
-  (`3,5,8` by default) get higher weights. Region embeddings are built lazily
-  from per-page inverted indexes, so expensive vector dots do not run over every
-  OCR window in the corpus. When NumPy is available, the same page-local sparse
-  postings are scored with vectorized dot accumulation; this is an acceleration
-  of the contiguous-region matcher, not a page-wide embedding shortcut. The
-  detailed pass still requires each accepted poem line to match one local OCR
-  region, then verifies that local region with the longest contiguous exact and
-  OCR-class character runs. Exact contiguous runs count fully; class-only
-  contiguous runs add half credit. It reports both the longest consecutive run
-  of matched poem lines and the ordered run of local OCR regions. Candidate
-  windows are capped to short printed-page spans. This report is not an apply
-  source; fuzzy-only candidates must still be checked against printed-page
-  evidence before writing poem metadata.
+  contiguous OCR windows only. Windows are source-local: a window can span
+  neighboring `ocr` lines, neighboring `pdftotext` lines, or neighboring
+  profile lines, but it cannot cross from one extraction stream into another.
+  Each embedding has two feature channels: exact contiguous character shingles
+  at full weight, and OCR class-normalized contiguous character shingles at half
+  weight. Longer contiguous shingles (`3,5,8` by default) get higher weights.
+  Region embeddings are built lazily from per-page inverted indexes, so
+  expensive vector dots do not run over every OCR window in the corpus. When
+  NumPy is available, the same page-local sparse postings are scored with
+  vectorized dot accumulation; this is an acceleration of the contiguous-region
+  matcher, not a page-wide embedding shortcut. The detailed pass still requires
+  each accepted poem line to match one local OCR region, then verifies that
+  local region with the longest contiguous exact and OCR-class character runs.
+  Exact contiguous runs count fully; class-only contiguous runs add half credit.
+  It reports both the longest consecutive run of matched poem lines and a
+  source-aware ordered run of local OCR regions. A strong fuzzy review now
+  requires the ordered region run to meet the configured threshold
+  (`--min-ordered-region-run`, default `3`); same-page consecutive matches must
+  remain in the same extraction source and within `--max-ordered-region-gap`
+  normalized OCR lines. Candidate windows are capped to short printed-page
+  spans. This report is not an apply source; fuzzy-only candidates must still be
+  checked against printed-page evidence before writing poem metadata.
 
 - `scripts/ordered_region_audit.py`
   Builds a review-only ordered-token report for the remaining printed-page
@@ -406,10 +412,13 @@ review rather than looser fuzzy citation writes.
 The fuzzy verifier now treats page-wide overlap as recall-only and local
 contiguity as the evidence gate. Its vector features are still hashable and
 cacheable, but every scored feature comes from a contiguous character shingle
-inside a bounded OCR line window, with a parallel OCR-equivalence-class channel.
-The follow-up line score measures the longest contiguous substring inside that
-same window, so repeated OCR confusions can improve a weak partial match without
-letting unrelated tokens from different page regions combine into a citation.
+inside a bounded, source-local OCR line window, with a parallel
+OCR-equivalence-class channel. The follow-up line score measures the longest
+contiguous substring inside that same window, and the candidate status gate
+requires consecutive poem lines to advance through nearby OCR windows in source
+order. Repeated OCR confusions can improve a weak partial match without letting
+unrelated tokens from different page regions or extraction streams combine into
+a citation.
 
 The ordered-region audit confirms the same result from a stricter angle. Its
 default gate found zero candidates. A permissive diagnostic run found three weak

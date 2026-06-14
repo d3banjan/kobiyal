@@ -35,6 +35,7 @@ UNKNOWN_COLLECTION = "সংকলন অজানা"
 DEFAULT_MAX_REGION_LINES = 3
 DEFAULT_MAX_REGION_CHARS = 520
 DEFAULT_REGION_TOP_WINDOWS = 16
+DEFAULT_MAX_ORDERED_REGION_GAP = 4
 CLASS_GROUPS = [
     "ািীুূৃেৈোৌ",
     "নণংঙঞ",
@@ -164,24 +165,36 @@ def profile_text(page: dict[str, Any]) -> str:
     return "\n".join(profile.get("text") or "" for profile in page.get("ocr_profiles") or [])
 
 
-def page_region_lines(page: dict[str, Any], max_region_chars: int) -> list[str]:
+def normalized_region_lines(source_text: str, max_region_chars: int) -> list[str]:
     lines: list[str] = []
     seen = set()
-    for source in [page.get("raw_ocr") or "", page.get("raw_pdftotext") or "", profile_text(page)]:
-        for raw_line in source.splitlines():
-            normalized = spans.normalize(raw_line)
-            compact = compact_text(normalized)
-            if len(compact) < 3:
-                continue
-            if compact.isdigit():
-                continue
-            if len(compact) > max_region_chars:
-                continue
-            if normalized in seen:
-                continue
-            seen.add(normalized)
-            lines.append(normalized)
+    for raw_line in source_text.splitlines():
+        normalized = spans.normalize(raw_line)
+        compact = compact_text(normalized)
+        if len(compact) < 3:
+            continue
+        if compact.isdigit():
+            continue
+        if len(compact) > max_region_chars:
+            continue
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        lines.append(normalized)
     return lines
+
+
+def page_region_line_sources(page: dict[str, Any], max_region_chars: int) -> list[tuple[str, list[str]]]:
+    sources = [
+        ("ocr", page.get("raw_ocr") or ""),
+        ("pdftotext", page.get("raw_pdftotext") or ""),
+        ("profiles", profile_text(page)),
+    ]
+    return [
+        (source_name, lines)
+        for source_name, source_text in sources
+        if (lines := normalized_region_lines(source_text, max_region_chars))
+    ]
 
 
 def page_region_windows(
@@ -190,31 +203,32 @@ def page_region_windows(
     max_region_lines: int,
     max_region_chars: int,
 ) -> list[dict[str, Any]]:
-    lines = page_region_lines(page, max_region_chars)
     windows = []
-    for start in range(len(lines)):
-        pieces: list[str] = []
-        for end in range(start, min(len(lines), start + max_region_lines)):
-            pieces.append(lines[end])
-            text = " ".join(pieces)
-            if compact_length(text) > max_region_chars:
-                break
-            compact = compact_text(text)
-            exact_grams = char_ngrams(text, ngram_size)
-            class_grams = char_ngrams(text, ngram_size, class_mode=True)
-            if not exact_grams or not class_grams:
-                continue
-            windows.append(
-                {
-                    "line_start": start,
-                    "line_end": end,
-                    "text": text,
-                    "compact": compact,
-                    "class_compact": class_signature(compact),
-                    "exact_grams": exact_grams,
-                    "class_grams": class_grams,
-                }
-            )
+    for source_name, lines in page_region_line_sources(page, max_region_chars):
+        for start in range(len(lines)):
+            pieces: list[str] = []
+            for end in range(start, min(len(lines), start + max_region_lines)):
+                pieces.append(lines[end])
+                text = " ".join(pieces)
+                if compact_length(text) > max_region_chars:
+                    break
+                compact = compact_text(text)
+                exact_grams = char_ngrams(text, ngram_size)
+                class_grams = char_ngrams(text, ngram_size, class_mode=True)
+                if not exact_grams or not class_grams:
+                    continue
+                windows.append(
+                    {
+                        "source": source_name,
+                        "line_start": start,
+                        "line_end": end,
+                        "text": text,
+                        "compact": compact,
+                        "class_compact": class_signature(compact),
+                        "exact_grams": exact_grams,
+                        "class_grams": class_grams,
+                    }
+                )
     return windows
 
 
@@ -575,6 +589,7 @@ def page_candidate_pool(
     vector_top_regions_per_line: int,
     vector_max_lines: int,
     use_vector_prefilter: bool,
+    max_ordered_region_gap: int,
 ) -> list[dict[str, Any]]:
     allowed_pages = [
         page
@@ -641,6 +656,7 @@ def page_candidate_pool(
                     "line_index": int(line["line_index"]),
                     "score": best_score,
                     "window_index": int(best_window_index),
+                    "page_region_source": str(best_window.get("source") or ""),
                     "page_line_start": int(best_window.get("line_start") or 0),
                     "page_line_end": int(best_window.get("line_end") or 0),
                 }
@@ -649,7 +665,7 @@ def page_candidate_pool(
             continue
         line_indexes = sorted({hit["line_index"] for hit in line_hits})
         hit_scores = sorted((float(hit["score"]) for hit in line_hits), reverse=True)
-        ordered_region_run = longest_ordered_vector_region_run(line_hits)
+        ordered_region_run = longest_ordered_vector_region_run(line_hits, max_ordered_region_gap)
         line_run = longest_consecutive_run(line_indexes)
         page_score = sum(hit_scores[:required_hits]) / max(1, required_hits)
         scored_pages.append(
@@ -728,6 +744,7 @@ def best_region_match(page: dict[str, Any], line: dict[str, Any], top_windows: i
             "contiguous_char_ratio": fuzzy_score["contiguous_char_ratio"],
             "page_line_start": region["line_start"],
             "page_line_end": region["line_end"],
+            "page_region_source": region.get("source") or "",
             "region_text": region["text"][:220],
         }
         if best is None or (
@@ -769,6 +786,7 @@ def page_match(
                     "exact_contiguous_chars": int(region_match["exact_contiguous_chars"]),
                     "class_contiguous_chars": int(region_match["class_contiguous_chars"]),
                     "contiguous_char_ratio": round(float(region_match["contiguous_char_ratio"]), 3),
+                    "page_region_source": region_match["page_region_source"],
                     "page_line_start": region_match["page_line_start"],
                     "page_line_end": region_match["page_line_end"],
                     "region_text": region_match["region_text"],
@@ -818,40 +836,93 @@ def longest_consecutive_run(values: list[int]) -> int:
     return best
 
 
-def longest_ordered_vector_region_run(line_hits: list[dict[str, Any]]) -> int:
+def can_extend_region_run(
+    previous: dict[str, Any],
+    current: dict[str, Any],
+    max_region_gap: int,
+) -> bool:
+    if int(current["line_index"]) != int(previous["line_index"]) + 1:
+        return False
+    previous_scan = int(previous.get("scan_page") or 0)
+    current_scan = int(current.get("scan_page") or 0)
+    if current_scan < previous_scan:
+        return False
+    if current_scan > previous_scan:
+        return True
+    if str(current.get("page_region_source") or "") != str(previous.get("page_region_source") or ""):
+        return False
+    previous_end = int(previous.get("page_line_end") or 0)
+    current_start = int(current.get("page_line_start") or 0)
+    if current_start < int(previous.get("page_line_start") or 0):
+        return False
+    return current_start <= previous_end + max_region_gap
+
+
+def longest_ordered_region_run_from_events(events: list[dict[str, Any]], max_region_gap: int) -> int:
+    events.sort(
+        key=lambda item: (
+            int(item.get("line_index") or 0),
+            int(item.get("scan_page") or 0),
+            str(item.get("page_region_source") or ""),
+            int(item.get("page_line_start") or 0),
+            int(item.get("page_line_end") or 0),
+            int(item.get("window_index") or 0),
+        )
+    )
+    best = 0
+    for start, event in enumerate(events):
+        current = 1
+        previous = event
+        for next_event in events[start + 1 :]:
+            next_line_index = int(next_event.get("line_index") or 0)
+            previous_line_index = int(previous.get("line_index") or 0)
+            if next_line_index <= previous_line_index:
+                continue
+            if next_line_index != previous_line_index + 1:
+                break
+            if not can_extend_region_run(previous, next_event, max_region_gap):
+                continue
+            current += 1
+            best = max(best, current)
+            previous = next_event
+    return max(best, 1 if events else 0)
+
+
+def longest_ordered_vector_region_run(line_hits: list[dict[str, Any]], max_region_gap: int) -> int:
     events = []
     for hit in line_hits:
         events.append(
             {
                 "line_index": int(hit["line_index"]),
-                "position": (
-                    int(hit.get("page_line_start") or 0),
-                    int(hit.get("page_line_end") or 0),
-                    int(hit.get("window_index") or 0),
-                ),
+                "scan_page": 0,
+                "page_region_source": str(hit.get("page_region_source") or ""),
+                "page_line_start": int(hit.get("page_line_start") or 0),
+                "page_line_end": int(hit.get("page_line_end") or 0),
+                "window_index": int(hit.get("window_index") or 0),
             }
         )
-    events.sort(key=lambda item: (item["line_index"], item["position"]))
-    best = 0
-    for start, event in enumerate(events):
-        current = 1
-        last_line = event["line_index"]
-        last_position = event["position"]
-        for next_event in events[start + 1 :]:
-            if next_event["line_index"] == last_line:
-                continue
-            if next_event["line_index"] != last_line + 1:
-                break
-            if next_event["position"] < last_position:
-                continue
-            current += 1
-            best = max(best, current)
-            last_line = next_event["line_index"]
-            last_position = next_event["position"]
-    return max(best, 1 if events else 0)
+    return longest_ordered_region_run_from_events(events, max_region_gap)
 
 
-def summarize_group(group: list[dict[str, Any]]) -> dict[str, Any]:
+def longest_ordered_region_run(group: list[dict[str, Any]], max_region_gap: int) -> int:
+    events = []
+    for hit in group:
+        scan_page = int(hit.get("scan_page") or 0)
+        for match in hit.get("matches") or []:
+            events.append(
+                {
+                    "line_index": int(match["line_index"]),
+                    "scan_page": scan_page,
+                    "page_region_source": str(match.get("page_region_source") or ""),
+                    "page_line_start": int(match.get("page_line_start") or 0),
+                    "page_line_end": int(match.get("page_line_end") or 0),
+                    "window_index": 0,
+                }
+            )
+    return longest_ordered_region_run_from_events(events, max_region_gap)
+
+
+def summarize_group(group: list[dict[str, Any]], max_ordered_region_gap: int) -> dict[str, Any]:
     line_indexes = sorted({index for hit in group for index in hit["line_indexes"]})
     exact_count = sum(hit["exact_line_match_count"] for hit in group)
     fuzzy_count = sum(hit["fuzzy_line_match_count"] for hit in group)
@@ -878,6 +949,7 @@ def summarize_group(group: list[dict[str, Any]]) -> dict[str, Any]:
                     "exact_contiguous_chars": match.get("exact_contiguous_chars"),
                     "class_contiguous_chars": match.get("class_contiguous_chars"),
                     "contiguous_char_ratio": match.get("contiguous_char_ratio"),
+                    "page_region_source": match.get("page_region_source"),
                     "page_line_start": match.get("page_line_start"),
                     "page_line_end": match.get("page_line_end"),
                     "region_text": match.get("region_text"),
@@ -903,20 +975,24 @@ def summarize_group(group: list[dict[str, Any]]) -> dict[str, Any]:
         "fuzzy_line_match_count": fuzzy_count,
         "matched_line_indexes": line_indexes,
         "longest_line_run": longest_consecutive_run(line_indexes),
+        "longest_ordered_region_run": longest_ordered_region_run(group, max_ordered_region_gap),
         "score": round(sum(hit["score"] for hit in group), 3),
         "sample_matches": samples,
     }
 
 
-def candidate_status(candidate: dict[str, Any], source_edition: str | None) -> str:
+def candidate_status(candidate: dict[str, Any], source_edition: str | None, min_ordered_region_run: int) -> str:
     has_pages = isinstance(candidate.get("printed_page_start"), int) and isinstance(candidate.get("printed_page_end"), int)
     if not has_pages:
         return "needs_printed_page_sequence"
     longest = int(candidate.get("longest_line_run") or 0)
+    ordered = int(candidate.get("longest_ordered_region_run") or 0)
     exact = int(candidate.get("exact_line_match_count") or 0)
     line_count = int(candidate.get("line_match_count") or 0)
     span_count = int(candidate.get("span_page_count") or 0)
     if longest < 3:
+        return "weak_fuzzy_review"
+    if ordered < min_ordered_region_run:
         return "weak_fuzzy_review"
     if exact >= 2:
         return "strong_fuzzy_review"
@@ -955,8 +1031,9 @@ def markdown_report(rows: list[dict[str, Any]], max_rows: int) -> str:
                 for part in [match.get("page_line_start"), match.get("page_line_end")]
                 if part is not None
             )
+            source = match.get("page_region_source") or "region"
             sample_parts.append(
-                f"{match.get('kind')}@{page_lines}: {match.get('text') or ''} => {region}"
+                f"{match.get('kind')}@{source}:{page_lines}: {match.get('text') or ''} => {region}"
             )
         sample = " / ".join(sample_parts)
         lines.append(
@@ -971,7 +1048,8 @@ def markdown_report(rows: list[dict[str, Any]], max_rows: int) -> str:
                     (
                         f"{candidate.get('line_match_count', 0)} "
                         f"({candidate.get('exact_line_match_count', 0)} exact, "
-                        f"run {candidate.get('longest_line_run', 0)})"
+                        f"run {candidate.get('longest_line_run', 0)}, "
+                        f"ordered {candidate.get('longest_ordered_region_run', 0)})"
                     ),
                     sample.replace("|", "\\|"),
                 ]
@@ -1011,6 +1089,8 @@ def main() -> int:
     parser.add_argument("--max-region-lines", type=int, default=DEFAULT_MAX_REGION_LINES)
     parser.add_argument("--max-region-chars", type=int, default=DEFAULT_MAX_REGION_CHARS)
     parser.add_argument("--region-top-windows", type=int, default=DEFAULT_REGION_TOP_WINDOWS)
+    parser.add_argument("--max-ordered-region-gap", type=int, default=DEFAULT_MAX_ORDERED_REGION_GAP)
+    parser.add_argument("--min-ordered-region-run", type=int, default=3)
     parser.add_argument("--min-line-chars", type=int, default=20)
     parser.add_argument("--min-line-score", type=float, default=0.62)
     parser.add_argument("--min-candidate-lines", type=int, default=3)
@@ -1082,6 +1162,7 @@ def main() -> int:
             args.vector_top_regions_per_line,
             args.vector_max_lines,
             use_vector_prefilter,
+            args.max_ordered_region_gap,
         )
         for page in candidate_pages:
             exact_prefilter = len(poem_exact_grams & (page.get("_char_ngrams") or set()))
@@ -1119,12 +1200,13 @@ def main() -> int:
             continue
 
         candidates = [
-            summarize_group(group)
+            summarize_group(group, args.max_ordered_region_gap)
             for group in candidate_windows(page_hits, args.max_candidate_span_pages)
             if sum(hit["exact_line_match_count"] + hit["fuzzy_line_match_count"] for hit in group) >= args.min_candidate_lines
         ]
         candidates.sort(
             key=lambda item: (
+                int(item.get("longest_ordered_region_run") or 0),
                 int(item.get("longest_line_run") or 0),
                 int(item.get("line_match_count") or 0),
                 int(item.get("exact_line_match_count") or 0),
@@ -1141,7 +1223,7 @@ def main() -> int:
             continue
 
         best = candidates[0]
-        status = candidate_status(best, poem.get("source_edition"))
+        status = candidate_status(best, poem.get("source_edition"), args.min_ordered_region_run)
         rows.append(
             {
                 "filename": filename,
@@ -1193,6 +1275,9 @@ def main() -> int:
                 else "python_counter_sparse_posting_accumulation"
             ),
             "region_verification": "longest_contiguous_exact_and_ocr_class_character_runs",
+            "candidate_status_requires_ordered_region_run": True,
+            "min_ordered_region_run": args.min_ordered_region_run,
+            "max_ordered_region_gap": args.max_ordered_region_gap,
             "max_candidate_span_pages": args.max_candidate_span_pages,
             "max_region_lines": args.max_region_lines,
             "max_region_chars": args.max_region_chars,
