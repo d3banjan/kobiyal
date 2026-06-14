@@ -20,6 +20,8 @@ import propose_poem_spans as spans
 
 UNKNOWN_COLLECTION = "সংকলন অজানা"
 DEFAULT_REVIEW_EXCLUSIONS = "src/data/metadata-review-exclusions.json"
+DEFAULT_CANDIDATES = "metadata_reports/poem-span-candidates.current.regen.jsonl"
+DEFAULT_PAGE_CORPUS = "metadata_reports/page-corpus.full.repaired.layout.jsonl"
 TRUSTED_PAGE_TYPES = {
     "normal_poem_page",
     "poem_or_text_page",
@@ -305,6 +307,48 @@ def review_note_summary(item: dict[str, Any]) -> str:
     return str(exclusion.get("note_bn") or exclusion.get("reason") or "")
 
 
+def source_coverage_blockers(missing: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[tuple[str, str], dict[str, Any]] = {}
+    for item in missing:
+        edition = item.get("source_edition") or ""
+        if not edition or edition == UNKNOWN_COLLECTION:
+            continue
+        review = item.get("source_scan_review") or {}
+        status = str(review.get("status") or "not_applicable")
+        if status in {"source_scan_supported", "source_scan_token_only"}:
+            continue
+        key = (status, edition)
+        row = grouped.setdefault(
+            key,
+            {
+                "status": status,
+                "source_edition": edition,
+                "count": 0,
+                "candidate_book_ids": sorted(review.get("candidate_book_ids") or []),
+                "items": [],
+            },
+        )
+        row["count"] += 1
+        row["items"].append(
+            {
+                "filename": item.get("filename"),
+                "poem_id": item.get("poem_id"),
+                "title_bn": item.get("title_bn"),
+                "source_year": item.get("source_year"),
+                "review_bucket": item.get("review_bucket"),
+                "source_url": item.get("source_url"),
+            }
+        )
+    return sorted(
+        grouped.values(),
+        key=lambda row: (
+            row["status"] != "unscanned_source_edition",
+            row["source_edition"],
+            -int(row["count"]),
+        ),
+    )
+
+
 def build_report(
     poems: list[tuple[str, dict[str, Any]]],
     candidates_by_file: dict[str, dict[str, Any]],
@@ -351,6 +395,7 @@ def build_report(
             item["title_bn"] or "",
         )
     )
+    blockers = source_coverage_blockers(missing)
     return {
         "summary": {
             "public_poem_count": len(poems),
@@ -370,7 +415,10 @@ def build_report(
                 Counter(item["source_edition"] or "" for item in missing).most_common()
             ),
             "reviewed_exclusion_count": sum(1 for item in missing if item.get("review_exclusion")),
+            "source_coverage_blocker_count": sum(int(item["count"]) for item in blockers),
+            "source_coverage_blocker_groups": len(blockers),
         },
+        "source_coverage_blockers": blockers,
         "missing": missing,
     }
 
@@ -416,6 +464,44 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
     for edition, count in summary["missing_by_source_edition"].items():
         lines.append(f"- {edition}: {count}")
 
+    blockers = report.get("source_coverage_blockers") or []
+    lines.extend(
+        [
+            "",
+            "## Source Coverage Blockers",
+            "",
+        ]
+    )
+    if blockers:
+        lines.extend(
+            [
+                "| status | source edition | count | titles |",
+                "|---|---|---:|---|",
+            ]
+        )
+        for blocker in blockers:
+            titles = " · ".join(
+                str(item.get("title_bn") or "")
+                for item in (blocker.get("items") or [])[:8]
+            )
+            remaining = int(blocker.get("count") or 0) - min(int(blocker.get("count") or 0), 8)
+            if remaining > 0:
+                titles = f"{titles} · +{remaining} more"
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        str(blocker.get("status") or ""),
+                        str(blocker.get("source_edition") or ""),
+                        str(blocker.get("count") or 0),
+                        titles.replace("|", "\\|"),
+                    ]
+                )
+                + " |"
+            )
+    else:
+        lines.append("- None")
+
     lines.extend(
         [
             "",
@@ -454,8 +540,16 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Report remaining poem metadata gaps.")
     parser.add_argument("--poems-dir", default="src/data/poems")
     parser.add_argument("--duplicates-source", default="src/lib/content.ts")
-    parser.add_argument("--candidates", default=None)
-    parser.add_argument("--page-corpus", default=None)
+    parser.add_argument(
+        "--candidates",
+        default=DEFAULT_CANDIDATES,
+        help="Span-candidate JSONL used to explain remaining gaps. Use an empty string to disable.",
+    )
+    parser.add_argument(
+        "--page-corpus",
+        default=DEFAULT_PAGE_CORPUS,
+        help="Repaired page corpus used for source-scan status. Use an empty string to disable.",
+    )
     parser.add_argument("--ocr-substitutions", default=None)
     parser.add_argument("--include-logical-aliases", action="store_true")
     parser.add_argument("--include-untrusted-pages", action="store_true")

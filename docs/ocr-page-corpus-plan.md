@@ -124,8 +124,8 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
 - `scripts/report_metadata_gaps.py`
   Builds a review-only Markdown/JSON inventory of public Jibanananda records
   that still lack printed book page citations. It joins the current poem JSON
-  with a span-candidate report, excludes hidden duplicate imports, and ranks
-  gaps into buckets such as `manual_collection_review`,
+  with the current regenerated span-candidate report by default, excludes hidden
+  duplicate imports, and ranks gaps into buckets such as `manual_collection_review`,
   `needs_printed_page_sequence`, `weak_text_anchor`,
   `token_or_title_only_candidate`, and `no_candidate`. This is
   the handoff list for printed-source review; it does not apply metadata. It
@@ -133,10 +133,14 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   of candidate-specific false positives. Reviewed exclusions remain in the
   missing-citation count, but are moved to `reviewed_*` buckets so the next
   review pass focuses on unresolved evidence instead of rechecking disproved
-  title collisions or weak one-line overlaps. With `--page-corpus`, it also
-  checks each known-source gap against the matching scanned collection and
-  reports whether the source book is unscanned, weakly supported by OCR tokens,
-  or supported by title/line evidence.
+  title collisions or weak one-line overlaps. By default it also checks each
+  known-source gap against `metadata_reports/page-corpus.full.repaired.layout.jsonl`
+  and reports whether the source book is unscanned, weakly supported by OCR
+  tokens, or supported by title/line evidence. Pass an empty `--candidates ""`
+  or `--page-corpus ""` only when intentionally generating a reduced report.
+  The report also groups known-source gaps into source-coverage blockers, which
+  is the handoff list for adding missing scans or performing direct printed-book
+  review.
 
 - `scripts/phrase_window_audit.py`
   Builds a review-only exact phrase-window report for remaining poems by
