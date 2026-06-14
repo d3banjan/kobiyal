@@ -14,20 +14,6 @@
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/onirban/",
   "sort_order": 9,
-  "verified": true,
-  "marketplace_url": "https://www.rokomari.com/book/83344/bela-abela-kalabela",
-  "book_sources": [
-    {
-      "role": "primary",
-      "title_bn": "বেলা অবেলা কালবেলা",
-      "publisher_bn": "নিউস্ক্রিপ্ট",
-      "edition_bn": "প্রথম সংস্করণ",
-      "publication_year": 1961,
-      "page_start": 67,
-      "page_end": 67,
-      "page_label_bn": "৬৭",
-      "page_basis": "printed_page",
-      "note_bn": "Gemini দ্বারা ভেরিফাইড (পৃষ্ঠা ৬৭)"
-    }
-  ]
+  "verified": false,
+  "marketplace_url": "https://www.rokomari.com/book/83344/bela-abela-kalabela"
 }

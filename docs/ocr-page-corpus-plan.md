@@ -364,6 +364,20 @@ older printed-page citations (`অঘ্রাণ`, `অনন্ত জীব�
 `অনির্বাণ`) so review reports and overwrite guards count them as existing
 book-backed sources.
 
+A later cleanup rechecked those older Gemini-backed citations against the
+repaired corpus. `অঘ্রাণ` was corrected from printed page 95 to 91 in
+`ধূসর পাণ্ডুলিপি`; the printed page visibly carries the damaged OCR title and
+body. The stale citations for `অনন্ত জীবন যদি পাই আমি` (`সাতটি তারার তিমির`
+p.136, outside the scanned p.6-62 corpus) and `অনির্বাণ` (`বেলা অবেলা
+কালবেলা` p.67, which belongs to `হে হৃদয়`) were removed rather than displayed
+as book-backed evidence. The same pass removed the imported
+`(সাতটি তারার তিমির কাব্যগ্রন্থ)` source marker from the body of `তবু` and
+downgraded unsupported `verified: true` flags that were not line-by-line
+proofreading evidence. After this cleanup the default citation audit has no
+`outside_corpus_range` or `weak_current_citation` rows; the remaining
+`missing_page_rows` are the three `শ্রেষ্ঠ কবিতা` rows whose auxiliary corpus is
+not present in the default sidecar file.
+
 A reviewed appendix pass added four `মহাপৃথিবী` citations from the `সংযোজন`
 section in the shared scan: `মনোকণিকা` pages 173-174, `সুবিনয় মুস্তফী` page
 175, `অনুপম ত্রিবেদী` pages 175-176, and `একটি নক্ষত্র আসে` page 176. The

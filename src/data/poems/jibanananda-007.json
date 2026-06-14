@@ -14,20 +14,6 @@
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/onnot-jibon/",
   "sort_order": 7,
-  "verified": true,
-  "marketplace_url": "https://www.rokomari.com/book/83339/satti-tarar-timir",
-  "book_sources": [
-    {
-      "role": "primary",
-      "title_bn": "সাতটি তারার তিমির",
-      "publisher_bn": "বেঙ্গল পাবলিশার্স",
-      "edition_bn": "প্রথম সংস্করণ",
-      "publication_year": 1948,
-      "page_start": 136,
-      "page_end": 136,
-      "page_label_bn": "১৩৬",
-      "page_basis": "printed_page",
-      "note_bn": "Gemini দ্বারা ভেরিফাইড (পৃষ্ঠা ১৩৬)"
-    }
-  ]
+  "verified": false,
+  "marketplace_url": "https://www.rokomari.com/book/83339/satti-tarar-timir"
 }

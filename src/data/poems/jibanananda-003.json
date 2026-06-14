@@ -14,7 +14,7 @@
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/oghran/",
   "sort_order": 3,
-  "verified": true,
+  "verified": false,
   "marketplace_url": "https://www.rokomari.com/book/18974/dhusor-pandulipi",
   "book_sources": [
     {
@@ -23,11 +23,11 @@
       "publisher_bn": "সিগনেট প্রেস",
       "edition_bn": "প্রথম সংস্করণ",
       "publication_year": 1936,
-      "page_start": 95,
-      "page_end": 95,
-      "page_label_bn": "৯৫",
+      "page_start": 91,
+      "page_end": 91,
+      "page_label_bn": "৯১",
       "page_basis": "printed_page",
-      "note_bn": "Gemini দ্বারা ভেরিফাইড (পৃষ্ঠা ৯৫)"
+      "note_bn": "মুদ্রিত পৃষ্ঠা-ক্রম, ক্ষতিগ্রস্ত OCR শিরোনাম ও শরীরের মিলিয়ে সংশোধিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
     }
   ]
 }
