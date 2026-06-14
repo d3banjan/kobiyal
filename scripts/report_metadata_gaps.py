@@ -76,6 +76,21 @@ def has_primary_printed_pages(poem: dict[str, Any]) -> bool:
     )
 
 
+def primary_printed_sources(poem: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        source
+        for source in poem.get("book_sources") or []
+        if source.get("role") == "primary"
+        and isinstance(source.get("page_start"), int)
+        and isinstance(source.get("page_end"), int)
+        and source.get("page_basis") == "printed_page"
+    ]
+
+
+def has_primary_printed_book_year(poem: dict[str, Any]) -> bool:
+    return any(isinstance(source.get("publication_year"), int) for source in primary_printed_sources(poem))
+
+
 def compact(text: str) -> str:
     return re.sub(r"\s+", "", spans.normalize(text))
 
@@ -442,6 +457,7 @@ def source_year_blockers(poems: list[tuple[str, dict[str, Any]]]) -> list[dict[s
     for filename, poem in poems:
         if poem.get("source_year") is not None:
             continue
+        primary_sources = primary_printed_sources(poem)
         edition = str(poem.get("source_edition") or "")
         row = grouped.setdefault(
             edition,
@@ -458,8 +474,38 @@ def source_year_blockers(poems: list[tuple[str, dict[str, Any]]]) -> list[dict[s
                 "poem_id": poem.get("id"),
                 "title_bn": poem.get("title_bn"),
                 "source_url": poem.get("source_url"),
+                "primary_printed_sources": primary_sources,
+                "has_primary_printed_book_year": has_primary_printed_book_year(poem),
             }
         )
+    return sorted(grouped.values(), key=lambda row: (-int(row["count"]), row["source_edition"]))
+
+
+def primary_printed_book_year_blockers(poems: list[tuple[str, dict[str, Any]]]) -> list[dict[str, Any]]:
+    grouped: dict[str, dict[str, Any]] = {}
+    for filename, poem in poems:
+        if has_primary_printed_book_year(poem):
+            continue
+        edition = str(poem.get("source_edition") or "")
+        row = grouped.setdefault(
+            edition,
+            {
+                "source_edition": edition,
+                "count": 0,
+                "items": [],
+            },
+        )
+        row["count"] += 1
+        if len(row["items"]) < 12:
+            row["items"].append(
+                {
+                    "filename": filename,
+                    "poem_id": poem.get("id"),
+                    "title_bn": poem.get("title_bn"),
+                    "source_year": poem.get("source_year"),
+                    "has_primary_printed_pages": has_primary_printed_pages(poem),
+                }
+            )
     return sorted(grouped.values(), key=lambda row: (-int(row["count"]), row["source_edition"]))
 
 
@@ -577,6 +623,7 @@ def build_report(
     toc_blockers = [item for item in toc_rows if not item.get("review_exclusion")]
     toc_reviewed_exclusions = [item for item in toc_rows if item.get("review_exclusion")]
     source_year_missing = source_year_blockers(poems)
+    primary_book_year_missing = primary_printed_book_year_blockers(poems)
     title_date_rows = title_date_candidates(poems)
     composition_date_missing = composition_date_blockers(poems)
     return {
@@ -587,6 +634,9 @@ def build_report(
                 1 for item in missing if item["source_edition"] == UNKNOWN_COLLECTION
             ),
             "missing_source_year_count": sum(1 for _, poem in poems if poem.get("source_year") is None),
+            "missing_primary_printed_book_year_count": sum(
+                1 for _, poem in poems if not has_primary_printed_book_year(poem)
+            ),
             "missing_composition_date_count": sum(1 for _, poem in poems if not poem.get("composition_date_bn")),
             "review_buckets": dict(Counter(item["review_bucket"] for item in missing).most_common()),
             "source_scan_status_counts": dict(
@@ -615,6 +665,7 @@ def build_report(
         "toc_index_blockers": toc_blockers,
         "toc_index_reviewed_exclusions": toc_reviewed_exclusions,
         "source_year_blockers": source_year_missing,
+        "primary_printed_book_year_blockers": primary_book_year_missing,
         "title_date_candidates": title_date_rows,
         "composition_date_blockers": composition_date_missing,
         "embedded_source_conflicts": marker_conflicts,
@@ -635,6 +686,7 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         f"- Missing printed page citations: {summary['missing_printed_page_count']}",
         f"- Missing citations with unknown collection: {summary['unknown_collection_missing_count']}",
         f"- Public poems missing source year: {summary['missing_source_year_count']}",
+        f"- Public poems missing primary printed book year: {summary['missing_primary_printed_book_year_count']}",
         f"- Public poems missing composition date: {summary['missing_composition_date_count']}",
         f"- TOC index candidates requiring review: {summary['toc_index_candidate_count']}",
         f"- Reviewed TOC exclusions: {summary['toc_index_reviewed_exclusion_count']}",
@@ -716,6 +768,37 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
     if year_blockers:
         lines.extend(["| source edition | count | titles |", "|---|---:|---|"])
         for blocker in year_blockers:
+            titles = " · ".join(str(item.get("title_bn") or "") for item in (blocker.get("items") or [])[:8])
+            remaining = int(blocker.get("count") or 0) - min(int(blocker.get("count") or 0), 8)
+            if remaining > 0:
+                titles = f"{titles} · +{remaining} more"
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        str(blocker.get("source_edition") or ""),
+                        str(blocker.get("count") or 0),
+                        titles.replace("|", "\\|"),
+                    ]
+                )
+                + " |"
+            )
+    else:
+        lines.append("- None")
+
+    primary_book_year_blockers = report.get("primary_printed_book_year_blockers") or []
+    lines.extend(
+        [
+            "",
+            "## Primary Printed Book Year Blockers",
+            "",
+            "This counts cited-book publication-year coverage, separate from editorial `source_year`.",
+            "",
+        ]
+    )
+    if primary_book_year_blockers:
+        lines.extend(["| source edition | count | sample titles |", "|---|---:|---|"])
+        for blocker in primary_book_year_blockers:
             titles = " · ".join(str(item.get("title_bn") or "") for item in (blocker.get("items") or [])[:8])
             remaining = int(blocker.get("count") or 0) - min(int(blocker.get("count") or 0), 8)
             if remaining > 0:

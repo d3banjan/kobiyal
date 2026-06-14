@@ -521,12 +521,16 @@ TOC blockers and one reviewed TOC exclusion. A lower diagnostic threshold still
 produces only weak title matches and one missing-page sequence row. No poem JSON
 should be updated from the current TOC report.
 
-The main metadata gap report now separates source-year and composition-date
-debt from page-citation debt. The current report has 102 missing printed-page
-citations, 89 missing source years, and 369 missing composition dates. Since the
-strict composition-date audit found no authorial date/place signatures in the
-currently cited OCR spans, composition dates should not be filled until stronger
-printed-source evidence is added or manually reviewed.
+The main metadata gap report now separates source-year, primary printed
+book-year, and composition-date debt from page-citation debt. The current report
+has 102 missing printed-page citations, 102 missing primary printed book years,
+89 missing editorial source years, and 369 missing composition dates. The
+primary printed book-year count matches the missing printed-page count, which
+means every current primary printed-page citation already carries a cited-book
+publication year; the remaining book-year debt is really page-citation debt.
+Since the strict composition-date audit found no authorial date/place signatures
+in the currently cited OCR spans, composition dates should not be filled until
+stronger printed-source evidence is added or manually reviewed.
 
 The apply script dry-run now uses the same duplicate-hidden scope as the public
 site by default. With all review gates enabled against the current regenerated
