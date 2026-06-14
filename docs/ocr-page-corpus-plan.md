@@ -94,6 +94,11 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   anchors, but only when the leading window contains a trusted text/poem page.
   This covers unnumbered opening poems such as `রূপসী বাংলা` page 9 without
   turning blank-only front matter into citation pages.
+  For very short appendix sections with only one visible anchor, it can also
+  infer a short footer-backed tail when the next pages visibly carry the
+  expected page numbers in footer-only OCR. This handles `মহাপৃথিবী`
+  সংযোজন pages 174-176, including the noisy `১৭৫৬` footer read for page 175,
+  without treating Bengali title/date lines as page numbers.
 
 - `scripts/propose_poem_spans.py`
   Proposes poem-to-page spans using the repaired page corpus and current poem JSON. It emits sidecar candidates only. Accepted candidates require deterministic title/line anchors and a repaired printed page range; a match without printed book page numbers remains a manual-review candidate because the website citation must name printed pages rather than PDF scan pages. The current algorithm is deterministic:
@@ -550,6 +555,15 @@ regeneration restored the `বনলতা সেন` appendix tail page 172, ma
 `supported` and raising `ভিখিরী` from weak evidence to high token coverage.
 Those results are evidence for the next OCR sidecar rebuild; the ignored JSONL
 sidecars were not committed.
+
+A later footer-tail repair recovered the `মহাপৃথিবী` সংযোজন tail in the shared
+scan: visible page 173 is followed by footer-backed pages 174 and 175, then a
+short inferred final page 176. Against that scratch corpus the citation audit
+reduced `outside_corpus_range` rows from 5 to 2. In the same review pass,
+`গভীর এরিয়েলে` was corrected from a stale `সাতটি তারার তিমির` p.163-164
+citation to `বেলা অবেলা কালবেলা` printed pages 41-42, supported by the
+`বেলা অবেলা কালবেলা` contents entry and page-local title/body OCR; the current
+default citation audit now has 1 `outside_corpus_range` row.
 
 The poem-body quality report also records leading dash structure across all
 Jibanananda poem JSON files. A single leading ASCII hyphen is treated by the site

@@ -9,11 +9,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
 BANGLA_DIGITS = "০১২৩৪৫৬৭৮৯"
+BANGLA_TO_ASCII = str.maketrans(BANGLA_DIGITS, "0123456789")
 ASCII_TO_BANGLA = str.maketrans("0123456789", BANGLA_DIGITS)
 
 TRUSTED_PAGE_TYPES = {
@@ -240,6 +242,73 @@ def fill_trailing_sequence_extensions(rows: list[dict[str, Any]], anchors: list[
         row["sequence_confidence"] = 0.55
 
 
+def page_text_tail_lines(row: dict[str, Any], max_lines: int = 4) -> list[str]:
+    lines: list[str] = []
+    footer = ((row.get("zones") or {}).get("footer_text") or "").splitlines()
+    lines.extend(footer[-max_lines:])
+    for source in (row.get("raw_ocr") or "", row.get("raw_pdftotext") or ""):
+        source_lines = source.splitlines()
+        lines.extend(source_lines[-max_lines:])
+    return [line.strip() for line in lines if line.strip()]
+
+
+def footer_contains_expected_page(row: dict[str, Any], expected: int) -> bool:
+    """Return true when a footer/tail line visibly carries the expected page.
+
+    This allows a small amount of OCR noise around the page number, such as
+    `* ১৭৪`, and one trailing digit merged into the page number, such as
+    `১৭৫৬` for page 175. The line must be digit/punctuation only, so poem text
+    and title/date lines are not treated as page numbers.
+    """
+
+    expected_ascii = str(expected)
+    for raw_line in page_text_tail_lines(row):
+        ascii_line = raw_line.translate(BANGLA_TO_ASCII)
+        if re.search(r"[A-Za-z\u0980-\u09FF]", ascii_line):
+            continue
+        digit_groups = re.findall(r"\d+", ascii_line)
+        if not digit_groups:
+            continue
+        if expected_ascii in digit_groups:
+            return True
+        if any(group.startswith(expected_ascii) and len(group) == len(expected_ascii) + 1 for group in digit_groups):
+            return True
+    return False
+
+
+def fill_single_anchor_footer_tail(rows: list[dict[str, Any]], anchors: list[tuple[int, int]], max_pages: int = 3) -> None:
+    """Infer a short tail from one visible page plus footer-only page evidence."""
+
+    if len(anchors) != 1:
+        return
+    last_idx, last_page = anchors[0]
+    explicit_footer_pages = 0
+    for idx in range(last_idx + 1, min(len(rows), last_idx + 1 + max_pages)):
+        row = rows[idx]
+        if row.get("page_type") not in TRUSTED_PAGE_TYPES:
+            break
+        if row.get("printed_page_fixed") is not None:
+            break
+        if best_visible_candidate(row) is not None:
+            break
+
+        inferred = last_page + (idx - last_idx)
+        if footer_contains_expected_page(row, inferred):
+            row["printed_page_fixed"] = inferred
+            row["printed_page_label_bn"] = bangla_number(inferred)
+            row["printed_page_basis"] = "footer_sequence_inferred"
+            row["sequence_confidence"] = 0.62
+            explicit_footer_pages += 1
+            continue
+        if explicit_footer_pages >= 2:
+            row["printed_page_fixed"] = inferred
+            row["printed_page_label_bn"] = bangla_number(inferred)
+            row["printed_page_basis"] = "trailing_sequence_inferred"
+            row["sequence_confidence"] = 0.55
+            continue
+        break
+
+
 def fill_leading_sequence_extensions(rows: list[dict[str, Any]], anchors: list[tuple[int, int]], max_pages: int = 2) -> None:
     """Infer a short unnumbered opening run before the first visible anchor."""
 
@@ -329,6 +398,10 @@ def repair_book(rows: list[dict[str, Any]]) -> None:
         if row.get("printed_page_basis") in {"visible_ocr_candidate", "visible_layout_candidate"}
         and isinstance(row.get("printed_page_fixed"), int)
     ]
+
+    if len(anchors) == 1:
+        fill_single_anchor_footer_tail(rows, anchors)
+        return
 
     if len(anchors) < 2:
         return
