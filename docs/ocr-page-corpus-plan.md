@@ -369,9 +369,9 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 
 Current cumulative site-facing metadata state:
 
-- 282 of 389 Jibanananda records have printed book citations.
-- 269 of 369 public/non-duplicate Jibanananda records have printed book citations.
-- 100 public/non-duplicate Jibanananda records still lack printed book citations.
+- 280 of 389 Jibanananda records have printed book citations.
+- 267 of 369 public/non-duplicate Jibanananda records have printed book citations.
+- 102 public/non-duplicate Jibanananda records still lack printed book citations.
 - 82 public/non-duplicate records still have `সংকলন অজানা` as the collection.
 - 89 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
@@ -497,6 +497,15 @@ The TOC-only `উদয়াস্ত` hit against `মহাপৃথিবী
 reviewed exclusion: the same printed page matches the distinct `jibanananda-055`
 body with title, opening line, and line-anchor evidence, so it must not be used
 to classify `jibanananda-054`.
+
+A later review pass rejected the four remaining higher-posterior
+token/body-overlap candidates: `ঘাটশিলা—ঘটশিলা`, `সমুদ্রের জলে আমি দেহ ধুয়ে`,
+`অনির্বাণ`, and `সোনালী ডানার শঙ্খচিল`. Their candidate pages have repaired
+printed page numbers but no title, opening-line, exact-line, or contiguous body
+anchors for the imported poem bodies. The factor report now has no
+`needs_stronger_text_anchors` rows; the unresolved queue is split between
+better text extraction, collection identification, source-corpus review, and
+reviewed exclusions.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 

@@ -187,6 +187,50 @@
       "review_bucket": "reviewed_false_candidate",
       "reason": "theme_phrase_overlap_wrong_poem",
       "note_bn": "ধূসর পাণ্ডুলিপি পৃষ্ঠা ১০৭-এ মুদ্রিত কবিতা 'তোমারে দেখেছি, তাই'। 'তোমার/আমার/ভালোবাসা' জাতীয় মিল থাকলেও 'তোমায় আমি' আমদানি করা কবিতার শিরোনাম, প্রথম পঙ্‌ক্তি, বা ধারাবাহিক শরীর সেখানে মেলে না।"
+    },
+    {
+      "filename": "jibanananda-120.json",
+      "poem_id": "jibanananda-120",
+      "title_bn": "ঘাটশিলা—ঘটশিলা",
+      "candidate_book_id": "rupasi-bangla-copy",
+      "candidate_page_start": 164,
+      "candidate_page_end": 164,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "body_token_overlap_wrong_poem",
+      "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৬৪-তে দেখা OCR পাঠ 'তারপর চোখ তুলে...' অংশ দিয়ে শুরু; 'ঘাটশিলা—ঘটশিলা' শিরোনাম, কলকাতা/ঘাটশিলা-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। broad body-token overlap পৃষ্ঠা-উদ্ধৃতির জন্য যথেষ্ট নয়।"
+    },
+    {
+      "filename": "jibanananda-329.json",
+      "poem_id": "jibanananda-329",
+      "title_bn": "সমুদ্রের জলে আমি দেহ ধুয়ে",
+      "candidate_book_id": "rupasi-bangla-copy",
+      "candidate_page_start": 164,
+      "candidate_page_end": 164,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "body_token_overlap_wrong_poem",
+      "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৬৪-তে দেখা OCR পাঠে 'সমুদ্রের জলে আমি দেহ ধুয়ে' শিরোনাম, সমুদ্র/মালাবার-প্রারম্ভ, বা ধারাবাহিক শরীর নেই। high body-token coverage সাধারণ শব্দ-সাদৃশ্য; পৃষ্ঠা-উদ্ধৃতি হিসেবে গ্রহণযোগ্য নয়।"
+    },
+    {
+      "filename": "jibanananda-009.json",
+      "poem_id": "jibanananda-009",
+      "title_bn": "অনির্বাণ",
+      "candidate_book_id": "bela-abela-kalabela-copy",
+      "candidate_page_start": 150,
+      "candidate_page_end": 150,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "body_token_overlap_wrong_poem",
+      "note_bn": "বেলা অবেলা কালবেলা কপি পৃষ্ঠা ১৫০-তে দেখা OCR পাঠ 'দূর থেকে প্রপেলার...' অংশ দিয়ে শুরু; 'অনির্বাণ' শিরোনাম, উত্তরসাগর-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। runner-up gap শূন্য, তাই broad body-token overlap গ্রহণযোগ্য নয়।"
+    },
+    {
+      "filename": "jibanananda-367.json",
+      "poem_id": "jibanananda-367",
+      "title_bn": "সোনালী ডানার শঙ্খচিল",
+      "candidate_book_id": "rupasi-bangla-copy",
+      "candidate_page_start": 158,
+      "candidate_page_end": 158,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "body_token_overlap_wrong_poem",
+      "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৫৮-তে দেখা OCR পাঠ 'মাঠের আঁধার পথে শিশু...' অংশ দিয়ে শুরু; 'সোনালী ডানার শঙ্খচিল' শিরোনাম, কলকাতা/বৌবাজার-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। source-scan review-ও no-support, তাই এই candidate বাদ।"
     }
   ]
 }
