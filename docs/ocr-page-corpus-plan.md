@@ -427,10 +427,11 @@ false-positive queue: many high-scoring rows were fuzzy-only and drew character
 shingles from unrelated regions of the same page. The region-aware embedding
 pass uses narrower review defaults (`--vector-top-pages 8`,
 `--vector-page-prefilter-multiplier 2`, `--vector-max-lines 6`) and completed a
-current full run in about 85 seconds including page-window setup. It found zero
-matched poems. Treat this as negative evidence for automatic fuzzy application:
-the remaining gaps need better OCR/source extraction or manual printed-source
-review rather than looser fuzzy citation writes.
+current full run in about 110 seconds including page-window setup. It found one
+diagnostic-only weak row (`তোমায় আমি`), with no exact lines and an ordered
+region run of one. Treat this as negative evidence for automatic fuzzy
+application: the remaining gaps need better OCR/source extraction or manual
+printed-source review rather than looser fuzzy citation writes.
 
 The fuzzy verifier now treats page-wide overlap as recall-only and local
 contiguity as the evidence gate. Its vector features are still hashable and
@@ -444,6 +445,12 @@ representative line for that ordered-run calculation; it does not collapse the
 page into a single bag-of-shingles decision. Repeated OCR confusions can improve
 a weak partial match without letting unrelated tokens from different page
 regions or extraction streams combine into a citation.
+
+Any future NumPy/SIMD acceleration must preserve those same boundaries. The
+unit of comparison is a bounded OCR region, not a whole page; features are
+contiguous exact character shingles plus half-weight OCR-class shingles; and a
+candidate must still show consecutive poem lines in nearby source-local regions
+before it can rise above weak review.
 
 The ordered-region audit confirms the same result from a stricter angle. Its
 default gate found zero candidates. A permissive diagnostic run found three weak
