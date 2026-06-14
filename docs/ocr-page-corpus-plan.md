@@ -173,14 +173,17 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   contiguous character shingles at half weight. Longer contiguous shingles
   (`3,5,8` by default) get higher weights. Region embeddings are built lazily
   from per-page inverted indexes, so expensive vector dots do not run over every
-  OCR window in the corpus. The detailed pass still requires each accepted poem
-  line to match one local OCR region, then verifies that local region with the
-  longest contiguous exact and OCR-class character runs. Exact contiguous runs
-  count fully; class-only contiguous runs add half credit. It reports both the
-  longest consecutive run of matched poem lines and the ordered run of local OCR
-  regions. Candidate windows are capped to short printed-page spans. This
-  report is not an apply source; fuzzy-only candidates must still be checked
-  against printed-page evidence before writing poem metadata.
+  OCR window in the corpus. When NumPy is available, the same page-local sparse
+  postings are scored with vectorized dot accumulation; this is an acceleration
+  of the contiguous-region matcher, not a page-wide embedding shortcut. The
+  detailed pass still requires each accepted poem line to match one local OCR
+  region, then verifies that local region with the longest contiguous exact and
+  OCR-class character runs. Exact contiguous runs count fully; class-only
+  contiguous runs add half credit. It reports both the longest consecutive run
+  of matched poem lines and the ordered run of local OCR regions. Candidate
+  windows are capped to short printed-page spans. This report is not an apply
+  source; fuzzy-only candidates must still be checked against printed-page
+  evidence before writing poem metadata.
 
 - `scripts/ordered_region_audit.py`
   Builds a review-only ordered-token report for the remaining printed-page

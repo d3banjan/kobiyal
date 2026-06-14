@@ -20,6 +20,11 @@ from typing import Any
 import propose_poem_spans as spans
 
 try:
+    import numpy as np
+except ImportError:  # pragma: no cover - numpy is a project dependency under uv.
+    np = None
+
+try:
     from tqdm import tqdm
 except ImportError:  # pragma: no cover - fallback for direct python without uv.
     tqdm = None
@@ -447,6 +452,19 @@ def region_embedding_index(windows: list[dict[str, Any]]) -> dict[int, list[tupl
     return dict(index)
 
 
+def region_embedding_numpy_index(postings: dict[int, list[tuple[int, float]]]) -> dict[int, tuple[Any, Any]]:
+    """Build page-local sparse postings arrays for vectorized dot accumulation."""
+    if np is None:
+        return {}
+    return {
+        feature: (
+            np.asarray([window_index for window_index, _weight in rows], dtype=np.int32),
+            np.asarray([weight for _window_index, weight in rows], dtype=np.float32),
+        )
+        for feature, rows in postings.items()
+    }
+
+
 def prepare_pages(
     page_corpus: Path,
     trusted_only: bool,
@@ -484,7 +502,63 @@ def ensure_region_embedding_index(
     if page.get("_region_embedding_index") is not None:
         return
     attach_region_embeddings(page.get("_region_windows") or [], embedding_dimensions, embedding_ngram_sizes)
-    page["_region_embedding_index"] = region_embedding_index(page.get("_region_windows") or [])
+    windows = page.get("_region_windows") or []
+    postings = region_embedding_index(windows)
+    page["_region_embedding_norms"] = (
+        np.asarray([float(window.get("embedding_norm") or 0.0) for window in windows], dtype=np.float32)
+        if np is not None
+        else None
+    )
+    page["_region_embedding_numpy_index"] = region_embedding_numpy_index(postings)
+    page["_region_embedding_index"] = postings
+
+
+def vector_region_scores(line: dict[str, Any], page: dict[str, Any]) -> list[tuple[int, float]]:
+    line_features = line.get("embedding_features") or {}
+    line_norm = float(line.get("embedding_norm") or 0.0)
+    windows = page.get("_region_windows") or []
+    if not line_features or line_norm <= 0 or not windows:
+        return []
+
+    numpy_index = page.get("_region_embedding_numpy_index") or {}
+    numpy_norms = page.get("_region_embedding_norms")
+    if np is not None and numpy_index and numpy_norms is not None:
+        scores = np.zeros(len(windows), dtype=np.float32)
+        for feature, line_weight in line_features.items():
+            posting = numpy_index.get(int(feature))
+            if posting is None:
+                continue
+            window_indexes, window_weights = posting
+            np.add.at(scores, window_indexes, window_weights * float(line_weight))
+        nonzero_indexes = np.flatnonzero(scores)
+        if nonzero_indexes.size == 0:
+            return []
+        norms = numpy_norms[nonzero_indexes]
+        valid = norms > 0
+        if not bool(np.any(valid)):
+            return []
+        valid_indexes = nonzero_indexes[valid]
+        cosine_scores = scores[valid_indexes] / (line_norm * numpy_norms[valid_indexes])
+        return [
+            (int(window_index), float(score))
+            for window_index, score in zip(valid_indexes.tolist(), cosine_scores.tolist())
+        ]
+
+    region_index = page.get("_region_embedding_index") or {}
+    if not region_index:
+        return []
+    region_scores: Counter[int] = Counter()
+    for feature, line_weight in line_features.items():
+        for window_index, window_weight in region_index.get(feature, []):
+            region_scores[window_index] += float(line_weight) * float(window_weight)
+
+    output = []
+    for window_index, dot_product in region_scores.items():
+        window_norm = float(windows[window_index].get("embedding_norm") or 0)
+        if window_norm <= 0:
+            continue
+        output.append((window_index, float(dot_product) / (line_norm * window_norm)))
+    return output
 
 
 def page_candidate_pool(
@@ -542,23 +616,14 @@ def page_candidate_pool(
     required_hits = min(min_candidate_lines, len(line_embeddings))
     for page in allowed_pages:
         ensure_region_embedding_index(page, embedding_dimensions, embedding_ngram_sizes)
-        region_index = page.get("_region_embedding_index") or {}
         windows = page.get("_region_windows") or []
-        if not region_index or not windows:
+        if not windows:
             continue
         line_hits = []
         for line in line_embeddings:
-            region_scores: Counter[int] = Counter()
-            for feature, line_weight in line["embedding_features"].items():
-                for window_index, window_weight in region_index.get(feature, []):
-                    region_scores[window_index] += float(line_weight) * float(window_weight)
             ranked_regions = []
-            for window_index, dot_product in region_scores.items():
+            for window_index, score in vector_region_scores(line, page):
                 window = windows[window_index]
-                window_norm = float(window.get("embedding_norm") or 0)
-                if window_norm <= 0:
-                    continue
-                score = float(dot_product) / (float(line["embedding_norm"]) * window_norm)
                 if score >= min_vector_score:
                     ranked_regions.append((score, window_index, window))
             if not ranked_regions:
@@ -1122,6 +1187,11 @@ def main() -> int:
                 "exact_contiguous_character_shingles",
                 "ocr_class_normalized_contiguous_character_shingles",
             ],
+            "vector_dot_backend": (
+                "numpy_sparse_posting_accumulation"
+                if np is not None
+                else "python_counter_sparse_posting_accumulation"
+            ),
             "region_verification": "longest_contiguous_exact_and_ocr_class_character_runs",
             "max_candidate_span_pages": args.max_candidate_span_pages,
             "max_region_lines": args.max_region_lines,

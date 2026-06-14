@@ -165,6 +165,17 @@
       "review_bucket": "reviewed_false_candidate",
       "reason": "opening_phrase_overlap_wrong_poem",
       "note_bn": "সাতটি তারার তিমির পৃষ্ঠা ২৭-এ মুদ্রিত কবিতা 'বিভিন্ন কোরাস'। 'পৃথিবীতে ঢের দিন বেঁচে থেকে' ধরনের opening phrase মেলে, কিন্তু 'উদয়াস্ত' শিরোনাম বা আমদানি করা কবিতার শরীর নির্ভরযোগ্যভাবে মেলে না।"
+    },
+    {
+      "filename": "jibanananda-160.json",
+      "poem_id": "jibanananda-160",
+      "title_bn": "তোমায় আমি",
+      "candidate_book_id": "dhusar-pandulipi",
+      "candidate_page_start": 107,
+      "candidate_page_end": 107,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "theme_phrase_overlap_wrong_poem",
+      "note_bn": "ধূসর পাণ্ডুলিপি পৃষ্ঠা ১০৭-এ মুদ্রিত কবিতা 'তোমারে দেখেছি, তাই'। 'তোমার/আমার/ভালোবাসা' জাতীয় মিল থাকলেও 'তোমায় আমি' আমদানি করা কবিতার শিরোনাম, প্রথম পঙ্‌ক্তি, বা ধারাবাহিক শরীর সেখানে মেলে না।"
     }
   ]
 }
