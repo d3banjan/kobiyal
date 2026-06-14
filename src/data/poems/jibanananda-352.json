@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-352",
   "poet_id": "jibanananda-das",
-  "phase_id": "mahaprithibi-timir",
+  "phase_id": "posthumous-manuscript",
   "title_bn": "সূর্য রাত্রি নক্ষত্র",
   "body_bn": "এইখানে মাইল-মাইল ঘাস ও শালিখ রৌদ্র ছাড়া কিছু নেই।\nসূর্যালোকিত হ'য়ে শরীর ফসল ভালোবাসি\nআমারি ফসল সব- মীনকন্যা এসে ফলালেই\nবৃশ্চিক কর্কট তুলা মেষ সিংহ রাশি\nবলয়িত হ'য়ে উঠে আমাকে সূর্যের মতো ঘিরে\nনিরবধি কাল নীলাকাশ হ'য়ে মিশে গেছে আমার শরীরে।\nএই নদী নীড় নারী কেউ নয়; -মানুষের প্রাণের ভিতরে\nএ-পৃথিবী তবুও তো সব\nঅধিক গভীরভাবে মানবজীবন ভালো হ'লে\nঅধিক নিবিড়তরভাবে প্রকৃতিকে অনুভব\nকরা যায়। কিছু নয়- অন্তহীন ময়দান অন্ধকার রাত্রি নক্ষত্র-\nতারপর কেউ তাকে না চাইতে নবীন করুণ রৌদ্রে ভোর;-\nঅভাবে সমাজ নষ্ট না-হ'লে মানুষ এইসবে\nহ'য়ে যেতো এক তিল অধিক বিভোর।",
   "tags": [
@@ -9,8 +9,8 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সাতটি তারার তিমির",
-  "source_year": 1948,
+  "source_edition": "বেলা অবেলা কালবেলা",
+  "source_year": 1961,
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/surjo-nari-nokhtro/",
   "sort_order": 352,
@@ -18,10 +18,10 @@
   "book_sources": [
     {
       "role": "primary",
-      "title_bn": "সাতটি তারার তিমির",
+      "title_bn": "বেলা অবেলা কালবেলা",
       "publisher_bn": null,
       "edition_bn": null,
-      "publication_year": 1948,
+      "publication_year": 1961,
       "isbn": null,
       "purchase_url": null,
       "page_start": 155,

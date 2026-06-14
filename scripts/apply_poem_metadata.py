@@ -70,6 +70,21 @@ UNKNOWN_COLLECTION = "সংকলন অজানা"
 DEFAULT_DUPLICATES_SOURCE = "src/lib/content.ts"
 
 
+def canonical_book_id(book_id: str | None) -> str | None:
+    if not book_id:
+        return None
+    return BOOK_ALIASES.get(book_id, book_id)
+
+
+def source_title_book_id(title_bn: str | None) -> str | None:
+    if not title_bn:
+        return None
+    for book_id, meta in BASE_BOOK_META.items():
+        if meta["title_bn"] == title_bn:
+            return book_id
+    return None
+
+
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
     rows = []
     with path.open(encoding="utf-8") as f:
@@ -92,6 +107,77 @@ def duplicate_ids(path: Path) -> set[str]:
     if not path.exists():
         return set()
     return set(re.findall(r'"(jibanananda-[^"]+)"', path.read_text(encoding="utf-8")))
+
+
+def load_page_corpus_context(path: Path | None) -> dict[str, Any] | None:
+    if path is None:
+        return None
+    rows = read_jsonl(path)
+    exact_pages: set[tuple[str, int]] = set()
+    canonical_ranges: dict[str, dict[str, int]] = {}
+    for row in rows:
+        book_id = row.get("book_id")
+        printed_page = row.get("printed_page_fixed")
+        if not isinstance(book_id, str) or not isinstance(printed_page, int):
+            continue
+        exact_pages.add((book_id, printed_page))
+        canonical = canonical_book_id(book_id)
+        if canonical is None:
+            continue
+        existing = canonical_ranges.get(canonical)
+        if existing is None:
+            canonical_ranges[canonical] = {"min": printed_page, "max": printed_page}
+            continue
+        existing["min"] = min(existing["min"], printed_page)
+        existing["max"] = max(existing["max"], printed_page)
+    return {"exact_pages": exact_pages, "canonical_ranges": canonical_ranges}
+
+
+def candidate_pages_exist(row: dict[str, Any], page_context: dict[str, Any] | None) -> bool:
+    if page_context is None:
+        return True
+    book_id = row.get("candidate_book_id")
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(book_id, str) or not isinstance(start, int) or not isinstance(end, int) or end < start:
+        return False
+    exact_pages: set[tuple[str, int]] = page_context["exact_pages"]
+    return all((book_id, page_number) in exact_pages for page_number in range(start, end + 1))
+
+
+def primary_source_for_title(poem: dict[str, Any], title_bn: str) -> dict[str, Any] | None:
+    for source in poem.get("book_sources") or []:
+        if (
+            source.get("role") == "primary"
+            and source.get("title_bn") == title_bn
+            and source.get("page_basis") == "printed_page"
+            and isinstance(source.get("page_start"), int)
+            and isinstance(source.get("page_end"), int)
+        ):
+            return source
+    return None
+
+
+def source_pages_outside_corpus(
+    poem: dict[str, Any],
+    source_title_bn: str | None,
+    page_context: dict[str, Any] | None,
+) -> bool:
+    if page_context is None:
+        return False
+    source_book = source_title_book_id(source_title_bn)
+    if source_book is None:
+        return False
+    source = primary_source_for_title(poem, str(source_title_bn))
+    if source is None:
+        return False
+    ranges: dict[str, dict[str, int]] = page_context["canonical_ranges"]
+    corpus_range = ranges.get(source_book)
+    if corpus_range is None:
+        return False
+    start = int(source["page_start"])
+    end = int(source["page_end"])
+    return not any(corpus_range["min"] <= page_number <= corpus_range["max"] for page_number in range(start, end + 1))
 
 
 def book_source(row: dict[str, Any], meta: dict[str, Any]) -> dict[str, Any]:
@@ -699,6 +785,100 @@ def is_conflict_accepted_candidate(row: dict[str, Any], poem: dict[str, Any], me
     return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
 
 
+def is_outside_range_conflict_candidate(
+    row: dict[str, Any],
+    poem: dict[str, Any],
+    meta: dict[str, Any],
+    page_context: dict[str, Any] | None,
+) -> bool:
+    """Override stale known editions when their current pages are impossible.
+
+    This gate is for records whose existing source citation points outside the
+    repaired page range for that source book. It still requires an accepted
+    line-anchor candidate whose printed pages exist in the current corpus.
+    """
+
+    current_edition = poem.get("source_edition")
+    if current_edition in {UNKNOWN_COLLECTION, meta["title_bn"]}:
+        return False
+    if not source_pages_outside_corpus(poem, str(current_edition or ""), page_context):
+        return False
+    if row.get("status") != "accepted_candidate":
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+    if not candidate_pages_exist(row, page_context):
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if not {"high_body_coverage", "page_sequence_present"} <= evidence:
+        return False
+    if not ({"title_match", "first_line_match", "last_line_match"} & evidence):
+        return False
+    if float(row.get("score") or 0) < 29:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 7:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 2:
+        return False
+
+    runner_up_gap = row.get("runner_up_gap")
+    if runner_up_gap is not None and float(runner_up_gap) < 8:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int) or end < start:
+        return False
+    page_span = end - start + 1
+    return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
+
+
+def is_outside_range_alias_repair_candidate(
+    row: dict[str, Any],
+    poem: dict[str, Any],
+    meta: dict[str, Any],
+    page_context: dict[str, Any] | None,
+) -> bool:
+    """Replace a same-book page range only when the current range is impossible."""
+
+    if poem.get("source_edition") != meta["title_bn"]:
+        return False
+    if row.get("candidate_book_id") not in BOOK_ALIASES:
+        return False
+    if not source_pages_outside_corpus(poem, meta["title_bn"], page_context):
+        return False
+    if row.get("status") != "accepted_candidate":
+        return False
+    if row.get("span_basis") != "line_anchor_cluster":
+        return False
+    if not candidate_pages_exist(row, page_context):
+        return False
+
+    evidence = set(row.get("evidence") or [])
+    if not {"high_body_coverage", "page_sequence_present"} <= evidence:
+        return False
+    if not ({"title_match", "first_line_match", "last_line_match"} & evidence):
+        return False
+    if float(row.get("score") or 0) < 25:
+        return False
+    if int(row.get("span_line_match_count") or 0) < 5:
+        return False
+    if int(row.get("span_exact_line_match_count") or 0) < 3:
+        return False
+
+    runner_up_gap = row.get("runner_up_gap")
+    if runner_up_gap is not None and float(runner_up_gap) < 8:
+        return False
+
+    start = row.get("printed_page_start")
+    end = row.get("printed_page_end")
+    if not isinstance(start, int) or not isinstance(end, int) or end < start:
+        return False
+    page_span = end - start + 1
+    return int(row.get("span_anchor_count") or 0) >= min(page_span, 2)
+
+
 def has_embedded_collection_marker(poem: dict[str, Any], title_bn: str) -> bool:
     marker = f"#{title_bn}"
     return any(line.strip() == marker for line in (poem.get("body_bn") or "").splitlines())
@@ -797,6 +977,9 @@ def is_eligible(
     allow_conflict_exact_rich_candidates: bool,
     allow_conflict_accepted_candidates: bool,
     allow_conflict_embedded_candidates: bool,
+    allow_outside_range_conflict_candidates: bool,
+    allow_outside_range_alias_repairs: bool,
+    page_context: dict[str, Any] | None,
 ) -> tuple[bool, str]:
     if poem.get("poet_id") != "jibanananda-das":
         return False, "not_jibanananda"
@@ -806,6 +989,8 @@ def is_eligible(
     meta = BOOK_META.get(row.get("candidate_book_id"))
     if not meta:
         return False, "unknown_candidate_book"
+    if page_context is not None and not candidate_pages_exist(row, page_context):
+        return False, "candidate_pages_not_in_corpus"
 
     if allow_conflict_exact_rich_candidates and is_conflict_exact_rich_candidate(row, poem, meta):
         return True, "eligible_conflict_exact_rich"
@@ -813,6 +998,10 @@ def is_eligible(
         return True, "eligible_conflict_accepted"
     if allow_conflict_embedded_candidates and is_conflict_embedded_collection_candidate(row, poem, meta):
         return True, "eligible_conflict_embedded_collection"
+    if allow_outside_range_conflict_candidates and is_outside_range_conflict_candidate(row, poem, meta, page_context):
+        return True, "eligible_outside_range_conflict"
+    if allow_outside_range_alias_repairs and is_outside_range_alias_repair_candidate(row, poem, meta, page_context):
+        return True, "eligible_outside_range_alias_repair"
     if row.get("candidate_book_id") in BOOK_ALIASES and has_existing_book_source(poem, meta["title_bn"]):
         return False, "alias_existing_source"
 
@@ -916,6 +1105,11 @@ def main() -> int:
     parser.add_argument("--candidates", default="metadata_reports/poem-span-candidates.full.layout.normal.jsonl")
     parser.add_argument("--poems-dir", default="src/data/poems")
     parser.add_argument("--duplicates-source", default=DEFAULT_DUPLICATES_SOURCE)
+    parser.add_argument(
+        "--page-corpus",
+        default=None,
+        help="Optional repaired page corpus used to verify candidate printed pages and outside-range repairs.",
+    )
     parser.add_argument(
         "--include-duplicates",
         action="store_true",
@@ -1023,6 +1217,16 @@ def main() -> int:
         help="Override stale known collection assignments when the poem body embeds the candidate collection marker.",
     )
     parser.add_argument(
+        "--allow-outside-range-conflict-candidates",
+        action="store_true",
+        help="Override stale known collection assignments only when the existing citation is outside the source corpus range.",
+    )
+    parser.add_argument(
+        "--allow-outside-range-alias-repairs",
+        action="store_true",
+        help="Replace same-book page ranges from alias/copy evidence only when the existing range is outside the corpus range.",
+    )
+    parser.add_argument(
         "--allow-existing-page-overwrite",
         action="store_true",
         help="Allow a candidate to replace an existing printed primary page range for the same book.",
@@ -1032,6 +1236,7 @@ def main() -> int:
     poems_dir = Path(args.poems_dir)
     rows = read_jsonl(Path(args.candidates))
     duplicates = duplicate_ids(Path(args.duplicates_source))
+    page_context = load_page_corpus_context(Path(args.page_corpus)) if args.page_corpus else None
     summary: dict[str, int] = {}
     changed: list[str] = []
 
@@ -1071,6 +1276,9 @@ def main() -> int:
             args.allow_conflict_exact_rich_candidates,
             args.allow_conflict_accepted_candidates,
             args.allow_conflict_embedded_candidates,
+            args.allow_outside_range_conflict_candidates,
+            args.allow_outside_range_alias_repairs,
+            page_context,
         )
         if not eligible:
             summary[reason] = summary.get(reason, 0) + 1
@@ -1080,11 +1288,16 @@ def main() -> int:
             "eligible_conflict_exact_rich",
             "eligible_conflict_accepted",
             "eligible_conflict_embedded_collection",
+            "eligible_outside_range_conflict",
+        }
+        force_page_overwrite = reason in {
+            "eligible_outside_range_alias_repair",
         }
         meta = BOOK_META[row["candidate_book_id"]]
         if (
             not args.allow_existing_page_overwrite
             and not force_collection_update
+            and not force_page_overwrite
             and has_existing_page_range_conflict(row, poem, meta["title_bn"])
         ):
             summary["existing_page_range_conflict"] = summary.get("existing_page_range_conflict", 0) + 1

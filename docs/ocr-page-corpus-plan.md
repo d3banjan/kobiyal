@@ -122,8 +122,12 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   requires deterministic all-books evidence, repaired printed pages, high body
   coverage, title or opening-line evidence, exact line anchors, and a clear
   runner-up gap before changing `source_edition`, `source_year`, `phase_id`, and
-  the primary printed-page citation together. The default apply scope skips
-  duplicate-hidden poem imports listed in `src/lib/content.ts`; use
+  the primary printed-page citation together. A separate outside-range repair
+  gate requires `--page-corpus`, verifies that the replacement printed pages
+  exist in the exact candidate scan, and only rewrites citations whose current
+  printed page range is outside the repaired corpus range for the named source.
+  The default apply scope skips duplicate-hidden poem imports listed in
+  `src/lib/content.ts`; use
   `--include-duplicates` only for a deliberate duplicate-cleanup pass.
 
 - `scripts/report_metadata_gaps.py`
@@ -232,9 +236,9 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   corpus. It checks whether the cited printed page exists in the exact source
   scan or a logical alias, then looks for title, opening-line, exact-line, and
   body-token evidence on that cited page range. It is review-only and does not
-  mutate poem JSON. The current run checks 270 existing citations: 230 are
+  mutate poem JSON. The current run checks 270 existing citations: 234 are
   supported by title/opening/exact-line evidence, 26 are supported only by broad
-  token coverage, 11 cite pages outside the current OCR corpus range for that
+  token coverage, 7 cite pages outside the current OCR corpus range for that
   book, and 3 are weak current citations that need manual source review.
 
 - `scripts/citation_repair_audit.py`
@@ -469,7 +473,8 @@ The apply script dry-run now uses the same duplicate-hidden scope as the public
 site by default. With all review gates enabled against the current regenerated
 span candidates, it reports `changed: []`; the only previously writable row was
 already a hidden duplicate import. This is negative evidence for further
-automatic public metadata writes from the current sidecars.
+automatic public metadata writes from the main regenerated sidecar, but not a
+claim that every auxiliary review sidecar is exhausted.
 
 A later conflict-gated all-books pass corrected three stale source assignments:
 `বিস্ময়`, `যদিও দিন`, and `সারাৎসার` moved from `সাতটি তারার তিমির` to
@@ -479,8 +484,18 @@ pages, high body coverage, title or opening-line evidence, exact line anchors,
 and a runner-up gap of at least 4. A repeat dry run with
 `--allow-conflict-accepted-candidates` is now idempotent.
 
+A later corpus-backed outside-range repair pass regenerated the lexicon
+all-books sidecar from `metadata_reports/page-corpus.full.repaired.layout.jsonl`
+before applying. It corrected four citations whose existing page ranges were
+outside the named source corpus: `দেশ কাল সন্ততি`, `নারীসবিতা`, and
+`সূর্য রাত্রি নক্ষত্র` moved from stale `সাতটি তারার তিমির` citations to
+`বেলা অবেলা কালবেলা`, and `মাঘসংক্রান্তির রাতে` stayed in
+`বেলা অবেলা কালবেলা` but moved from printed page 11 to printed page 135. The
+new gate rejected stale sidecar rows whose printed pages no longer exist in the
+current corpus, including `তোমাকে` page 172.
+
 The citation consistency audit distinguishes absent scan coverage from
-potentially wrong citations. In the current run, 11 rows are
+potentially wrong citations. In the current run, 7 rows are
 `outside_corpus_range`: their cited printed pages sit outside the repaired OCR
 page range for the named book, so the audit cannot prove or disprove them from
 the current sidecars. Only 3 existing citations have in-range OCR rows but weak
