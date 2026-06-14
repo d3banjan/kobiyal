@@ -127,7 +127,8 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   with the current regenerated span-candidate report by default, excludes hidden
   duplicate imports, and ranks gaps into buckets such as `manual_collection_review`,
   `needs_printed_page_sequence`, `weak_text_anchor`,
-  `token_or_title_only_candidate`, and `no_candidate`. This is
+  `conflicting_embedded_source_marker`, `token_or_title_only_candidate`, and
+  `no_candidate`. This is
   the handoff list for printed-source review; it does not apply metadata. It
   also reads `src/data/metadata-review-exclusions.json`, a committed audit trail
   of candidate-specific false positives. Reviewed exclusions remain in the
@@ -140,7 +141,9 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   or `--page-corpus ""` only when intentionally generating a reduced report.
   The report also groups known-source gaps into source-coverage blockers, which
   is the handoff list for adding missing scans or performing direct printed-book
-  review.
+  review. It also surfaces explicit embedded source-marker conflicts, so a
+  source note imported into the poem body cannot stay hidden behind a generic
+  weak-candidate row.
 
 - `scripts/embedded_source_audit.py`
   Audits explicit source markers that were imported into poem bodies, such as a
@@ -355,7 +358,8 @@ records that the listed candidate evidence is insufficient and must not be
 applied without stronger printed-page proof. After this pass, the all-books gap
 report has no unresolved candidate with line-anchor evidence, and the
 phrase-window queue has no unreviewed matches; the remaining unresolved rows
-are `token_or_title_only_candidate` matches or no-candidate records.
+are mostly `token_or_title_only_candidate` matches or no-candidate records, plus
+the explicit `তবু` embedded-source conflict that now has its own review bucket.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 

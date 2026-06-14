@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 import propose_poem_spans as spans
+import embedded_source_audit
 
 
 UNKNOWN_COLLECTION = "সংকলন অজানা"
@@ -244,7 +245,35 @@ def find_review_exclusion(
     return None
 
 
-def review_bucket(poem: dict[str, Any], row: dict[str, Any] | None) -> str:
+def embedded_source_conflict(filename: str, poem: dict[str, Any]) -> dict[str, Any] | None:
+    marker = embedded_source_audit.find_marker(str(poem.get("body_bn") or ""))
+    if marker is None:
+        return None
+    current = poem.get("source_edition")
+    marker_source = marker.get("source_edition")
+    if current in {None, UNKNOWN_COLLECTION, marker_source}:
+        return None
+    return {
+        "filename": filename,
+        "poem_id": poem.get("id"),
+        "title_bn": poem.get("title_bn"),
+        "current_source_edition": current,
+        "current_source_year": poem.get("source_year"),
+        "marker_source_edition": marker_source,
+        "marker_source_year": marker.get("source_year"),
+        "marker_phase_id": marker.get("phase_id"),
+        "marker_line": marker.get("line"),
+        "source_url": poem.get("source_url"),
+    }
+
+
+def review_bucket(
+    poem: dict[str, Any],
+    row: dict[str, Any] | None,
+    marker_conflict: dict[str, Any] | None = None,
+) -> str:
+    if marker_conflict is not None:
+        return "conflicting_embedded_source_marker"
     if row is None or row.get("status") == "no_candidate":
         return "no_candidate"
     if not isinstance(row.get("printed_page_start"), int) or not isinstance(row.get("printed_page_end"), int):
@@ -358,12 +387,23 @@ def build_report(
     source_scan_min_line_chars: int,
 ) -> dict[str, Any]:
     missing = []
+    marker_conflicts = [
+        conflict
+        for filename, poem in poems
+        if (conflict := embedded_source_conflict(filename, poem)) is not None
+    ]
+    marker_conflicts_by_file = {str(item["filename"]): item for item in marker_conflicts}
     for filename, poem in poems:
         if has_primary_printed_pages(poem):
             continue
         row = candidates_by_file.get(filename)
         review_exclusion = find_review_exclusion(filename, row, review_exclusions)
-        bucket = str(review_exclusion.get("review_bucket")) if review_exclusion else review_bucket(poem, row)
+        marker_conflict = marker_conflicts_by_file.get(filename)
+        bucket = (
+            str(review_exclusion.get("review_bucket"))
+            if review_exclusion
+            else review_bucket(poem, row, marker_conflict=marker_conflict)
+        )
         missing.append(
             {
                 "filename": filename,
@@ -383,6 +423,7 @@ def build_report(
                     min_line_chars=source_scan_min_line_chars,
                 ),
                 "review_exclusion": review_exclusion,
+                "embedded_source_conflict": marker_conflict,
             }
         )
 
@@ -415,10 +456,15 @@ def build_report(
                 Counter(item["source_edition"] or "" for item in missing).most_common()
             ),
             "reviewed_exclusion_count": sum(1 for item in missing if item.get("review_exclusion")),
+            "embedded_source_conflict_count": len(marker_conflicts),
+            "missing_embedded_source_conflict_count": sum(
+                1 for item in missing if item.get("embedded_source_conflict")
+            ),
             "source_coverage_blocker_count": sum(int(item["count"]) for item in blockers),
             "source_coverage_blocker_groups": len(blockers),
         },
         "source_coverage_blockers": blockers,
+        "embedded_source_conflicts": marker_conflicts,
         "missing": missing,
     }
 
@@ -437,6 +483,7 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         f"- Missing citations with unknown collection: {summary['unknown_collection_missing_count']}",
         f"- Public poems missing source year: {summary['missing_source_year_count']}",
         f"- Reviewed exclusions: {summary['reviewed_exclusion_count']}",
+        f"- Embedded source marker conflicts: {summary['embedded_source_conflict_count']}",
         "",
         "## Source Scan Status",
         "",
@@ -495,6 +542,39 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
                         str(blocker.get("source_edition") or ""),
                         str(blocker.get("count") or 0),
                         titles.replace("|", "\\|"),
+                    ]
+                )
+                + " |"
+            )
+    else:
+        lines.append("- None")
+
+    marker_conflicts = report.get("embedded_source_conflicts") or []
+    lines.extend(
+        [
+            "",
+            "## Embedded Source Marker Conflicts",
+            "",
+        ]
+    )
+    if marker_conflicts:
+        lines.extend(
+            [
+                "| file | title | current source | marker source | marker line |",
+                "|---|---|---|---|---|",
+            ]
+        )
+        for conflict in marker_conflicts:
+            marker_line = str(conflict.get("marker_line") or "").replace("|", "\\|")
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        str(conflict.get("filename") or ""),
+                        str(conflict.get("title_bn") or ""),
+                        str(conflict.get("current_source_edition") or ""),
+                        str(conflict.get("marker_source_edition") or ""),
+                        marker_line,
                     ]
                 )
                 + " |"
