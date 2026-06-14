@@ -142,6 +142,15 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   is the handoff list for adding missing scans or performing direct printed-book
   review.
 
+- `scripts/embedded_source_audit.py`
+  Audits explicit source markers that were imported into poem bodies, such as a
+  trailing `(অগ্রন্থিত কবিতা)` or `#অগ্রন্থিত কবিতা`. The matcher is deliberately
+  narrow so ordinary poem text mentions of a collection title do not become
+  metadata. With `--apply`, it may classify `সংকলন অজানা` rows and remove the
+  source marker from the body text, but it never writes printed-page citations.
+  Rows where an embedded marker conflicts with an existing source edition are
+  reported as review debt and left unchanged.
+
 - `scripts/phrase_window_audit.py`
   Builds a review-only exact phrase-window report for remaining poems by
   matching normalized 4-6 token body phrases against trusted OCR page records.
@@ -260,7 +269,7 @@ Current cumulative site-facing metadata state:
 - 279 of 389 Jibanananda records have printed book citations.
 - 270 of 373 public/non-duplicate Jibanananda records have printed book citations.
 - 103 public/non-duplicate Jibanananda records still lack printed book citations.
-- 85 public/non-duplicate records still have `সংকলন অজানা` as the collection.
+- 82 public/non-duplicate records still have `সংকলন অজানা` as the collection.
 - 89 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
   parenthesized `সূর্য নক্ষত্র নারী` fragments and the alternate `সেই দিন এই
@@ -271,11 +280,20 @@ Current cumulative site-facing metadata state:
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 
 The enhanced gap report now separates known-source failures. In the current
-sidecar run, 11 known-source gaps cite editions not mapped to a current OCR book
+sidecar run, 14 known-source gaps cite editions not mapped to a current OCR book
 corpus (`আলোপৃথিবী`, `শ্রেষ্ঠ কবিতা`, `অগ্রন্থিত কবিতা`, or `অপ্রকাশিত
 কবিতা`). Seven known-source gaps do target scanned collections, but six have
 only weak same-source OCR support and one has token-only support; none has title
 or exact-line evidence strong enough for automatic page citation.
+
+An embedded-source marker pass classified three unknown rows as
+`অগ্রন্থিত কবিতা`: `কোহিনূর`, `বর্ষ-আবাহন`, and `ভোর হয়`. The source-note
+markers were removed from the poem body text. This pass intentionally did not
+add printed-page citations, because the markers identify collection status but
+do not prove a book page. The same audit surfaced one unresolved conflict:
+`তবু` is currently filed under `শ্রেষ্ঠ কবিতা`, while the imported body ends
+with a `সাতটি তারার তিমির কাব্যগ্রন্থ` marker. It remains unchanged until
+printed-source evidence resolves the conflict.
 
 A manual evidence pass over the strongest remaining line-anchor candidates added
 `ভিখিরী` to the `বনলতা সেন` appendix on printed pages 171-172 and `হাঁস` to
@@ -442,4 +460,4 @@ more likely to be punctuation than stanza separators.
 
 - Human-reviewed text correction and stanza recovery.
 - Affiliate/publisher purchase-link population.
-- Full metadata sprint for collection mapping, composition dates, duplicate titles, and proofing status.
+- Full metadata sprint for collection mapping, composition dates, duplicate titles, conflicting source markers, and proofing status.
