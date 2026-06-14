@@ -15,9 +15,16 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+import propose_poem_spans as spans
+
 
 UNKNOWN_COLLECTION = "সংকলন অজানা"
 DEFAULT_REVIEW_EXCLUSIONS = "src/data/metadata-review-exclusions.json"
+TRUSTED_PAGE_TYPES = {
+    "normal_poem_page",
+    "poem_or_text_page",
+    "poem_start_or_short_page",
+}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -62,6 +69,20 @@ def has_primary_printed_pages(poem: dict[str, Any]) -> bool:
     )
 
 
+def compact(text: str) -> str:
+    return re.sub(r"\s+", "", spans.normalize(text))
+
+
+def normalized_body_lines(body: str, min_chars: int) -> list[dict[str, Any]]:
+    lines = []
+    for line_index, raw_line in enumerate((body or "").splitlines()):
+        normalized = spans.normalize(raw_line)
+        if len(compact(normalized)) < min_chars:
+            continue
+        lines.append({"line_index": line_index, "raw": raw_line.strip(), "normalized": normalized})
+    return lines
+
+
 def load_public_jibanananda_poems(poems_dir: Path, duplicates: set[str]) -> list[tuple[str, dict[str, Any]]]:
     poems = []
     for path in sorted(glob.glob(str(poems_dir / "*.json"))):
@@ -72,6 +93,105 @@ def load_public_jibanananda_poems(poems_dir: Path, duplicates: set[str]) -> list
             continue
         poems.append((Path(path).name, poem))
     return poems
+
+
+def load_source_pages(path: Path | None, trusted_only: bool) -> dict[str, list[dict[str, Any]]]:
+    if path is None:
+        return {}
+    pages_by_book: dict[str, list[dict[str, Any]]] = {}
+    for row in read_jsonl(path):
+        if trusted_only and row.get("page_type") not in TRUSTED_PAGE_TYPES:
+            continue
+        prepared = spans.prepare_page(row)
+        pages_by_book.setdefault(str(prepared.get("book_id") or ""), []).append(prepared)
+    return pages_by_book
+
+
+def source_scan_review(
+    poem: dict[str, Any],
+    pages_by_book: dict[str, list[dict[str, Any]]],
+    include_logical_aliases: bool,
+    min_line_chars: int,
+) -> dict[str, Any] | None:
+    edition = poem.get("source_edition")
+    if edition == UNKNOWN_COLLECTION:
+        return None
+    if edition not in spans.COLLECTION_TO_BOOK_ID:
+        return {
+            "status": "unscanned_source_edition",
+            "source_edition": edition,
+            "reason": "source edition is not mapped to a current OCR book corpus",
+        }
+
+    allowed_books = spans.collection_book_ids(str(edition), include_logical_aliases=include_logical_aliases)
+    source_pages = [page for book_id in allowed_books for page in pages_by_book.get(book_id, [])]
+    if not source_pages:
+        return {
+            "status": "no_source_scan_pages",
+            "source_edition": edition,
+            "candidate_book_ids": sorted(allowed_books),
+        }
+
+    title = spans.normalize(str(poem.get("title_bn") or ""))
+    body = str(poem.get("body_bn") or "")
+    body_tokens = spans.tokens(body)
+    body_lines = normalized_body_lines(body, min_chars=min_line_chars)
+    best: dict[str, Any] | None = None
+    for page in source_pages:
+        page_text = spans.page_text(page)
+        page_tokens = page.get("_tokens") or spans.tokens(page_text)
+        exact_lines = [
+            line
+            for line in body_lines
+            if line["normalized"] and line["normalized"] in page_text
+        ]
+        title_match = bool(title and (spans.title_heading_match(title, page) or title in page_text))
+        first_line_match = bool(body_lines and body_lines[0]["normalized"] in page_text)
+        token_overlap = len(body_tokens & page_tokens)
+        body_coverage = token_overlap / max(1, len(body_tokens))
+        row = {
+            "candidate_book_id": page.get("book_id"),
+            "candidate_scan_page": page.get("scan_page"),
+            "candidate_printed_page": page.get("printed_page_fixed"),
+            "candidate_page_type": page.get("page_type"),
+            "title_match": title_match,
+            "first_line_match": first_line_match,
+            "line_match_count": len(exact_lines),
+            "exact_line_indexes": [line["line_index"] for line in exact_lines[:12]],
+            "body_token_count": len(body_tokens),
+            "body_token_overlap": token_overlap,
+            "body_coverage": round(body_coverage, 4),
+        }
+        if best is None or (
+            int(row["line_match_count"]),
+            bool(row["title_match"]),
+            bool(row["first_line_match"]),
+            float(row["body_coverage"]),
+            int(row["body_token_overlap"]),
+        ) > (
+            int(best["line_match_count"]),
+            bool(best["title_match"]),
+            bool(best["first_line_match"]),
+            float(best["body_coverage"]),
+            int(best["body_token_overlap"]),
+        ):
+            best = row
+
+    assert best is not None
+    if best["title_match"] or best["first_line_match"] or int(best["line_match_count"]) >= 2:
+        status = "source_scan_supported"
+    elif float(best["body_coverage"]) >= 0.35:
+        status = "source_scan_token_only"
+    elif float(best["body_coverage"]) >= 0.18:
+        status = "source_scan_weak"
+    else:
+        status = "source_scan_no_support"
+    return {
+        "status": status,
+        "source_edition": edition,
+        "candidate_book_ids": sorted(allowed_books),
+        "best_page": best,
+    }
 
 
 def evidence_score(row: dict[str, Any] | None) -> int:
@@ -162,6 +282,22 @@ def candidate_summary(row: dict[str, Any] | None) -> str:
     return "; ".join(pieces)
 
 
+def source_scan_summary(review: dict[str, Any] | None) -> str:
+    if not review:
+        return "-"
+    status = str(review.get("status") or "")
+    best = review.get("best_page") or {}
+    if not best:
+        return status
+    page = best.get("candidate_printed_page")
+    page_label = str(page) if isinstance(page, int) else "পৃষ্ঠা নেই"
+    return (
+        f"{status}; {best.get('candidate_book_id')}; p.{page_label}; "
+        f"coverage {best.get('body_coverage')}; "
+        f"lines {best.get('line_match_count')}; title {best.get('title_match')}"
+    )
+
+
 def review_note_summary(item: dict[str, Any]) -> str:
     exclusion = item.get("review_exclusion")
     if not exclusion:
@@ -173,6 +309,9 @@ def build_report(
     poems: list[tuple[str, dict[str, Any]]],
     candidates_by_file: dict[str, dict[str, Any]],
     review_exclusions: dict[str, list[dict[str, Any]]],
+    pages_by_book: dict[str, list[dict[str, Any]]],
+    include_logical_aliases: bool,
+    source_scan_min_line_chars: int,
 ) -> dict[str, Any]:
     missing = []
     for filename, poem in poems:
@@ -193,6 +332,12 @@ def build_report(
                 "review_bucket": bucket,
                 "evidence_score": evidence_score(row),
                 "candidate": row,
+                "source_scan_review": source_scan_review(
+                    poem,
+                    pages_by_book,
+                    include_logical_aliases=include_logical_aliases,
+                    min_line_chars=source_scan_min_line_chars,
+                ),
                 "review_exclusion": review_exclusion,
             }
         )
@@ -215,6 +360,12 @@ def build_report(
             ),
             "missing_source_year_count": sum(1 for _, poem in poems if poem.get("source_year") is None),
             "review_buckets": dict(Counter(item["review_bucket"] for item in missing).most_common()),
+            "source_scan_status_counts": dict(
+                Counter(
+                    (item.get("source_scan_review") or {}).get("status") or "not_applicable"
+                    for item in missing
+                ).most_common()
+            ),
             "missing_by_source_edition": dict(
                 Counter(item["source_edition"] or "" for item in missing).most_common()
             ),
@@ -239,9 +390,19 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         f"- Public poems missing source year: {summary['missing_source_year_count']}",
         f"- Reviewed exclusions: {summary['reviewed_exclusion_count']}",
         "",
-        "## Review buckets",
+        "## Source Scan Status",
         "",
     ]
+    for status, count in summary["source_scan_status_counts"].items():
+        lines.append(f"- `{status}`: {count}")
+
+    lines.extend(
+        [
+            "",
+            "## Review buckets",
+            "",
+        ]
+    )
     for bucket, count in summary["review_buckets"].items():
         lines.append(f"- `{bucket}`: {count}")
 
@@ -260,8 +421,8 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
             "",
             "## Ranked Rows",
             "",
-            "| file | title | current source | review bucket | candidate | source URL |",
-            "|---|---|---|---|---|---|",
+            "| file | title | current source | review bucket | candidate | source scan | source URL |",
+            "|---|---|---|---|---|---|---|",
         ]
     )
     for item in report["missing"][:max_rows]:
@@ -279,6 +440,7 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
                     source,
                     f"`{item['review_bucket']}`",
                     candidate_summary(item.get("candidate")),
+                    source_scan_summary(item.get("source_scan_review")),
                     source_url,
                 ]
             )
@@ -293,6 +455,11 @@ def main() -> int:
     parser.add_argument("--poems-dir", default="src/data/poems")
     parser.add_argument("--duplicates-source", default="src/lib/content.ts")
     parser.add_argument("--candidates", default=None)
+    parser.add_argument("--page-corpus", default=None)
+    parser.add_argument("--ocr-substitutions", default=None)
+    parser.add_argument("--include-logical-aliases", action="store_true")
+    parser.add_argument("--include-untrusted-pages", action="store_true")
+    parser.add_argument("--source-scan-min-line-chars", type=int, default=18)
     parser.add_argument("--review-exclusions", default=DEFAULT_REVIEW_EXCLUSIONS)
     parser.add_argument("--output", default="metadata_reports/metadata-gap-review.current.md")
     parser.add_argument("--json-output", default="metadata_reports/metadata-gap-review.current.json")
@@ -300,7 +467,14 @@ def main() -> int:
     args = parser.parse_args()
 
     duplicates = duplicate_ids(Path(args.duplicates_source))
+    spans.OCR_SUBSTITUTIONS = spans.load_ocr_substitutions(
+        Path(args.ocr_substitutions) if args.ocr_substitutions else None
+    )
     poems = load_public_jibanananda_poems(Path(args.poems_dir), duplicates)
+    pages_by_book = load_source_pages(
+        Path(args.page_corpus) if args.page_corpus else None,
+        trusted_only=not args.include_untrusted_pages,
+    )
     candidates_by_file: dict[str, dict[str, Any]] = {}
     if args.candidates:
         for row in read_jsonl(Path(args.candidates)):
@@ -309,7 +483,14 @@ def main() -> int:
                 candidates_by_file[str(filename)] = row
     review_exclusions = load_review_exclusions(Path(args.review_exclusions))
 
-    report = build_report(poems, candidates_by_file, review_exclusions)
+    report = build_report(
+        poems,
+        candidates_by_file,
+        review_exclusions,
+        pages_by_book,
+        include_logical_aliases=args.include_logical_aliases,
+        source_scan_min_line_chars=args.source_scan_min_line_chars,
+    )
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(markdown_report(report, args.max_rows), encoding="utf-8")

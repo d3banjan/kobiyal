@@ -13,6 +13,7 @@ import json
 import re
 import zlib
 from collections import Counter, defaultdict
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -193,6 +194,7 @@ def page_region_windows(
             text = " ".join(pieces)
             if compact_length(text) > max_region_chars:
                 break
+            compact = compact_text(text)
             exact_grams = char_ngrams(text, ngram_size)
             class_grams = char_ngrams(text, ngram_size, class_mode=True)
             if not exact_grams or not class_grams:
@@ -202,6 +204,8 @@ def page_region_windows(
                     "line_start": start,
                     "line_end": end,
                     "text": text,
+                    "compact": compact,
+                    "class_compact": class_signature(compact),
                     "exact_grams": exact_grams,
                     "class_grams": class_grams,
                 }
@@ -229,11 +233,64 @@ def longest_run(flags: list[bool]) -> int:
     return best
 
 
+@lru_cache(maxsize=200_000)
+def longest_common_contiguous_length(left: str, right: str) -> int:
+    if not left or not right:
+        return 0
+    if len(left) > len(right):
+        left, right = right, left
+    low = 0
+    high = len(left)
+
+    def has_common_substring(size: int) -> bool:
+        if size <= 0:
+            return True
+        for start in range(0, len(left) - size + 1):
+            if left[start : start + size] in right:
+                return True
+        return False
+
+    while low < high:
+        middle = (low + high + 1) // 2
+        if has_common_substring(middle):
+            low = middle
+        else:
+            high = middle - 1
+    return low
+
+
+def contiguous_char_score(
+    line_compact: str,
+    region_compact: str,
+    line_class_compact: str,
+    region_class_compact: str,
+) -> dict[str, Any]:
+    if not line_compact or not region_compact:
+        return {
+            "exact_contiguous_chars": 0,
+            "class_contiguous_chars": 0,
+            "contiguous_char_ratio": 0.0,
+        }
+
+    exact_chars = longest_common_contiguous_length(line_compact, region_compact)
+    class_chars = longest_common_contiguous_length(line_class_compact, region_class_compact)
+    weighted_chars = exact_chars + (0.5 * max(0, class_chars - exact_chars))
+    return {
+        "exact_contiguous_chars": exact_chars,
+        "class_contiguous_chars": class_chars,
+        "contiguous_char_ratio": min(1.0, weighted_chars / max(1, len(line_compact))),
+    }
+
+
 def fuzzy_ngram_score(
     exact_sequence: list[str],
     class_sequence: list[str],
     page_exact_grams: set[str],
     page_class_grams: set[str],
+    line_compact: str,
+    region_compact: str,
+    line_class_compact: str,
+    region_class_compact: str,
 ) -> dict[str, Any] | None:
     if not exact_sequence or not class_sequence:
         return None
@@ -246,7 +303,17 @@ def fuzzy_ngram_score(
 
     exact_run_ratio = longest_run(exact_flags) / len(exact_sequence)
     class_run_ratio = longest_run(class_flags) / len(class_sequence)
-    contiguous_bonus = min(0.18, 0.18 * max(exact_run_ratio, 0.5 * class_run_ratio))
+    char_score = contiguous_char_score(
+        line_compact,
+        region_compact,
+        line_class_compact,
+        region_class_compact,
+    )
+    shingle_run_ratio = max(exact_run_ratio, 0.5 * class_run_ratio)
+    contiguous_bonus = min(
+        0.22,
+        (0.14 * float(char_score["contiguous_char_ratio"])) + (0.08 * shingle_run_ratio),
+    )
     score = min(1.0, exact_score + (0.5 * class_only_score) + contiguous_bonus)
 
     return {
@@ -257,6 +324,7 @@ def fuzzy_ngram_score(
         "contiguous_bonus": contiguous_bonus,
         "exact_run_ratio": exact_run_ratio,
         "class_run_ratio": class_run_ratio,
+        **char_score,
     }
 
 
@@ -264,7 +332,7 @@ def normalized_lines(body: str, min_chars: int, ngram_size: int) -> list[dict[st
     rows = []
     for line_index, raw in enumerate(body.splitlines()):
         normalized = spans.normalize(raw)
-        compact = compact_text(raw)
+        compact = compact_text(normalized)
         if len(compact) < min_chars:
             continue
         exact_ngrams = ngram_sequence(normalized, ngram_size)
@@ -277,6 +345,7 @@ def normalized_lines(body: str, min_chars: int, ngram_size: int) -> list[dict[st
                 "raw": raw.strip(),
                 "normalized": normalized,
                 "compact": compact,
+                "class_compact": class_signature(compact),
                 "exact_ngrams": exact_ngrams,
                 "class_ngrams": class_ngrams,
                 "exact_gram_set": set(exact_ngrams),
@@ -334,6 +403,7 @@ def iter_embedding_features(
 
 
 def sparse_embedding_features(text: str, dimensions: int, ngram_sizes: list[int]) -> dict[int, float]:
+    """Hash local contiguous exact/class character shingles into a sparse vector."""
     features: Counter[int] = Counter()
     for index, weight in iter_embedding_features(
         text,
@@ -573,6 +643,10 @@ def best_region_match(page: dict[str, Any], line: dict[str, Any], top_windows: i
             line.get("class_ngrams") or [],
             region.get("exact_grams") or set(),
             region.get("class_grams") or set(),
+            line.get("compact") or "",
+            region.get("compact") or "",
+            line.get("class_compact") or "",
+            region.get("class_compact") or "",
         )
         if fuzzy_score is None:
             continue
@@ -584,6 +658,9 @@ def best_region_match(page: dict[str, Any], line: dict[str, Any], top_windows: i
             "class_score": fuzzy_score["class_score"],
             "class_only_score": fuzzy_score["class_only_score"],
             "contiguous_bonus": fuzzy_score["contiguous_bonus"],
+            "exact_contiguous_chars": fuzzy_score["exact_contiguous_chars"],
+            "class_contiguous_chars": fuzzy_score["class_contiguous_chars"],
+            "contiguous_char_ratio": fuzzy_score["contiguous_char_ratio"],
             "page_line_start": region["line_start"],
             "page_line_end": region["line_end"],
             "region_text": region["text"][:220],
@@ -624,6 +701,9 @@ def page_match(
                     "class_score": round(float(region_match["class_score"]), 3),
                     "class_only_score": round(float(region_match["class_only_score"]), 3),
                     "contiguous_bonus": round(float(region_match["contiguous_bonus"]), 3),
+                    "exact_contiguous_chars": int(region_match["exact_contiguous_chars"]),
+                    "class_contiguous_chars": int(region_match["class_contiguous_chars"]),
+                    "contiguous_char_ratio": round(float(region_match["contiguous_char_ratio"]), 3),
                     "page_line_start": region_match["page_line_start"],
                     "page_line_end": region_match["page_line_end"],
                     "region_text": region_match["region_text"],
@@ -730,6 +810,9 @@ def summarize_group(group: list[dict[str, Any]]) -> dict[str, Any]:
                     "class_score": match.get("class_score"),
                     "class_only_score": match.get("class_only_score"),
                     "contiguous_bonus": match.get("contiguous_bonus"),
+                    "exact_contiguous_chars": match.get("exact_contiguous_chars"),
+                    "class_contiguous_chars": match.get("class_contiguous_chars"),
+                    "contiguous_char_ratio": match.get("contiguous_char_ratio"),
                     "page_line_start": match.get("page_line_start"),
                     "page_line_end": match.get("page_line_end"),
                     "region_text": match.get("region_text"),
@@ -1039,6 +1122,7 @@ def main() -> int:
                 "exact_contiguous_character_shingles",
                 "ocr_class_normalized_contiguous_character_shingles",
             ],
+            "region_verification": "longest_contiguous_exact_and_ocr_class_character_runs",
             "max_candidate_span_pages": args.max_candidate_span_pages,
             "max_region_lines": args.max_region_lines,
             "max_region_chars": args.max_region_chars,
@@ -1046,7 +1130,7 @@ def main() -> int:
             "min_line_chars": args.min_line_chars,
             "min_line_score": args.min_line_score,
             "class_match_weight": 0.5,
-            "max_contiguous_bonus": 0.18,
+            "max_contiguous_bonus": 0.22,
             "min_candidate_lines": args.min_candidate_lines,
             "all_books": args.all_books,
             "include_logical_aliases": args.include_logical_aliases,

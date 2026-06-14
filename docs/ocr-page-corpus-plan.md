@@ -131,7 +131,10 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   of candidate-specific false positives. Reviewed exclusions remain in the
   missing-citation count, but are moved to `reviewed_*` buckets so the next
   review pass focuses on unresolved evidence instead of rechecking disproved
-  title collisions or weak one-line overlaps.
+  title collisions or weak one-line overlaps. With `--page-corpus`, it also
+  checks each known-source gap against the matching scanned collection and
+  reports whether the source book is unscanned, weakly supported by OCR tokens,
+  or supported by title/line evidence.
 
 - `scripts/phrase_window_audit.py`
   Builds a review-only exact phrase-window report for remaining poems by
@@ -169,10 +172,13 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   (`3,5,8` by default) get higher weights. Region embeddings are built lazily
   from per-page inverted indexes, so expensive vector dots do not run over every
   OCR window in the corpus. The detailed pass still requires each accepted poem
-  line to match one local OCR region and reports the longest consecutive run of
-  matched poem lines. Candidate windows are capped to short printed-page spans.
-  This report is not an apply source; fuzzy-only candidates must still be
-  checked against printed-page evidence before writing poem metadata.
+  line to match one local OCR region, then verifies that local region with the
+  longest contiguous exact and OCR-class character runs. Exact contiguous runs
+  count fully; class-only contiguous runs add half credit. It reports both the
+  longest consecutive run of matched poem lines and the ordered run of local OCR
+  regions. Candidate windows are capped to short printed-page spans. This
+  report is not an apply source; fuzzy-only candidates must still be checked
+  against printed-page evidence before writing poem metadata.
 
 - `scripts/ordered_region_audit.py`
   Builds a review-only ordered-token report for the remaining printed-page
@@ -243,6 +249,13 @@ Current cumulative site-facing metadata state:
   `আকাশে সাতটি তাঁরা`.
 
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
+
+The enhanced gap report now separates known-source failures. In the current
+sidecar run, 11 known-source gaps cite editions not mapped to a current OCR book
+corpus (`আলোপৃথিবী`, `শ্রেষ্ঠ কবিতা`, `অগ্রন্থিত কবিতা`, or `অপ্রকাশিত
+কবিতা`). Seven known-source gaps do target scanned collections, but six have
+only weak same-source OCR support and one has token-only support; none has title
+or exact-line evidence strong enough for automatic page citation.
 
 A manual evidence pass over the strongest remaining line-anchor candidates added
 `ভিখিরী` to the `বনলতা সেন` appendix on printed pages 171-172 and `হাঁস` to
@@ -348,6 +361,14 @@ matched poems. Treat this as negative evidence for automatic fuzzy application:
 the remaining gaps need better OCR/source extraction or manual printed-source
 review rather than looser fuzzy citation writes.
 
+The fuzzy verifier now treats page-wide overlap as recall-only and local
+contiguity as the evidence gate. Its vector features are still hashable and
+cacheable, but every scored feature comes from a contiguous character shingle
+inside a bounded OCR line window, with a parallel OCR-equivalence-class channel.
+The follow-up line score measures the longest contiguous substring inside that
+same window, so repeated OCR confusions can improve a weak partial match without
+letting unrelated tokens from different page regions combine into a citation.
+
 The ordered-region audit confirms the same result from a stricter angle. Its
 default gate found zero candidates. A permissive diagnostic run found three weak
 rows (`কত দিন ঘাসে আর মাঠে`, `গল্পে আমি পড়িয়াছি কাঞ্চী কাশী বিদিশার কথা`,
@@ -382,7 +403,7 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/report_metadata_gaps.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.
