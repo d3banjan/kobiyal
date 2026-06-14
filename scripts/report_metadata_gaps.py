@@ -382,10 +382,39 @@ def source_coverage_blockers(missing: list[dict[str, Any]]) -> list[dict[str, An
     )
 
 
-def toc_index_blockers(toc_matches_by_file: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+def matches_toc_review_exclusion(match: dict[str, Any], exclusion: dict[str, Any]) -> bool:
+    candidate = match.get("best_candidate") or {}
+    expected_book = exclusion.get("candidate_book_id")
+    if expected_book != candidate.get("candidate_book_id"):
+        return False
+
+    printed_page = candidate.get("printed_page")
+    for exclusion_key in ("candidate_page_start", "candidate_page_end"):
+        if exclusion_key in exclusion and exclusion.get(exclusion_key) != printed_page:
+            return False
+
+    return True
+
+
+def find_toc_review_exclusion(
+    filename: str,
+    match: dict[str, Any],
+    review_exclusions: dict[str, list[dict[str, Any]]],
+) -> dict[str, Any] | None:
+    for exclusion in review_exclusions.get(filename, []):
+        if matches_toc_review_exclusion(match, exclusion):
+            return exclusion
+    return None
+
+
+def toc_index_blockers(
+    toc_matches_by_file: dict[str, dict[str, Any]],
+    review_exclusions: dict[str, list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
     rows = []
     for filename, match in sorted(toc_matches_by_file.items()):
         candidate = match.get("best_candidate") or {}
+        review_exclusion = find_toc_review_exclusion(filename, match, review_exclusions)
         rows.append(
             {
                 "filename": filename,
@@ -402,6 +431,7 @@ def toc_index_blockers(toc_matches_by_file: dict[str, dict[str, Any]]) -> list[d
                 "title_score": candidate.get("title_score"),
                 "toc_line": candidate.get("toc_line"),
                 "duplicate_title_context": match.get("duplicate_title_context") or [],
+                "review_exclusion": review_exclusion,
             }
         )
     return rows
@@ -543,7 +573,9 @@ def build_report(
         )
     )
     blockers = source_coverage_blockers(missing)
-    toc_blockers = toc_index_blockers(toc_matches_by_file)
+    toc_rows = toc_index_blockers(toc_matches_by_file, review_exclusions)
+    toc_blockers = [item for item in toc_rows if not item.get("review_exclusion")]
+    toc_reviewed_exclusions = [item for item in toc_rows if item.get("review_exclusion")]
     source_year_missing = source_year_blockers(poems)
     title_date_rows = title_date_candidates(poems)
     composition_date_missing = composition_date_blockers(poems)
@@ -574,12 +606,14 @@ def build_report(
             "source_coverage_blocker_count": sum(int(item["count"]) for item in blockers),
             "source_coverage_blocker_groups": len(blockers),
             "toc_index_candidate_count": len(toc_blockers),
+            "toc_index_reviewed_exclusion_count": len(toc_reviewed_exclusions),
             "toc_index_status_counts": dict(Counter(str(item.get("status") or "") for item in toc_blockers).most_common()),
             "title_date_candidate_count": len(title_date_rows),
             "title_date_source_year_gap_count": sum(1 for item in title_date_rows if item.get("source_year") is None),
         },
         "source_coverage_blockers": blockers,
         "toc_index_blockers": toc_blockers,
+        "toc_index_reviewed_exclusions": toc_reviewed_exclusions,
         "source_year_blockers": source_year_missing,
         "title_date_candidates": title_date_rows,
         "composition_date_blockers": composition_date_missing,
@@ -603,6 +637,7 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         f"- Public poems missing source year: {summary['missing_source_year_count']}",
         f"- Public poems missing composition date: {summary['missing_composition_date_count']}",
         f"- TOC index candidates requiring review: {summary['toc_index_candidate_count']}",
+        f"- Reviewed TOC exclusions: {summary['toc_index_reviewed_exclusion_count']}",
         f"- Title date candidates requiring printed-source review: {summary['title_date_candidate_count']}",
         f"- Reviewed exclusions: {summary['reviewed_exclusion_count']}",
         f"- Embedded source marker conflicts: {summary['embedded_source_conflict_count']}",

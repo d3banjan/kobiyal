@@ -159,6 +159,17 @@
       "filename": "jibanananda-054.json",
       "poem_id": "jibanananda-054",
       "title_bn": "উদয়াস্ত",
+      "candidate_book_id": "mahaprithibi-copy",
+      "candidate_page_start": 127,
+      "candidate_page_end": 127,
+      "review_bucket": "reviewed_false_candidate",
+      "reason": "duplicate_title_distinct_poem",
+      "note_bn": "মহাপৃথিবী কপি পৃষ্ঠা ১২৭-এ মুদ্রিত 'উদয়াস্ত' কবিতাটি jibanananda-055-এর শরীরের সঙ্গে শিরোনাম, প্রথম পঙ্‌ক্তি, ও পঙ্‌ক্তি-প্রমাণে মেলে। jibanananda-054 একই শিরোনামের আলাদা আমদানি; কেবল TOC শিরোনাম দেখে এটিকে ওই পৃষ্ঠা দেওয়া যাবে না।"
+    },
+    {
+      "filename": "jibanananda-054.json",
+      "poem_id": "jibanananda-054",
+      "title_bn": "উদয়াস্ত",
       "candidate_book_id": "satti-tarar-timir",
       "candidate_page_start": 27,
       "candidate_page_end": 27,

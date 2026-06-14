@@ -411,6 +411,10 @@ report has no unresolved candidate with line-anchor evidence, and the
 phrase-window queue has no unreviewed matches; the remaining unresolved rows
 are mostly `token_or_title_only_candidate` matches or no-candidate records, plus
 the explicit `তবু` embedded-source conflict that now has its own review bucket.
+The TOC-only `উদয়াস্ত` hit against `মহাপৃথিবী` copy page 127 is also now a
+reviewed exclusion: the same printed page matches the distinct `jibanananda-055`
+body with title, opening line, and line-anchor evidence, so it must not be used
+to classify `jibanananda-054`.
 
 The next deterministic pass replaces broad adjacent-token span expansion with line-anchor clustering. In the current local report it keeps 146 accepted candidates, rejects or defers 243 records, reduces accepted spans longer than four pages from 29 to 1, and restores short continuation pages only where line indexes continue in order. This pass is intended to correct over-wide printed-page citations before further expansion.
 
@@ -482,18 +486,17 @@ rather than a stable poem span. No poem JSON should be updated from these rows.
 
 The TOC index audit parsed 233 title/page entries from the repaired corpus,
 including continuation TOC pages and logical sections in the shared
-`banalata-sen` scan. The current normal-threshold run found one title hit,
-`উদয়াস্ত`, but marked it `duplicate_title_conflict`: another local
-`উদয়াস্ত` record already has stronger line-anchor evidence, so a TOC title
-alone cannot identify which imported body should receive the citation. A
-follow-up run also compared TOC entries with each poem's first substantial body
-lines. At the normal threshold it still found no additional rows; at a lower
-diagnostic threshold it produced only weak title matches and one missing-page
-sequence row. No poem JSON should be updated from the current TOC report.
+`banalata-sen` scan. Its normal-threshold `উদয়াস্ত` hit is now filtered through
+`src/data/metadata-review-exclusions.json`: `jibanananda-055` has the stronger
+body match for that printed page, while `jibanananda-054` is a distinct imported
+body with only title-level overlap. The current gap report has zero unreviewed
+TOC blockers and one reviewed TOC exclusion. A lower diagnostic threshold still
+produces only weak title matches and one missing-page sequence row. No poem JSON
+should be updated from the current TOC report.
 
 The main metadata gap report now separates source-year and composition-date
 debt from page-citation debt. The current report has 100 missing printed-page
-citations, 89 missing source years, and 373 missing composition dates. Since the
+citations, 89 missing source years, and 369 missing composition dates. Since the
 strict composition-date audit found no authorial date/place signatures in the
 currently cited OCR spans, composition dates should not be filled until stronger
 printed-source evidence is added or manually reviewed.
