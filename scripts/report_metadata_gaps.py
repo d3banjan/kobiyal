@@ -378,6 +378,59 @@ def source_coverage_blockers(missing: list[dict[str, Any]]) -> list[dict[str, An
     )
 
 
+def source_year_blockers(poems: list[tuple[str, dict[str, Any]]]) -> list[dict[str, Any]]:
+    grouped: dict[str, dict[str, Any]] = {}
+    for filename, poem in poems:
+        if poem.get("source_year") is not None:
+            continue
+        edition = str(poem.get("source_edition") or "")
+        row = grouped.setdefault(
+            edition,
+            {
+                "source_edition": edition,
+                "count": 0,
+                "items": [],
+            },
+        )
+        row["count"] += 1
+        row["items"].append(
+            {
+                "filename": filename,
+                "poem_id": poem.get("id"),
+                "title_bn": poem.get("title_bn"),
+                "source_url": poem.get("source_url"),
+            }
+        )
+    return sorted(grouped.values(), key=lambda row: (-int(row["count"]), row["source_edition"]))
+
+
+def composition_date_blockers(poems: list[tuple[str, dict[str, Any]]]) -> list[dict[str, Any]]:
+    grouped: dict[str, dict[str, Any]] = {}
+    for filename, poem in poems:
+        if poem.get("composition_date_bn"):
+            continue
+        edition = str(poem.get("source_edition") or "")
+        row = grouped.setdefault(
+            edition,
+            {
+                "source_edition": edition,
+                "count": 0,
+                "items": [],
+            },
+        )
+        row["count"] += 1
+        if len(row["items"]) < 12:
+            row["items"].append(
+                {
+                    "filename": filename,
+                    "poem_id": poem.get("id"),
+                    "title_bn": poem.get("title_bn"),
+                    "source_year": poem.get("source_year"),
+                }
+            )
+    return sorted(grouped.values(), key=lambda row: (-int(row["count"]), row["source_edition"]))
+
+
 def build_report(
     poems: list[tuple[str, dict[str, Any]]],
     candidates_by_file: dict[str, dict[str, Any]],
@@ -437,6 +490,8 @@ def build_report(
         )
     )
     blockers = source_coverage_blockers(missing)
+    source_year_missing = source_year_blockers(poems)
+    composition_date_missing = composition_date_blockers(poems)
     return {
         "summary": {
             "public_poem_count": len(poems),
@@ -445,6 +500,7 @@ def build_report(
                 1 for item in missing if item["source_edition"] == UNKNOWN_COLLECTION
             ),
             "missing_source_year_count": sum(1 for _, poem in poems if poem.get("source_year") is None),
+            "missing_composition_date_count": sum(1 for _, poem in poems if not poem.get("composition_date_bn")),
             "review_buckets": dict(Counter(item["review_bucket"] for item in missing).most_common()),
             "source_scan_status_counts": dict(
                 Counter(
@@ -464,6 +520,8 @@ def build_report(
             "source_coverage_blocker_groups": len(blockers),
         },
         "source_coverage_blockers": blockers,
+        "source_year_blockers": source_year_missing,
+        "composition_date_blockers": composition_date_missing,
         "embedded_source_conflicts": marker_conflicts,
         "missing": missing,
     }
@@ -482,6 +540,7 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         f"- Missing printed page citations: {summary['missing_printed_page_count']}",
         f"- Missing citations with unknown collection: {summary['unknown_collection_missing_count']}",
         f"- Public poems missing source year: {summary['missing_source_year_count']}",
+        f"- Public poems missing composition date: {summary['missing_composition_date_count']}",
         f"- Reviewed exclusions: {summary['reviewed_exclusion_count']}",
         f"- Embedded source marker conflicts: {summary['embedded_source_conflict_count']}",
         "",
@@ -510,6 +569,66 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
     )
     for edition, count in summary["missing_by_source_edition"].items():
         lines.append(f"- {edition}: {count}")
+
+    year_blockers = report.get("source_year_blockers") or []
+    lines.extend(
+        [
+            "",
+            "## Source Year Blockers",
+            "",
+        ]
+    )
+    if year_blockers:
+        lines.extend(["| source edition | count | titles |", "|---|---:|---|"])
+        for blocker in year_blockers:
+            titles = " · ".join(str(item.get("title_bn") or "") for item in (blocker.get("items") or [])[:8])
+            remaining = int(blocker.get("count") or 0) - min(int(blocker.get("count") or 0), 8)
+            if remaining > 0:
+                titles = f"{titles} · +{remaining} more"
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        str(blocker.get("source_edition") or ""),
+                        str(blocker.get("count") or 0),
+                        titles.replace("|", "\\|"),
+                    ]
+                )
+                + " |"
+            )
+    else:
+        lines.append("- None")
+
+    composition_blockers = report.get("composition_date_blockers") or []
+    lines.extend(
+        [
+            "",
+            "## Composition Date Blockers",
+            "",
+            "Composition dates are absent until the printed-source date audit can verify authorial date/place signatures.",
+            "",
+        ]
+    )
+    if composition_blockers:
+        lines.extend(["| source edition | count | sample titles |", "|---|---:|---|"])
+        for blocker in composition_blockers:
+            titles = " · ".join(str(item.get("title_bn") or "") for item in blocker.get("items") or [])
+            remaining = int(blocker.get("count") or 0) - len(blocker.get("items") or [])
+            if remaining > 0:
+                titles = f"{titles} · +{remaining} more"
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        str(blocker.get("source_edition") or ""),
+                        str(blocker.get("count") or 0),
+                        titles.replace("|", "\\|"),
+                    ]
+                )
+                + " |"
+            )
+    else:
+        lines.append("- None")
 
     blockers = report.get("source_coverage_blockers") or []
     lines.extend(

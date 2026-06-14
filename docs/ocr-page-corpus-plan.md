@@ -240,6 +240,17 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   page source. This protects the requirement that citations use the printed page
   number in the book being linked, not merely any scan where the poem appears.
 
+- `scripts/composition_date_audit.py`
+  Builds a review-only report for possible composition date/place signatures
+  near already-cited printed page spans. It only inspects pages already cited in
+  `book_sources`, searches nearby OCR lines after matched poem endings and page
+  tails, and requires a stricter signature pattern: a Bengali month with a
+  digit, or a year paired with a known location word. Plain month words inside
+  poem lines and year-only memorial/context notes are not treated as composition
+  dates. The current strict run found no date candidates: 270 cited poems had no
+  date signature candidate, and 103 poems still lack a primary printed-page
+  citation to inspect.
+
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
   compares OCR page tokens against it. The output is a sidecar suspicion report
@@ -437,6 +448,13 @@ lines. At the normal threshold it still found no additional rows; at a lower
 diagnostic threshold it produced only weak title matches and one missing-page
 sequence row. No poem JSON should be updated from the current TOC report.
 
+The main metadata gap report now separates source-year and composition-date
+debt from page-citation debt. The current report has 103 missing printed-page
+citations, 89 missing source years, and 373 missing composition dates. Since the
+strict composition-date audit found no authorial date/place signatures in the
+currently cited OCR spans, composition dates should not be filled until stronger
+printed-source evidence is added or manually reviewed.
+
 The apply script dry-run now uses the same duplicate-hidden scope as the public
 site by default. With all review gates enabled against the current regenerated
 span candidates, it reports `changed: []`; the only previously writable row was
@@ -460,7 +478,7 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/report_metadata_gaps.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.
