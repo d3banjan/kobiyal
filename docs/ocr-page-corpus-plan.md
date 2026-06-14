@@ -51,6 +51,51 @@ poem-span-candidates.jsonl
 gated poem JSON updates
 ```
 
+## Posterior evidence model
+
+The deterministic pipeline should be read as a factor graph over page, text,
+source, and citation variables. Every transformation emits observations that
+raise or lower confidence; no single OCR string or fuzzy match is treated as
+ground truth by itself.
+
+```text
+                 scan/image fidelity
+                         |
+                         v
+PDF page -> preprocessing profile -> OCR stream -> normalized OCR text
+   |               |                 |              |
+   |               |                 |              v
+   |               |                 +------> OCR confusion classes
+   |               v
+   |        layout geometry ----------------> page type / zones
+   |                                             |
+   v                                             v
+printed-page sequence <---------------- page-number candidates
+   |
+   v
+candidate poem span <--- title/line anchors <--- current poem text
+   |                    |       |
+   |                    |       +------> dictionary / equivalence-class evidence
+   |                    v
+   |              ordered contiguous-region evidence
+   |
+   v
+source-edition prior + book-corpus coverage + reviewed exclusions
+   |
+   v
+posterior-style citation triage
+   |
+   +-- apply only through explicit deterministic gates
+   +-- otherwise remain as review sidecars
+```
+
+This is not yet a calibrated probabilistic model. The current implementation is
+a transparent factor ledger: OCR fidelity, geometry, page-sequence repair,
+source priors, candidate competition, text anchors, and human review each become
+named evidence factors. Later Bayesian calibration can reuse those same factors
+without changing the production rule that poem JSON is updated only by explicit
+apply gates.
+
 ## Page corpus contract
 
 Each `metadata_reports/page-corpus.jsonl` row represents one PDF scan page:
@@ -168,6 +213,16 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   review. It also surfaces explicit embedded source-marker conflicts, so a
   source note imported into the poem body cannot stay hidden behind a generic
   weak-candidate row.
+
+- `scripts/citation_factor_model.py`
+  Builds a review-only posterior-style factor ledger for the unresolved
+  printed-page gaps emitted by `report_metadata_gaps.py`. It scores each row
+  from named pipeline factors: source priors, page-sequence repair, candidate
+  span basis, exact/title/opening-line evidence, runner-up separation,
+  source-corpus coverage, and reviewed exclusions. Its `posterior_like` score is
+  heuristic triage, not an apply gate. The output separates rows that need
+  better extraction, source identification, source-corpus review, stronger text
+  anchors, or continued exclusion.
 
 - `scripts/embedded_source_audit.py`
   Audits explicit source markers that were imported into poem bodies, such as a
@@ -597,7 +652,7 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py scripts/citation_factor_model.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.
