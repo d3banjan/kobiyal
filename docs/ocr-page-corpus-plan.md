@@ -271,6 +271,10 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   and reports `already_matching` or `conflicting_existing` rows, which keeps
   secondary-source evidence in the posterior ledger without turning it into a
   printed-page citation gate.
+  The default domain set covers both `bangla-kobita.com` and
+  `banglarkobita.com`; BanglarKobita book-link labels such as its generic
+  collected-poems bucket are recorded as source-page labels, but only exact
+  known collection labels become classification evidence.
 
 - `scripts/phrase_window_audit.py`
   Builds a review-only exact phrase-window report for remaining poems by

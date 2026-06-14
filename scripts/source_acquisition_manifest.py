@@ -148,6 +148,8 @@ def source_url_marker_summary(row: dict[str, Any] | None) -> dict[str, Any] | No
         summary["source_year"] = row.get("source_year")
     if row.get("phase_id"):
         summary["phase_id"] = row.get("phase_id")
+    if row.get("source_page_book_labels"):
+        summary["source_page_book_labels"] = row.get("source_page_book_labels")
     if row.get("error"):
         summary["error"] = row.get("error")
     return summary

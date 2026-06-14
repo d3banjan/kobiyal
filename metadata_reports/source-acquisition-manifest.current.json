@@ -16,9 +16,8 @@
       "keep_excluded": 14
     },
     "source_url_marker_status_counts": {
-      "no_explicit_marker": 63,
-      "not_checked": 36,
-      "no_checked_url": 3
+      "no_explicit_marker": 66,
+      "not_checked": 36
     },
     "source_group_counts": {
       "identify_collection_before_page_citation": 1,
@@ -107,8 +106,11 @@
             },
             "source_scan": null,
             "source_url_marker": {
-              "status": "no_checked_url",
-              "canonical_source_url": "https://banglarkobita.com/poem/famous/444"
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://banglarkobita.com/poem/famous/444",
+              "source_page_book_labels": [
+                "সংকলিত (জীবনানন্দ দাশ)"
+              ]
             },
             "review_exclusion": null,
             "factor_model": {
@@ -159,8 +161,11 @@
             },
             "source_scan": null,
             "source_url_marker": {
-              "status": "no_checked_url",
-              "canonical_source_url": "https://banglarkobita.com/poem/famous/440"
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://banglarkobita.com/poem/famous/440",
+              "source_page_book_labels": [
+                "সংকলিত (জীবনানন্দ দাশ)"
+              ]
             },
             "review_exclusion": null,
             "factor_model": {
@@ -2125,8 +2130,11 @@
             "candidate": null,
             "source_scan": null,
             "source_url_marker": {
-              "status": "no_checked_url",
-              "canonical_source_url": "https://banglarkobita.com/poem/famous/443"
+              "status": "no_explicit_marker",
+              "canonical_source_url": "https://banglarkobita.com/poem/famous/443",
+              "source_page_book_labels": [
+                "সংকলিত (জীবনানন্দ দাশ)"
+              ]
             },
             "review_exclusion": null,
             "factor_model": {

@@ -38,6 +38,10 @@ MARKER_RE = re.compile(
     + "|".join(re.escape(marker) for marker in SOURCE_MARKERS)
     + r")"
 )
+BANGLAR_KOBITA_BOOK_LINK_RE = re.compile(
+    r'<a\s+href="https?://banglarkobita\.com/book/famous/\d+"[^>]*>(?P<label>[^<]+)</a>',
+    re.IGNORECASE,
+)
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -53,9 +57,26 @@ def normalize_url(url: str) -> str:
     return url.replace("https://www.bangla-kobita.com/jibanananda/", "https://www.bangla-kobita.com/jibananandadas/")
 
 
+def allowed_domains(raw_domains: str) -> list[str]:
+    return [domain.strip() for domain in raw_domains.split(",") if domain.strip()]
+
+
+def should_check_url(url: str, domains: list[str]) -> bool:
+    return not domains or any(domain in url for domain in domains)
+
+
 def html_to_text(raw_html: str) -> str:
     text = re.sub(r"<[^>]+>", " ", raw_html)
     return re.sub(r"\s+", " ", html.unescape(text)).strip()
+
+
+def source_page_book_labels(raw_html: str) -> list[str]:
+    labels = []
+    for match in BANGLAR_KOBITA_BOOK_LINK_RE.finditer(raw_html):
+        label = re.sub(r"\s+", " ", html.unescape(match.group("label"))).strip()
+        if label and label not in labels:
+            labels.append(label)
+    return labels
 
 
 def fetch_url(url: str, timeout: int, user_agent: str) -> str:
@@ -64,8 +85,9 @@ def fetch_url(url: str, timeout: int, user_agent: str) -> str:
         return response.read().decode("utf-8", errors="replace")
 
 
-def find_source_marker(text: str) -> dict[str, Any] | None:
+def find_source_marker(text: str, book_labels: list[str]) -> dict[str, Any] | None:
     matches = [match.group("marker") for match in MARKER_RE.finditer(text)]
+    matches.extend(label for label in book_labels if label in SOURCE_MARKERS)
     unique_matches = sorted(set(matches))
     if len(unique_matches) != 1:
         return None
@@ -90,6 +112,7 @@ def status_for_marker(poem: dict[str, Any], marker: dict[str, Any] | None) -> st
 
 def audit_poems(args: argparse.Namespace) -> list[dict[str, Any]]:
     rows = []
+    domains = allowed_domains(args.domain)
     for path in sorted(Path(args.poems_dir).glob("*.json")):
         poem = read_json(path)
         if poem.get("poet_id") != "jibanananda-das":
@@ -107,21 +130,24 @@ def audit_poems(args: argparse.Namespace) -> list[dict[str, Any]]:
             "canonical_source_url": canonical_url,
             "status": "no_checked_url",
         }
-        if args.domain and args.domain not in canonical_url:
+        if not should_check_url(canonical_url, domains):
             rows.append(row)
             continue
         if not canonical_url:
             rows.append(row)
             continue
         try:
-            page_text = html_to_text(fetch_url(canonical_url, args.timeout, args.user_agent))
+            raw_html = fetch_url(canonical_url, args.timeout, args.user_agent)
         except (OSError, URLError, TimeoutError) as exc:
             row["status"] = "fetch_error"
             row["error"] = f"{type(exc).__name__}: {exc}"
             rows.append(row)
             continue
 
-        marker = find_source_marker(page_text)
+        book_labels = source_page_book_labels(raw_html)
+        if book_labels:
+            row["source_page_book_labels"] = book_labels
+        marker = find_source_marker(html_to_text(raw_html), book_labels)
         row["status"] = status_for_marker(poem, marker)
         if marker is not None:
             row.update(marker)
@@ -195,6 +221,32 @@ def markdown_report(payload: dict[str, Any]) -> str:
             )
             + " |"
         )
+    rows_with_labels = [row for row in payload["rows"] if row.get("source_page_book_labels")]
+    lines.extend(
+        [
+            "",
+            "## Observed Non-classifying Book Labels",
+            "",
+            "| file | title | source-page label | status | source URL |",
+            "|---|---|---|---|---|",
+        ]
+    )
+    if not rows_with_labels:
+        lines.append("| - | - | - | - | - |")
+    for row in rows_with_labels:
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    str(row.get("filename") or ""),
+                    str(row.get("title_bn") or "").replace("|", "\\|"),
+                    " · ".join(str(label).replace("|", "\\|") for label in row.get("source_page_book_labels") or []),
+                    str(row.get("status") or ""),
+                    str(row.get("canonical_source_url") or row.get("source_url") or ""),
+                ]
+            )
+            + " |"
+        )
     return "\n".join(lines) + "\n"
 
 
@@ -203,7 +255,7 @@ def main() -> int:
     parser.add_argument("--poems-dir", default="src/data/poems")
     parser.add_argument("--output", default="metadata_reports/source-url-marker-audit.current.json")
     parser.add_argument("--markdown-output", default="metadata_reports/source-url-marker-audit.current.md")
-    parser.add_argument("--domain", default="bangla-kobita.com")
+    parser.add_argument("--domain", default="bangla-kobita.com,banglarkobita.com")
     parser.add_argument("--timeout", type=int, default=20)
     parser.add_argument("--sleep", type=float, default=0.05)
     parser.add_argument("--user-agent", default="Mozilla/5.0")
@@ -220,6 +272,7 @@ def main() -> int:
             "already_matching_count": sum(1 for row in rows if row.get("status") == "already_matching"),
             "conflicting_existing_count": sum(1 for row in rows if row.get("status") == "conflicting_existing"),
             "no_explicit_marker_count": sum(1 for row in rows if row.get("status") == "no_explicit_marker"),
+            "no_checked_url_count": sum(1 for row in rows if row.get("status") == "no_checked_url"),
             "fetch_error_count": sum(1 for row in rows if row.get("status") == "fetch_error"),
             "changed_count": len(changed),
             "applied": args.apply,
