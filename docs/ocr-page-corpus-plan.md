@@ -236,6 +236,16 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   that need better extraction, source identification, source-corpus review,
   stronger text anchors, or continued exclusion.
 
+- `scripts/source_acquisition_manifest.py`
+  Exports the current source/corpus acquisition queue from
+  `metadata-gap-review.current.json` and `citation-factor-model.current.json`.
+  This is the complete machine-readable handoff for the remaining printed-page
+  citation blockers: existing citations whose source corpus is absent,
+  known-source poems that need a scan or direct printed-book review, unknown
+  collection rows, and reviewed scan holds. It preserves candidate, source-scan,
+  review-exclusion, and factor-model details for each poem, but never mutates
+  poem JSON or asserts a printed page citation.
+
 - `scripts/embedded_source_audit.py`
   Audits explicit source markers that were imported into poem bodies, such as a
   trailing `(অগ্রন্থিত কবিতা)` or `#অগ্রন্থিত কবিতা`. The matcher is deliberately
@@ -699,7 +709,7 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py scripts/citation_factor_model.py scripts/source_url_marker_audit.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py scripts/citation_factor_model.py scripts/source_acquisition_manifest.py scripts/source_url_marker_audit.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.

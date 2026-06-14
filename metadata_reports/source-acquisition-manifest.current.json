@@ -1,0 +1,4586 @@
+{
+  "summary": {
+    "input_missing_printed_page_count": 102,
+    "existing_citations_missing_corpus_count": 3,
+    "action_counts": {
+      "identify_collection_before_page_citation": 66,
+      "add_scan_or_direct_print_review": 27,
+      "improve_text_extraction_or_manual_page_review": 0,
+      "keep_excluded_until_new_scan_or_print_review": 9,
+      "add_corpus_or_regenerate_auxiliary_corpus": 3
+    },
+    "factor_next_action_counts": {
+      "add_or_review_source_corpus": 25,
+      "identify_collection": 27,
+      "needs_better_text_extraction": 36,
+      "keep_excluded": 14
+    },
+    "source_group_counts": {
+      "identify_collection_before_page_citation": 1,
+      "add_scan_or_direct_print_review": 3,
+      "improve_text_extraction_or_manual_page_review": 0,
+      "keep_excluded_until_new_scan_or_print_review": 4
+    },
+    "generated_from": {
+      "metadata_gap_report": "metadata_reports/metadata-gap-review.current.json",
+      "citation_factor_model": "metadata_reports/citation-factor-model.current.json"
+    },
+    "note": "Review/acquisition manifest only. It does not mutate poem JSON or assert page citations."
+  },
+  "existing_citations_missing_corpus": [
+    {
+      "source_edition": "শ্রেষ্ঠ কবিতা",
+      "book_id": "srestha-kabita",
+      "count": 3,
+      "items": [
+        {
+          "filename": "jibanananda-148.json",
+          "poem_id": "jibanananda-148",
+          "title_bn": "তবু",
+          "source_edition": "শ্রেষ্ঠ কবিতা",
+          "book_id": "srestha-kabita",
+          "page_start": 112,
+          "page_end": 114,
+          "page_label": "112-114"
+        },
+        {
+          "filename": "jibanananda-209.json",
+          "poem_id": "jibanananda-209",
+          "title_bn": "পৃথিবীতে",
+          "source_edition": "শ্রেষ্ঠ কবিতা",
+          "book_id": "srestha-kabita",
+          "page_start": 114,
+          "page_end": 114,
+          "page_label": "114"
+        },
+        {
+          "filename": "jibanananda-300.json",
+          "poem_id": "jibanananda-300",
+          "title_bn": "লোকেন বোসের জর্নাল",
+          "source_edition": "শ্রেষ্ঠ কবিতা",
+          "book_id": "srestha-kabita",
+          "page_start": 119,
+          "page_end": 120,
+          "page_label": "119-120"
+        }
+      ]
+    }
+  ],
+  "missing_page_citation_groups": {
+    "identify_collection_before_page_citation": [
+      {
+        "source_edition": "সংকলন অজানা",
+        "book_id": null,
+        "count": 66,
+        "items": [
+          {
+            "filename": "jibanananda-358.json",
+            "poem_id": "jibanananda-358",
+            "title_bn": "সে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://banglarkobita.com/poem/famous/444",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "dhusar-pandulipi-copy",
+              "printed_page_start": 52,
+              "printed_page_end": 52,
+              "printed_page_label": "52",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 16.2,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present",
+                "title_match"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0323,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "dhusar-pandulipi-copy",
+              "printed_page_start": 52,
+              "printed_page_end": 52,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.1,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-019.json",
+            "poem_id": "jibanananda-019",
+            "title_bn": "অন্য এক প্রেমিককে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://banglarkobita.com/poem/famous/440",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 10.6,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-044.json",
+            "poem_id": "jibanananda-044",
+            "title_bn": "আমি হাত প্রসারিত করে দেই",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/haat-prosarito/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "banalata-sen-appendix",
+              "printed_page_start": 170,
+              "printed_page_end": 170,
+              "printed_page_label": "170",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 12.2,
+              "runner_up_gap": 1.2,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0373,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "banalata-sen-appendix",
+              "printed_page_start": 170,
+              "printed_page_end": 170,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-084.json",
+            "poem_id": "jibanananda-084",
+            "title_bn": "কত দিন ঘাসে আর মাঠে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/koto-din-ghash-ar-mathey/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 17.0,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-113.json",
+            "poem_id": "jibanananda-113",
+            "title_bn": "গতিবিধি",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/gotibidhi/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "printed_page_label": "166",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 11.4,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-115.json",
+            "poem_id": "jibanananda-115",
+            "title_bn": "গল্পে আমি পড়িয়াছি কাঞ্চী কাশী বিদিশার কথা",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/golpey-poriachi-aami-kanchi-kashi-bidishar-kotha/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 167,
+              "printed_page_end": 167,
+              "printed_page_label": "167",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 11.0,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 167,
+              "printed_page_end": 167,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-132.json",
+            "poem_id": "jibanananda-132",
+            "title_bn": "চিরদিন শহরেই থাকি",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/chirodin-shohorei-thaki/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 16.6,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-133.json",
+            "poem_id": "jibanananda-133",
+            "title_bn": "চেতনা-লিখন",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/chetona-likhon/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 159,
+              "printed_page_end": 159,
+              "printed_page_label": "159",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 16.2,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 159,
+              "printed_page_end": 159,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-140.json",
+            "poem_id": "jibanananda-140",
+            "title_bn": "জীবন ভালোবেসে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/jibon-valobeshe/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 138,
+              "printed_page_end": 138,
+              "printed_page_label": "138",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 10.6,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 138,
+              "printed_page_end": 138,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-145.json",
+            "poem_id": "jibanananda-145",
+            "title_bn": "ঝরা ফসলের গান",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/jhora-fosholer-gan/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "jhara-palak",
+              "printed_page_start": 129,
+              "printed_page_end": 129,
+              "printed_page_label": "129",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 10.6,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present",
+                "title_phrase_match"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "jhara-palak",
+              "printed_page_start": 129,
+              "printed_page_end": 129,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-156.json",
+            "poem_id": "jibanananda-156",
+            "title_bn": "তোমরা স্বপ্নের হাতে ধরা দাও",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/tomra-shwopner-hatey-dhora-dao/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 163,
+              "printed_page_end": 163,
+              "printed_page_label": "163",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 13.0,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 163,
+              "printed_page_end": 163,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-196.json",
+            "poem_id": "jibanananda-196",
+            "title_bn": "পরবাসী",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/porobasi/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 147,
+              "printed_page_end": 147,
+              "printed_page_label": "147",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 14.2,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 147,
+              "printed_page_end": 147,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-205.json",
+            "poem_id": "jibanananda-205",
+            "title_bn": "পৃথিবী আজ",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/prithibi-aaj/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 140,
+              "printed_page_end": 140,
+              "printed_page_label": "140",
+              "status": "needs_manual_review",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 10.2,
+              "runner_up_gap": null,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0759,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 140,
+              "printed_page_end": 140,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "candidate_generation": 0.2,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-206.json",
+            "poem_id": "jibanananda-206",
+            "title_bn": "পৃথিবী ও সময়",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/prithibii-o-shomoy/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 138,
+              "printed_page_end": 138,
+              "printed_page_label": "138",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 12.2,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 138,
+              "printed_page_end": 138,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-215.json",
+            "poem_id": "jibanananda-215",
+            "title_bn": "প্যারাডিম",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/paradim/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 173,
+              "printed_page_end": 173,
+              "printed_page_label": "173",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 17.0,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 173,
+              "printed_page_end": 173,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-231.json",
+            "poem_id": "jibanananda-231",
+            "title_bn": "বাঙালি পাঞ্জাবি মারাঠি গুজরাটি",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/bangali-panjabi-marathi-gujrati/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "printed_page_label": "166",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 13.4,
+              "runner_up_gap": 1.6,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0373,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-290.json",
+            "poem_id": "jibanananda-290",
+            "title_bn": "রবীন্দ্রনাথ",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/robindronath/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "dhusar-pandulipi-copy",
+              "printed_page_start": 44,
+              "printed_page_end": 44,
+              "printed_page_label": "44",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 16.2,
+              "runner_up_gap": 0.2,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "dhusar-pandulipi-copy",
+              "printed_page_start": 44,
+              "printed_page_end": 44,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-294.json",
+            "poem_id": "jibanananda-294",
+            "title_bn": "রাত্রি, মন, মানবপৃথিবী",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/ratri-mon-manobprithibi/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela",
+              "printed_page_start": 17,
+              "printed_page_end": 17,
+              "printed_page_label": "17",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 14.6,
+              "runner_up_gap": 2.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0373,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "bela-abela-kalabela",
+              "printed_page_start": 17,
+              "printed_page_end": 17,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-297.json",
+            "poem_id": "jibanananda-297",
+            "title_bn": "রেনকোট কাঁধে রেখে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/rainkoat-kadhe-rekhe/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 16.6,
+              "runner_up_gap": 1.2,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0373,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-320.json",
+            "poem_id": "jibanananda-320",
+            "title_bn": "সন্ধ্যা হয়ে আসে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/sondhya-hoye-asey/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 168,
+              "printed_page_end": 168,
+              "printed_page_label": "168",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 15.8,
+              "runner_up_gap": 0.8,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 168,
+              "printed_page_end": 168,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-328.json",
+            "poem_id": "jibanananda-328",
+            "title_bn": "সমুদ্রচিল",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shomudrochil/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 151,
+              "printed_page_end": 151,
+              "printed_page_label": "151",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 17.0,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 151,
+              "printed_page_end": 151,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-343.json",
+            "poem_id": "jibanananda-343",
+            "title_bn": "সূর্য কখন",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shurjo-kokhon/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "printed_page_label": "166",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 13.0,
+              "runner_up_gap": 2.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0373,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-353.json",
+            "poem_id": "jibanananda-353",
+            "title_bn": "সূর্যকরোজ্জ্বলা",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shurjokorojjola/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 15.0,
+              "runner_up_gap": 1.2,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0373,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-365.json",
+            "poem_id": "jibanananda-365",
+            "title_bn": "সোনালি অগ্নির মতো",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shonalii-ogniir-moto/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "needs_manual_review",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 11.0,
+              "runner_up_gap": null,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0759,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "candidate_generation": 0.2,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-376.json",
+            "poem_id": "jibanananda-376",
+            "title_bn": "হঠাৎ তোমার সাথে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/hotath-tomar-sathey/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "printed_page_label": "166",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 17.0,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0148,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-381.json",
+            "poem_id": "jibanananda-381",
+            "title_bn": "হাজার বর্ষ আগে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/hajar-borsho-agey/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "needs_manual_review",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 10.2,
+              "runner_up_gap": null,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0759,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "candidate_generation": 0.2,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-388.json",
+            "poem_id": "jibanananda-388",
+            "title_bn": "হেমন্ত",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/haymento/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "dhusar-pandulipi-copy",
+              "printed_page_start": 64,
+              "printed_page_end": 64,
+              "printed_page_label": "64",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 13.4,
+              "runner_up_gap": 1.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present",
+                "title_phrase_match"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "identify_collection",
+              "posterior_like": 0.0373,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "dhusar-pandulipi-copy",
+              "printed_page_start": 64,
+              "printed_page_end": 64,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-014.json",
+            "poem_id": "jibanananda-014",
+            "title_bn": "অনেক মুহূর্ত আমি করেছি ক্ষয় করে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/oneyk-muhurto-khoy-korey/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-015.json",
+            "poem_id": "jibanananda-015",
+            "title_bn": "অনেক রাত্রিদিন",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/onek-ratrideen/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-028.json",
+            "poem_id": "jibanananda-028",
+            "title_bn": "আকাশে চাঁদের আলো",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/akashey-chader-alo/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-035.json",
+            "poem_id": "jibanananda-035",
+            "title_bn": "আদিম",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/aadim/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-059.json",
+            "poem_id": "jibanananda-059",
+            "title_bn": "এই কি সিন্ধুর হাওয়া",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/ei-kii-shindhur-hawoa/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-067.json",
+            "poem_id": "jibanananda-067",
+            "title_bn": "এই শতাব্দী-সন্ধীতে মৃত্যু",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/ei-shotabdii-shondhiitey-mrittu/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-072.json",
+            "poem_id": "jibanananda-072",
+            "title_bn": "একটি পুরোনো কবিতা",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/ekti-purono-kobita/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-092.json",
+            "poem_id": "jibanananda-092",
+            "title_bn": "কাউকে ভালোবেসেছিলাম",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/kaukey-valobeshechilam/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-096.json",
+            "poem_id": "jibanananda-096",
+            "title_bn": "কার্ত্তিকের ভোর- ১৩৫০",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/kartiker-vor-1350/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-100.json",
+            "poem_id": "jibanananda-100",
+            "title_bn": "কেন মিছে নক্ষত্রেরা",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/kani-miche-noakkhatrera/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-101.json",
+            "poem_id": "jibanananda-101",
+            "title_bn": "কেমন বৃষ্টি ঝরে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/kamon-brishty-jhorey/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-106.json",
+            "poem_id": "jibanananda-106",
+            "title_bn": "কোথায় গিয়েছে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/kothay-giese/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-107.json",
+            "poem_id": "jibanananda-107",
+            "title_bn": "কোনো এক ব্যথিতাকে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/kono-ek-bathitakey/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-116.json",
+            "poem_id": "jibanananda-116",
+            "title_bn": "গুবরে ফড়িং শুধু উড়ে যায় আজ",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/gubrey-foring-shudhu-urey-jai-aaj/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-141.json",
+            "poem_id": "jibanananda-141",
+            "title_bn": "জীবন সঙ্গীত",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/jibonshongeet/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-143.json",
+            "poem_id": "jibanananda-143",
+            "title_bn": "জীবনে অনেক দূর",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/jiboney-onek-dur/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-150.json",
+            "poem_id": "jibanananda-150",
+            "title_bn": "তবুও পায়ের চিহ্ন",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/tobuo-payer-chinho/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-159.json",
+            "poem_id": "jibanananda-159",
+            "title_bn": "তোমাকে ভালোবেসে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/tumake-bhalobeshe/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-160.json",
+            "poem_id": "jibanananda-160",
+            "title_bn": "তোমায় আমি",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://banglarkobita.com/poem/famous/443",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-161.json",
+            "poem_id": "jibanananda-161",
+            "title_bn": "তোমায় আমি দেখেছিলাম",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/tomai-aami-dekhesilam/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-164.json",
+            "poem_id": "jibanananda-164",
+            "title_bn": "দাও-দাও সূর্যকে জাগিয়ে দাও",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/dao-surjo-k-jagiye/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-180.json",
+            "poem_id": "jibanananda-180",
+            "title_bn": "নিঃসরণ",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/nishoron/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-187.json",
+            "poem_id": "jibanananda-187",
+            "title_bn": "নির্দেশ",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/nirdesh/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-199.json",
+            "poem_id": "jibanananda-199",
+            "title_bn": "পলাতকা",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/polatoka/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-233.json",
+            "poem_id": "jibanananda-233",
+            "title_bn": "বাতাসের শব্দ এসে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/batasher-shobdo-eshe/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-234.json",
+            "poem_id": "jibanananda-234",
+            "title_bn": "বিকেলের আলোয়",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/bikeler-aloy/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-250.json",
+            "poem_id": "jibanananda-250",
+            "title_bn": "মকরসংক্রান্তি প্রাণে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/mokorshongkrantir-praney/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-252.json",
+            "poem_id": "jibanananda-252",
+            "title_bn": "মনমর্মর",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/mon-mormor/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-258.json",
+            "poem_id": "jibanananda-258",
+            "title_bn": "মরুতৃণোজ্জ্বলা",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/morutrinojjola/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-265.json",
+            "poem_id": "jibanananda-265",
+            "title_bn": "মাঝে মাঝে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/majhey-majhey/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-289.json",
+            "poem_id": "jibanananda-289",
+            "title_bn": "রজনীগন্ধা",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/rojonigondha/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-305.json",
+            "poem_id": "jibanananda-305",
+            "title_bn": "শতাব্দী শেষ",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shotabdii-shesh/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-313.json",
+            "poem_id": "jibanananda-313",
+            "title_bn": "শীতের রাতের কবিতা",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shiiter-rater-kobita/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-314.json",
+            "poem_id": "jibanananda-314",
+            "title_bn": "শেষ হ’ল জীবনের সব লেনদেন",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/sesh-holo-jiboner-sob-lenden/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-323.json",
+            "poem_id": "jibanananda-323",
+            "title_bn": "সময় মুছিয়া ফেলে সব এসে",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shomy-muchia-faley-shob-eshey/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-389.json",
+            "poem_id": "jibanananda-389",
+            "title_bn": "হেমন্ত কুয়াশায়",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/haymonto-kuashai/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": null,
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "needs_better_text_extraction",
+              "posterior_like": 0.0017,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.9,
+                "candidate_generation": -2.5,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-057.json",
+            "poem_id": "jibanananda-057",
+            "title_bn": "ঊনিশশো চৌত্রিশের",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/unissho-choutrisher/",
+            "review_bucket": "reviewed_false_candidate",
+            "candidate": {
+              "book_id": "banalata-sen",
+              "printed_page_start": 21,
+              "printed_page_end": 21,
+              "printed_page_label": "21",
+              "status": "ambiguous",
+              "span_basis": "line_anchor_cluster",
+              "score": 19.8,
+              "runner_up_gap": 1.6,
+              "line_match_count": 1,
+              "exact_line_match_count": 1,
+              "evidence": [
+                "body_token_overlap",
+                "last_line_match",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": {
+              "reason": "weak_line_overlap_wrong_poem",
+              "note_bn": "বনলতা সেন পৃষ্ঠা ২১ মুদ্রিত কবিতা 'দু'জন'। ক্ষীণ পঙ্‌ক্তি/শব্দ মিল থাকলেও শিরোনাম ও মূল শরীর মেলে না।",
+              "candidate_book_id": "banalata-sen",
+              "candidate_page_start": 21,
+              "candidate_page_end": 21
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0006,
+              "blockers": [
+                "reviewed_negative",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "banalata-sen",
+              "printed_page_start": 21,
+              "printed_page_end": 21,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": 2.93,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-333.json",
+            "poem_id": "jibanananda-333",
+            "title_bn": "সারা দিন ট্রাম-বাস",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shara-din-trum-bus/",
+            "review_bucket": "reviewed_false_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 146,
+              "printed_page_end": 146,
+              "printed_page_label": "146",
+              "status": "ambiguous",
+              "span_basis": "line_anchor_cluster",
+              "score": 22.6,
+              "runner_up_gap": 0.6,
+              "line_match_count": 1,
+              "exact_line_match_count": 1,
+              "evidence": [
+                "body_token_overlap",
+                "last_line_match",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": {
+              "reason": "generic_line_overlap_wrong_poem",
+              "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৪৬ 'হায় পাখি...' পাঠ; প্রস্তাবিত এক-পঙ্‌ক্তির মিল সাধারণ/অপ্রতুল, শিরোনাম ও শরীর মেলে না।",
+              "candidate_book_id": "rupasi-bangla-copy",
+              "candidate_page_start": 146,
+              "candidate_page_end": 146
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0002,
+              "blockers": [
+                "reviewed_negative",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 146,
+              "printed_page_end": 146,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": 2.93,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-054.json",
+            "poem_id": "jibanananda-054",
+            "title_bn": "উদয়াস্ত",
+            "source_edition": "সংকলন অজানা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/udayosto/",
+            "review_bucket": "reviewed_false_candidate",
+            "candidate": {
+              "book_id": "mahaprithibi-copy",
+              "printed_page_start": 127,
+              "printed_page_end": 127,
+              "printed_page_label": "127",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 18.6,
+              "runner_up_gap": 1.6,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present",
+                "title_match"
+              ]
+            },
+            "source_scan": null,
+            "review_exclusion": {
+              "reason": "duplicate_title_distinct_poem",
+              "note_bn": "মহাপৃথিবী কপি পৃষ্ঠা ১২৭-এ মুদ্রিত 'উদয়াস্ত' কবিতাটি jibanananda-055-এর শরীরের সঙ্গে শিরোনাম, প্রথম পঙ্‌ক্তি, ও পঙ্‌ক্তি-প্রমাণে মেলে। jibanananda-054 একই শিরোনামের আলাদা আমদানি; কেবল TOC শিরোনাম দেখে এটিকে ওই পৃষ্ঠা দেওয়া যাবে না।",
+              "candidate_book_id": "mahaprithibi-copy",
+              "candidate_page_start": 127,
+              "candidate_page_end": 127
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0,
+              "blockers": [
+                "reviewed_negative",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "unknown_source_collection"
+              ],
+              "candidate_book_id": "mahaprithibi-copy",
+              "printed_page_start": 127,
+              "printed_page_end": 127,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": -0.9,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.1,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": 0.0
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "add_scan_or_direct_print_review": [
+      {
+        "source_edition": "আলোপৃথিবী",
+        "book_id": "aloprithibi",
+        "count": 21,
+        "items": [
+          {
+            "filename": "jibanananda-031.json",
+            "poem_id": "jibanananda-031",
+            "title_bn": "আজ",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/aaj/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "satti-tarar-timir",
+              "printed_page_start": 22,
+              "printed_page_end": 22,
+              "printed_page_label": "22",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 15.8,
+              "runner_up_gap": 2.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "page_sequence_present",
+                "title_match"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0339,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "satti-tarar-timir",
+              "printed_page_start": 22,
+              "printed_page_end": 22,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.1,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-066.json",
+            "poem_id": "jibanananda-066",
+            "title_bn": "এই পৃথিবীর",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/ei-prithibiir/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "dhusar-pandulipi-copy",
+              "printed_page_start": 73,
+              "printed_page_end": 73,
+              "printed_page_label": "73",
+              "status": "needs_manual_review",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 15.8,
+              "runner_up_gap": null,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "page_sequence_present",
+                "title_match"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0691,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "dhusar-pandulipi-copy",
+              "printed_page_start": 73,
+              "printed_page_end": 73,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.1,
+                "candidate_generation": 0.2,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-292.json",
+            "poem_id": "jibanananda-292",
+            "title_bn": "রাত্রি",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/ratrii/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "satti-tarar-timir",
+              "printed_page_start": 18,
+              "printed_page_end": 18,
+              "printed_page_label": "18",
+              "status": "needs_manual_review",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 17.8,
+              "runner_up_gap": 4.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present",
+                "title_match"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.1301,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "satti-tarar-timir",
+              "printed_page_start": 18,
+              "printed_page_end": 18,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.1,
+                "competition": 0.7,
+                "candidate_generation": 0.2,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-047.json",
+            "poem_id": "jibanananda-047",
+            "title_bn": "আলোপৃথিবী",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/aloprithibii/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "satti-tarar-timir",
+              "printed_page_start": 27,
+              "printed_page_end": 27,
+              "printed_page_label": "27",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 12.2,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0061,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "satti-tarar-timir",
+              "printed_page_start": 27,
+              "printed_page_end": 27,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-049.json",
+            "poem_id": "jibanananda-049",
+            "title_bn": "আশা ভরসা",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/asha-vorosha/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 175,
+              "printed_page_end": 175,
+              "printed_page_label": "175",
+              "status": "needs_manual_review",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 10.2,
+              "runner_up_gap": null,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0323,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 175,
+              "printed_page_end": 175,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "candidate_generation": 0.2,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-137.json",
+            "poem_id": "jibanananda-137",
+            "title_bn": "জার্মানীর রাত্রিপথেঃ ১৯৪৫",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/germanyir-ratripothey-1945/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 136,
+              "printed_page_end": 136,
+              "printed_page_label": "136",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 15.0,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0061,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 136,
+              "printed_page_end": 136,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-168.json",
+            "poem_id": "jibanananda-168",
+            "title_bn": "দুটি তুরঙ্গম",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/duti-turongom/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "banalata-sen",
+              "printed_page_start": 21,
+              "printed_page_end": 21,
+              "printed_page_label": "21",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 12.6,
+              "runner_up_gap": 1.2,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0155,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "banalata-sen",
+              "printed_page_start": 21,
+              "printed_page_end": 21,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-176.json",
+            "poem_id": "jibanananda-176",
+            "title_bn": "নবপ্রস্থান",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/noboprosthan/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 173,
+              "printed_page_end": 173,
+              "printed_page_label": "173",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 17.0,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0061,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 173,
+              "printed_page_end": 173,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-191.json",
+            "poem_id": "jibanananda-191",
+            "title_bn": "পটভূমি",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/potobhumi/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 173,
+              "printed_page_end": 173,
+              "printed_page_label": "173",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 10.6,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present",
+                "title_phrase_match"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0061,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 173,
+              "printed_page_end": 173,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-192.json",
+            "poem_id": "jibanananda-192",
+            "title_bn": "পটভূমি বিসার",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/potobhumi-bishar/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 175,
+              "printed_page_end": 175,
+              "printed_page_label": "175",
+              "status": "needs_manual_review",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 10.6,
+              "runner_up_gap": null,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0323,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 175,
+              "printed_page_end": 175,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "candidate_generation": 0.2,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-284.json",
+            "poem_id": "jibanananda-284",
+            "title_bn": "যাত্রী",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/jatrii/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "banalata-sen",
+              "printed_page_start": 21,
+              "printed_page_end": 21,
+              "printed_page_label": "21",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 11.8,
+              "runner_up_gap": 1.2,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0155,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "banalata-sen",
+              "printed_page_start": 21,
+              "printed_page_end": 21,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-351.json",
+            "poem_id": "jibanananda-351",
+            "title_bn": "সূর্য নিভে গেলে",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/shurjo-nivey-geley/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "banalata-sen",
+              "printed_page_start": 21,
+              "printed_page_end": 21,
+              "printed_page_label": "21",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 11.8,
+              "runner_up_gap": 0.8,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0061,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "banalata-sen",
+              "printed_page_start": 21,
+              "printed_page_end": 21,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-046.json",
+            "poem_id": "jibanananda-046",
+            "title_bn": "আলোক পত্র",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/alokpotro/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-048.json",
+            "poem_id": "jibanananda-048",
+            "title_bn": "আশা অনুমিতি",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/aasha-anumiti/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-095.json",
+            "poem_id": "jibanananda-095",
+            "title_bn": "কার্তিক-অঘ্রাণ ১৯৪৬",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/kartik-oghran-1946/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-182.json",
+            "poem_id": "jibanananda-182",
+            "title_bn": "নিজেকে নিয়মে ক্ষয়",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/nijeke-niyomey-khoy/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-236.json",
+            "poem_id": "jibanananda-236",
+            "title_bn": "বিপাশা",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/bipasha/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-248.json",
+            "poem_id": "jibanananda-248",
+            "title_bn": "ভোর ও ছয়টি বমারঃ ১৯৪২",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/vor-o-choity-bomar-1942/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-261.json",
+            "poem_id": "jibanananda-261",
+            "title_bn": "মহাগ্রহণ",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/mohagrohon/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-272.json",
+            "poem_id": "jibanananda-272",
+            "title_bn": "মৃত্যু সূর্য সংকল্প",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/mrittu-shurjo-shongkolpo/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-165.json",
+            "poem_id": "jibanananda-165",
+            "title_bn": "দিনরাত্রি",
+            "source_edition": "আলোপৃথিবী",
+            "book_id": "aloprithibi",
+            "source_year": 1981,
+            "source_url": "https://www.bangla-kobita.com/jibananandadas/dinratri/",
+            "review_bucket": "reviewed_false_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 165,
+              "printed_page_end": 165,
+              "printed_page_label": "165",
+              "status": "ambiguous",
+              "span_basis": "line_anchor_cluster",
+              "score": 15.0,
+              "runner_up_gap": 2.4,
+              "line_match_count": 1,
+              "exact_line_match_count": 1,
+              "evidence": [
+                "body_token_overlap",
+                "first_line_match",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "আলোপৃথিবী",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": {
+              "reason": "weak_line_overlap_wrong_page",
+              "note_bn": "বেলা অবেলা কালবেলা কপি পৃষ্ঠা ১৬৫ দেখা পাঠটি এই আমদানি করা কবিতার শুরু বা শরীরের সঙ্গে নির্ভরযোগ্যভাবে মেলে না।",
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "candidate_page_start": 165,
+              "candidate_page_end": 165
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0004,
+              "blockers": [
+                "reviewed_negative",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 165,
+              "printed_page_end": 165,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": 3.33,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          }
+        ]
+      },
+      {
+        "source_edition": "অগ্রন্থিত কবিতা",
+        "book_id": null,
+        "count": 5,
+        "items": [
+          {
+            "filename": "jibanananda-109.json",
+            "poem_id": "jibanananda-109",
+            "title_bn": "কোহিনূর",
+            "source_edition": "অগ্রন্থিত কবিতা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/kohinoor/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 11.8,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "অগ্রন্থিত কবিতা",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0061,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-249.json",
+            "poem_id": "jibanananda-249",
+            "title_bn": "ভোর হয়",
+            "source_edition": "অগ্রন্থিত কবিতা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/bhor-hoy/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 167,
+              "printed_page_end": 167,
+              "printed_page_label": "167",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 13.8,
+              "runner_up_gap": 3.6,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present",
+                "title_phrase_match"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "অগ্রন্থিত কবিতা",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0155,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 167,
+              "printed_page_end": 167,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-293.json",
+            "poem_id": "jibanananda-293",
+            "title_bn": "রাত্রি ও ভোর",
+            "source_edition": "অগ্রন্থিত কবিতা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/ratri-o-bhore/",
+            "review_bucket": "token_or_title_only_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "printed_page_label": "166",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 12.2,
+              "runner_up_gap": 0.2,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "অগ্রন্থিত কবিতা",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.0061,
+              "blockers": [
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 166,
+              "printed_page_end": 166,
+              "stage_deltas": {
+                "source_prior": -1.0,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-063.json",
+            "poem_id": "jibanananda-063",
+            "title_bn": "এই পথ দিয়ে",
+            "source_edition": "অগ্রন্থিত কবিতা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/ei-poth-diye/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "অগ্রন্থিত কবিতা",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-228.json",
+            "poem_id": "jibanananda-228",
+            "title_bn": "বর্ষ-আবাহন",
+            "source_edition": "অগ্রন্থিত কবিতা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/borsho-abahon/",
+            "review_bucket": "no_candidate",
+            "candidate": null,
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "অগ্রন্থিত কবিতা",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": null,
+            "factor_model": {
+              "next_action": "add_or_review_source_corpus",
+              "posterior_like": 0.001,
+              "blockers": [
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "source_prior": -0.6,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.8
+              }
+            }
+          }
+        ]
+      },
+      {
+        "source_edition": "অপ্রকাশিত কবিতা",
+        "book_id": null,
+        "count": 1,
+        "items": [
+          {
+            "filename": "jibanananda-340.json",
+            "poem_id": "jibanananda-340",
+            "title_bn": "সুদর্শনা",
+            "source_edition": "অপ্রকাশিত কবিতা",
+            "book_id": null,
+            "source_year": null,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shudorshona-oprokashito/",
+            "review_bucket": "reviewed_false_candidate",
+            "candidate": {
+              "book_id": "banalata-sen",
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "printed_page_label": null,
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 15.2,
+              "runner_up_gap": 3.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "title_match"
+              ]
+            },
+            "source_scan": {
+              "status": "unscanned_source_edition",
+              "source_edition": "অপ্রকাশিত কবিতা",
+              "reason": "source edition is not mapped to a current OCR book corpus",
+              "candidate_book_ids": [],
+              "best_page": null
+            },
+            "review_exclusion": {
+              "reason": "title_collision_distinct_poem",
+              "note_bn": "বনলতা সেন মুদ্রিত পৃষ্ঠা ১৮-তে একই শিরোনামের আলাদা কবিতা আছে, যা ইতিমধ্যে jibanananda-339 হিসেবে উদ্ধৃত। এই আমদানি করা অপ্রকাশিত পাঠের শরীর আলাদা, তাই title-only মিল গ্রহণযোগ্য নয়।",
+              "candidate_book_id": "banalata-sen",
+              "candidate_page_start": null,
+              "candidate_page_end": null
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0,
+              "blockers": [
+                "reviewed_negative",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor",
+                "missing_source_corpus"
+              ],
+              "candidate_book_id": "banalata-sen",
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": -1.0,
+                "page_sequence_repair": -2.0,
+                "text_alignment": -0.1,
+                "competition": 0.25,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.8
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "improve_text_extraction_or_manual_page_review": [],
+    "keep_excluded_until_new_scan_or_print_review": [
+      {
+        "source_edition": "রূপসী বাংলা",
+        "book_id": "rupasi-bangla",
+        "count": 5,
+        "items": [
+          {
+            "filename": "jibanananda-329.json",
+            "poem_id": "jibanananda-329",
+            "title_bn": "সমুদ্রের জলে আমি দেহ ধুয়ে",
+            "source_edition": "রূপসী বাংলা",
+            "book_id": "rupasi-bangla",
+            "source_year": 1957,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shomudrer-joley-aami-deho-dhuey/",
+            "review_bucket": "reviewed_false_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 15.4,
+              "runner_up_gap": 0.4,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "high_body_coverage",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "source_scan_weak",
+              "source_edition": "রূপসী বাংলা",
+              "reason": null,
+              "candidate_book_ids": [
+                "rupasi-bangla"
+              ],
+              "best_page": {
+                "book_id": "rupasi-bangla",
+                "printed_page": 64,
+                "page_type": "normal_poem_page",
+                "title_match": false,
+                "first_line_match": false,
+                "line_match_count": 0,
+                "body_coverage": 0.2292
+              }
+            },
+            "review_exclusion": {
+              "reason": "body_token_overlap_wrong_poem",
+              "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৬৪-তে দেখা OCR পাঠে 'সমুদ্রের জলে আমি দেহ ধুয়ে' শিরোনাম, সমুদ্র/মালাবার-প্রারম্ভ, বা ধারাবাহিক শরীর নেই। high body-token coverage সাধারণ শব্দ-সাদৃশ্য; পৃষ্ঠা-উদ্ধৃতি হিসেবে গ্রহণযোগ্য নয়।",
+              "candidate_book_id": "rupasi-bangla-copy",
+              "candidate_page_start": 164,
+              "candidate_page_end": 164
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0002,
+              "blockers": [
+                "reviewed_negative",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": 2.6,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.2,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.7
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-120.json",
+            "poem_id": "jibanananda-120",
+            "title_bn": "ঘাটশিলা—ঘটশিলা",
+            "source_edition": "রূপসী বাংলা",
+            "book_id": "rupasi-bangla",
+            "source_year": 1957,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/ghatshila-ghotshila/",
+            "review_bucket": "reviewed_false_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "printed_page_label": "164",
+              "status": "needs_manual_review",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 11.0,
+              "runner_up_gap": null,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "source_scan_weak",
+              "source_edition": "রূপসী বাংলা",
+              "reason": null,
+              "candidate_book_ids": [
+                "rupasi-bangla"
+              ],
+              "best_page": {
+                "book_id": "rupasi-bangla",
+                "printed_page": 73,
+                "page_type": "normal_poem_page",
+                "title_match": false,
+                "first_line_match": false,
+                "line_match_count": 0,
+                "body_coverage": 0.1899
+              }
+            },
+            "review_exclusion": {
+              "reason": "body_token_overlap_wrong_poem",
+              "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৬৪-তে দেখা OCR পাঠ 'তারপর চোখ তুলে...' অংশ দিয়ে শুরু; 'ঘাটশিলা—ঘটশিলা' শিরোনাম, কলকাতা/ঘাটশিলা-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। broad body-token overlap পৃষ্ঠা-উদ্ধৃতির জন্য যথেষ্ট নয়।",
+              "candidate_book_id": "rupasi-bangla-copy",
+              "candidate_page_start": 164,
+              "candidate_page_end": 164
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0005,
+              "blockers": [
+                "reviewed_negative",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 164,
+              "printed_page_end": 164,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": 2.6,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "candidate_generation": 0.2,
+                "corpus_coverage": -0.7
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-367.json",
+            "poem_id": "jibanananda-367",
+            "title_bn": "সোনালী ডানার শঙ্খচিল",
+            "source_edition": "রূপসী বাংলা",
+            "book_id": "rupasi-bangla",
+            "source_year": 1957,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/shonali-dangar-shongkho-chil/",
+            "review_bucket": "reviewed_false_candidate",
+            "candidate": {
+              "book_id": "rupasi-bangla-copy",
+              "printed_page_start": 158,
+              "printed_page_end": 158,
+              "printed_page_label": "158",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 15.0,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "source_scan_no_support",
+              "source_edition": "রূপসী বাংলা",
+              "reason": null,
+              "candidate_book_ids": [
+                "rupasi-bangla"
+              ],
+              "best_page": {
+                "book_id": "rupasi-bangla",
+                "printed_page": 73,
+                "page_type": "normal_poem_page",
+                "title_match": false,
+                "first_line_match": false,
+                "line_match_count": 0,
+                "body_coverage": 0.1189
+              }
+            },
+            "review_exclusion": {
+              "reason": "body_token_overlap_wrong_poem",
+              "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৫৮-তে দেখা OCR পাঠ 'মাঠের আঁধার পথে শিশু...' অংশ দিয়ে শুরু; 'সোনালী ডানার শঙ্খচিল' শিরোনাম, কলকাতা/বৌবাজার-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। source-scan review-ও no-support, তাই এই candidate বাদ।",
+              "candidate_book_id": "rupasi-bangla-copy",
+              "candidate_page_start": 158,
+              "candidate_page_end": 158
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0,
+              "blockers": [
+                "reviewed_negative",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": "rupasi-bangla-copy",
+              "printed_page_start": 158,
+              "printed_page_end": 158,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": 2.6,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -1.4
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-002.json",
+            "poem_id": "jibanananda-002",
+            "title_bn": "ঐখানে সারা দিন",
+            "source_edition": "রূপসী বাংলা",
+            "book_id": "rupasi-bangla",
+            "source_year": 1957,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/oikhaney-shara-din/",
+            "review_bucket": "reviewed_insufficient_scan_evidence",
+            "candidate": null,
+            "source_scan": {
+              "status": "source_scan_weak",
+              "source_edition": "রূপসী বাংলা",
+              "reason": null,
+              "candidate_book_ids": [
+                "rupasi-bangla"
+              ],
+              "best_page": {
+                "book_id": "rupasi-bangla",
+                "printed_page": 64,
+                "page_type": "normal_poem_page",
+                "title_match": false,
+                "first_line_match": false,
+                "line_match_count": 0,
+                "body_coverage": 0.2295
+              }
+            },
+            "review_exclusion": {
+              "reason": "not_found_in_current_scan_corpus",
+              "note_bn": "বর্তমান রূপসী বাংলা পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page কেবল দুর্বল token overlap; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।",
+              "candidate_book_id": null,
+              "candidate_page_start": null,
+              "candidate_page_end": null
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0,
+              "blockers": [
+                "reviewed_negative",
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": 0.8,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.7
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-119.json",
+            "poem_id": "jibanananda-119",
+            "title_bn": "ঘরের ভিতরে দীপ জ্বলে ওঠে সন্ধ্যায়",
+            "source_edition": "রূপসী বাংলা",
+            "book_id": "rupasi-bangla",
+            "source_year": 1957,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/ghorer-vitorey-dip-joley-othey-sondhyay/",
+            "review_bucket": "reviewed_insufficient_scan_evidence",
+            "candidate": null,
+            "source_scan": {
+              "status": "source_scan_weak",
+              "source_edition": "রূপসী বাংলা",
+              "reason": null,
+              "candidate_book_ids": [
+                "rupasi-bangla"
+              ],
+              "best_page": {
+                "book_id": "rupasi-bangla",
+                "printed_page": 73,
+                "page_type": "normal_poem_page",
+                "title_match": false,
+                "first_line_match": false,
+                "line_match_count": 0,
+                "body_coverage": 0.2105
+              }
+            },
+            "review_exclusion": {
+              "reason": "not_found_in_current_scan_corpus",
+              "note_bn": "বর্তমান রূপসী বাংলা পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page কেবল দুর্বল token overlap; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।",
+              "candidate_book_id": null,
+              "candidate_page_start": null,
+              "candidate_page_end": null
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0,
+              "blockers": [
+                "reviewed_negative",
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": 0.8,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.7
+              }
+            }
+          }
+        ]
+      },
+      {
+        "source_edition": "সাতটি তারার তিমির",
+        "book_id": "satti-tarar-timir",
+        "count": 2,
+        "items": [
+          {
+            "filename": "adbhut-andhar-ek.json",
+            "poem_id": "adbhut-andhar-ek",
+            "title_bn": "অদ্ভুত আঁধার এক",
+            "source_edition": "সাতটি তারার তিমির",
+            "book_id": "satti-tarar-timir",
+            "source_year": 1948,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/odbhut-adhar-prithibite-aaj/",
+            "review_bucket": "reviewed_insufficient_scan_evidence",
+            "candidate": null,
+            "source_scan": {
+              "status": "source_scan_weak",
+              "source_edition": "সাতটি তারার তিমির",
+              "reason": null,
+              "candidate_book_ids": [
+                "satti-tarar-timir"
+              ],
+              "best_page": {
+                "book_id": "satti-tarar-timir",
+                "printed_page": 32,
+                "page_type": "poem_or_text_page",
+                "title_match": false,
+                "first_line_match": false,
+                "line_match_count": 0,
+                "body_coverage": 0.2222
+              }
+            },
+            "review_exclusion": {
+              "reason": "not_found_in_current_scan_corpus",
+              "note_bn": "বর্তমান সাতটি তারার তিমির পেজ কর্পাসে শিরোনাম বা স্বতন্ত্র পঙ্‌ক্তি নির্ভরযোগ্যভাবে পাওয়া যায়নি। মুদ্রিত পৃষ্ঠা না দেখে বই-সূত্র থেকে পৃষ্ঠা বানানো যাবে না।",
+              "candidate_book_id": null,
+              "candidate_page_start": null,
+              "candidate_page_end": null
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0,
+              "blockers": [
+                "reviewed_negative",
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": 0.8,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.7
+              }
+            }
+          },
+          {
+            "filename": "jibanananda-007.json",
+            "poem_id": "jibanananda-007",
+            "title_bn": "অনন্ত জীবন যদি পাই আমি",
+            "source_edition": "সাতটি তারার তিমির",
+            "book_id": "satti-tarar-timir",
+            "source_year": 1948,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/onnot-jibon/",
+            "review_bucket": "reviewed_insufficient_scan_evidence",
+            "candidate": null,
+            "source_scan": {
+              "status": "source_scan_no_support",
+              "source_edition": "সাতটি তারার তিমির",
+              "reason": null,
+              "candidate_book_ids": [
+                "satti-tarar-timir"
+              ],
+              "best_page": {
+                "book_id": "satti-tarar-timir",
+                "printed_page": 29,
+                "page_type": "normal_poem_page",
+                "title_match": false,
+                "first_line_match": false,
+                "line_match_count": 0,
+                "body_coverage": 0.1519
+              }
+            },
+            "review_exclusion": {
+              "reason": "not_found_in_current_scan_corpus",
+              "note_bn": "বর্তমান সাতটি তারার তিমির পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page no-support; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।",
+              "candidate_book_id": null,
+              "candidate_page_start": null,
+              "candidate_page_end": null
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0,
+              "blockers": [
+                "reviewed_negative",
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": 0.8,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -1.4
+              }
+            }
+          }
+        ]
+      },
+      {
+        "source_edition": "বেলা অবেলা কালবেলা",
+        "book_id": "bela-abela-kalabela",
+        "count": 1,
+        "items": [
+          {
+            "filename": "jibanananda-009.json",
+            "poem_id": "jibanananda-009",
+            "title_bn": "অনির্বাণ",
+            "source_edition": "বেলা অবেলা কালবেলা",
+            "book_id": "bela-abela-kalabela",
+            "source_year": 1961,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/onirban/",
+            "review_bucket": "reviewed_false_candidate",
+            "candidate": {
+              "book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 150,
+              "printed_page_end": 150,
+              "printed_page_label": "150",
+              "status": "ambiguous",
+              "span_basis": "best_page_no_line_anchor",
+              "score": 12.2,
+              "runner_up_gap": 0.0,
+              "line_match_count": 0,
+              "exact_line_match_count": 0,
+              "evidence": [
+                "body_token_overlap",
+                "page_sequence_present"
+              ]
+            },
+            "source_scan": {
+              "status": "source_scan_weak",
+              "source_edition": "বেলা অবেলা কালবেলা",
+              "reason": null,
+              "candidate_book_ids": [
+                "bela-abela-kalabela"
+              ],
+              "best_page": {
+                "book_id": "bela-abela-kalabela",
+                "printed_page": null,
+                "page_type": "poem_or_text_page",
+                "title_match": false,
+                "first_line_match": false,
+                "line_match_count": 0,
+                "body_coverage": 0.2283
+              }
+            },
+            "review_exclusion": {
+              "reason": "body_token_overlap_wrong_poem",
+              "note_bn": "বেলা অবেলা কালবেলা কপি পৃষ্ঠা ১৫০-তে দেখা OCR পাঠ 'দূর থেকে প্রপেলার...' অংশ দিয়ে শুরু; 'অনির্বাণ' শিরোনাম, উত্তরসাগর-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। runner-up gap শূন্য, তাই broad body-token overlap গ্রহণযোগ্য নয়।",
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "candidate_page_start": 150,
+              "candidate_page_end": 150
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0001,
+              "blockers": [
+                "reviewed_negative",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": "bela-abela-kalabela-copy",
+              "printed_page_start": 150,
+              "printed_page_end": 150,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": 2.6,
+                "page_sequence_repair": 2.1,
+                "text_alignment": -0.9,
+                "competition": -0.7,
+                "candidate_generation": -0.8,
+                "corpus_coverage": -0.7
+              }
+            }
+          }
+        ]
+      },
+      {
+        "source_edition": "মহাপৃথিবী",
+        "book_id": "mahaprithibi",
+        "count": 1,
+        "items": [
+          {
+            "filename": "jibanananda-008.json",
+            "poem_id": "jibanananda-008",
+            "title_bn": "অনিবার",
+            "source_edition": "মহাপৃথিবী",
+            "book_id": "mahaprithibi",
+            "source_year": 1944,
+            "source_url": "https://www.bangla-kobita.com/jibanananda/onibar/",
+            "review_bucket": "reviewed_insufficient_scan_evidence",
+            "candidate": null,
+            "source_scan": {
+              "status": "source_scan_weak",
+              "source_edition": "মহাপৃথিবী",
+              "reason": null,
+              "candidate_book_ids": [
+                "mahaprithibi"
+              ],
+              "best_page": {
+                "book_id": "mahaprithibi",
+                "printed_page": 80,
+                "page_type": "poem_or_text_page",
+                "title_match": false,
+                "first_line_match": false,
+                "line_match_count": 0,
+                "body_coverage": 0.1972
+              }
+            },
+            "review_exclusion": {
+              "reason": "not_found_in_current_scan_corpus",
+              "note_bn": "বর্তমান মহাপৃথিবী পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page কেবল দুর্বল token overlap; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।",
+              "candidate_book_id": null,
+              "candidate_page_start": null,
+              "candidate_page_end": null
+            },
+            "factor_model": {
+              "next_action": "keep_excluded",
+              "posterior_like": 0.0,
+              "blockers": [
+                "reviewed_negative",
+                "no_candidate",
+                "no_printed_page",
+                "no_line_anchor_cluster",
+                "no_exact_line_anchor"
+              ],
+              "candidate_book_id": null,
+              "printed_page_start": null,
+              "printed_page_end": null,
+              "stage_deltas": {
+                "human_review": -8.0,
+                "source_prior": 0.8,
+                "candidate_generation": -2.5,
+                "corpus_coverage": -0.7
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -18,6 +18,9 @@ Notes:
 - 102 public `Jibanananda` poems still lack printed-page citations.
 - 66 poems still have unknown collection (`সংকলন অজানা`).
 - Source corpus backlog: **105 records across 12 groups**.
+- Full machine-readable acquisition queue:
+  `metadata_reports/source-acquisition-manifest.current.json` with a companion
+  Markdown summary at `metadata_reports/source-acquisition-manifest.current.md`.
 - Priority blockers:
   - `aloprithibi`: 21 uncited known-source poems.
   - `srestha-kabita`: 3 existing citations need corpus/default audit coverage.
