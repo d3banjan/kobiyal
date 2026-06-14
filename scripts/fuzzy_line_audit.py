@@ -1034,6 +1034,11 @@ def main() -> int:
             "vector_max_lines": args.vector_max_lines,
             "min_vector_score": args.min_vector_score,
             "vector_scope": "contiguous_ocr_region_windows",
+            "page_wide_prefilter_is_evidence": False,
+            "embedding_feature_channels": [
+                "exact_contiguous_character_shingles",
+                "ocr_class_normalized_contiguous_character_shingles",
+            ],
             "max_candidate_span_pages": args.max_candidate_span_pages,
             "max_region_lines": args.max_region_lines,
             "max_region_chars": args.max_region_chars,

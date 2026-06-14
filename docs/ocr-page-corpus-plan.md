@@ -157,18 +157,19 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
 - `scripts/fuzzy_line_audit.py`
   Builds a review-only fuzzy line report for remaining printed-page gaps after
   exact line and phrase-window matching are exhausted. Its vector prefilter is
-  now local-region aware: it first shortlists pages with cheap exact/class
-  shingle overlap, then compares representative poem lines against sparse
-  hashed embeddings for contiguous OCR windows only. The embedding uses full
-  weight for exact character shingles, half weight for OCR class-normalized
-  shingles, and higher weights for longer contiguous shingles (`3,5,8` by
-  default). Region embeddings are built lazily from per-page inverted indexes,
-  so the expensive vector dots do not run over every OCR window in the corpus.
-  The detailed pass still requires each accepted poem line to match one local
-  OCR region and reports the longest consecutive run of matched poem lines.
-  Candidate windows are capped to short printed-page spans. This report is not
-  an apply source; fuzzy-only candidates must still be checked against
-  printed-page evidence before writing poem metadata.
+  deliberately local-region aware: the page-wide exact/class shingle overlap is
+  only a cheap recall gate and is never citation evidence. Candidate scoring
+  compares representative poem lines against sparse hashed embeddings for
+  contiguous OCR windows only. Each embedding has two feature channels: exact
+  contiguous character shingles at full weight, and OCR class-normalized
+  contiguous character shingles at half weight. Longer contiguous shingles
+  (`3,5,8` by default) get higher weights. Region embeddings are built lazily
+  from per-page inverted indexes, so expensive vector dots do not run over every
+  OCR window in the corpus. The detailed pass still requires each accepted poem
+  line to match one local OCR region and reports the longest consecutive run of
+  matched poem lines. Candidate windows are capped to short printed-page spans.
+  This report is not an apply source; fuzzy-only candidates must still be
+  checked against printed-page evidence before writing poem metadata.
 
 - `scripts/ordered_region_audit.py`
   Builds a review-only ordered-token report for the remaining printed-page
@@ -181,6 +182,16 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   `weak_ordered_review` rows, all with ordered runs of one and no citation-grade
   page span. Its output is a triage sidecar only and must not be applied without
   exact ordered anchors and printed-page verification.
+
+- `scripts/citation_consistency_audit.py`
+  Audits existing primary printed-page citations against the repaired OCR
+  corpus. It checks whether the cited printed page exists in the exact source
+  scan or a logical alias, then looks for title, opening-line, exact-line, and
+  body-token evidence on that cited page range. It is review-only and does not
+  mutate poem JSON. The current run checks 270 existing citations: 238 are
+  supported by title/opening/exact-line evidence, 15 are supported only by broad
+  token coverage, 14 cite pages outside the current OCR corpus range for that
+  book, and 3 are weak current citations that need manual source review.
 
 - `scripts/ocr_lexicon_audit.py`
   Builds a Bengali token lexicon from the current Jibanananda poem JSON and
@@ -348,6 +359,14 @@ including continuation TOC pages and logical sections in the shared
 alone cannot identify which imported body should receive the citation. No poem
 JSON should be updated from the current TOC report.
 
+The citation consistency audit distinguishes absent scan coverage from
+potentially wrong citations. In the current run, 14 rows are
+`outside_corpus_range`: their cited printed pages sit outside the repaired OCR
+page range for the named book, so the audit cannot prove or disprove them from
+the current sidecars. Only 3 existing citations have in-range OCR rows but weak
+title/line/token evidence. These should be manually checked against printed
+sources before any metadata rewrite.
+
 The poem-body quality report also records leading dash structure across all
 Jibanananda poem JSON files. A single leading ASCII hyphen is treated by the site
 renderer as an imported stanza-break marker. Long all-hyphen divider lines are
@@ -357,7 +376,7 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.
