@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-272",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "posthumous-manuscript",
   "title_bn": "মৃত্যু সূর্য সংকল্প",
   "body_bn": "সর্বদাই অন্ধকারে মৃত্যু এক চিন্তার মতন;\nআমাদের এই শতাব্দীর সাধ, স্বপ্ন, কাজ, প্রাণ\nআচ্ছাদন ক'রে দিতে আসে।\nভোরের নিশ্চিন্ত মন কেমন সাহসে অনায়াসে\nআলো হয়- সূর্য হয়- দেখ;\nনদী- মেঘ- দিগন্তের পাহাড়ের নীল\nবিচ্ছুরিত হয়ে ওঠে কেমন নিঃশব্দ অনাবিল।\nআমরা প্রেমের কথা- জ্ঞান মুক্তি প্রগতির দিন\nঢের আগে শুরু ক'রে এখনো ব্রহ্মাণ্ড-অন্তর্লীন\nসুরের ভিতরে সুর-অগ্নি হতে গিয়ে\nবার বার অঙ্গারের অন্ধকারে সমাজ নিভিয়ে\nমানুষের ইতিহাস-ঊর্ণা হয়ে আছি।হে আকাশ, হে প্রতিভা, হে বিচিত্র উচ্ছ্রিত সূর্যের উজ্জ্বলন,\nআমাদের রোগ, পাপ, বয়সের রূঢ় মরুভূমি\nশেষ ক'রে মৃজনের অনাদির দীপ্তিকে আদিম\nচুম্বনে বিজ্ঞান, প্রেম, প্রেমাগ্নি উড্ডীন কর তুমি।",
   "tags": [
@@ -9,10 +9,10 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "আলোপৃথিবী",
+  "source_year": 1981,
   "source_name_bn": "বাংলা কবিতা",
-  "source_url": "https://www.bangla-kobita.com/jibanananda/mrittu-shurjo-shongkolpo/",
+  "source_url": "https://www.bangla-kobita.com/jibananandadas/mrittu-shurjo-shongkolpo/",
   "sort_order": 272,
   "verified": false
 }

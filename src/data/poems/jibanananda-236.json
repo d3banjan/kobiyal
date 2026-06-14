@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-236",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "posthumous-manuscript",
   "title_bn": "বিপাশা",
   "body_bn": "অনেক বছর হ’ল সে কোথায় পৃথিবীর মনে মিশে আছে।\nজেগে থেকে কথা ব’লে অন্য নারীমুখ দেখে কেউ কোনোমতে\nকেবলি কঠিন ঋণ দীর্ঘকাল আপামর পৃথিবীর কাছে\nচেয়ে নিয়ে তার পর পাশ কেটে, মেয়েটির ঘুমের জগতে\nদেনা শোধ ক’রে দিতে ভালোভাসে, আহা।\nআকাশে রৌদ্রের রোল, নদী, মাঠ, পথে বাতাস\nসেই স্বার্থ বুকে নিয়ে নিরুপম উজ্জ্বলতা হ’ল;\nশূন্যের সংঘর্ষ থেকে অনুপম হ’ল নীলাকাশ;\nতবু স্বাতির আলো- শিশিরের মত তার অপরীপ চোখ\nনিজের শরীর মন প্রাণশিল্পী আর\nনা জাগায়ে প্রেমিকের ঋতু পরিবর্তনের মত;\nনারী আজ সময়ের নিজের আধার।",
   "tags": [
@@ -9,10 +9,10 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "আলোপৃথিবী",
+  "source_year": 1981,
   "source_name_bn": "বাংলা কবিতা",
-  "source_url": "https://www.bangla-kobita.com/jibanananda/bipasha/",
+  "source_url": "https://www.bangla-kobita.com/jibananandadas/bipasha/",
   "sort_order": 236,
   "verified": false
 }

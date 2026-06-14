@@ -237,6 +237,15 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   Rows where an embedded marker conflicts with an existing source edition are
   reported as review debt and left unchanged.
 
+- `scripts/source_url_marker_audit.py`
+  Audits explicit collection labels on the existing online source URLs. This is
+  a secondary-source classifier, not a printed-book citation source: with
+  `--apply`, it may fill `source_edition`, `source_year`, `phase_id`, and a
+  canonical redirected source URL when the page text contains an exact label
+  like `কাব্যগ্রন্থ - আলোপৃথিবী`. It never writes `book_sources` or page
+  numbers. Rows without an exact marker remain unclassified even if OCR
+  candidates have title or token overlap in scanned books.
+
 - `scripts/phrase_window_audit.py`
   Builds a review-only exact phrase-window report for remaining poems by
   matching normalized 4-6 token body phrases against trusted OCR page records.
@@ -376,8 +385,8 @@ Current cumulative site-facing metadata state:
 - 280 of 389 Jibanananda records have printed book citations.
 - 267 of 369 public/non-duplicate Jibanananda records have printed book citations.
 - 102 public/non-duplicate Jibanananda records still lack printed book citations.
-- 79 public/non-duplicate records still have `সংকলন অজানা` as the collection.
-- 86 public/non-duplicate records still lack `source_year`.
+- 66 public/non-duplicate records still have `সংকলন অজানা` as the collection.
+- 73 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
   parenthesized `সূর্য নক্ষত্র নারী` fragments and the alternate `সেই দিন এই
   মাঠ` import whose cited `রূপসী বাংলা` counterpart remains listed, plus the
@@ -387,7 +396,7 @@ Current cumulative site-facing metadata state:
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 
 The enhanced gap report now separates known-source failures. In the current
-sidecar run, 14 known-source gaps cite editions not mapped to a current OCR book
+sidecar run, 27 known-source gaps cite editions not mapped to a current OCR book
 corpus (`আলোপৃথিবী`, `অগ্রন্থিত কবিতা`, or `অপ্রকাশিত কবিতা`). Nine known-source
 gaps do target scanned collections, but seven have only weak same-source OCR
 support and two have no current scan support; none has title or exact-line
@@ -600,15 +609,18 @@ produces only weak title matches and one missing-page sequence row. No poem JSON
 should be updated from the current TOC report.
 
 The main metadata gap report now separates source-year, primary printed
-book-year, and composition-date debt from page-citation debt. The current report
-has 102 missing printed-page citations, 102 missing primary printed book years,
-86 missing editorial source years, and 369 missing composition dates. The
-primary printed book-year count matches the missing printed-page count, which
-means every current primary printed-page citation already carries a cited-book
-publication year; the remaining book-year debt is really page-citation debt.
-Since the strict composition-date audit found no authorial date/place signatures
-in the currently cited OCR spans, composition dates should not be filled until
-stronger printed-source evidence is added or manually reviewed.
+book-year, and composition-date debt from page-citation debt. A later
+source-URL marker pass found 13 more explicit `কাব্যগ্রন্থ - আলোপৃথিবী`
+labels on existing Bangla-Kobita source pages and used them only to fill
+source edition/year/phase. The current report has 102 missing printed-page
+citations, 102 missing primary printed book years, 73 missing editorial source
+years, and 369 missing composition dates. The primary printed book-year count
+matches the missing printed-page count, which means every current primary
+printed-page citation already carries a cited-book publication year; the
+remaining book-year debt is really page-citation debt. Since the strict
+composition-date audit found no authorial date/place signatures in the
+currently cited OCR spans, composition dates should not be filled until stronger
+printed-source evidence is added or manually reviewed.
 
 The apply script dry-run now uses the same duplicate-hidden scope as the public
 site by default. With all review gates enabled against the current regenerated
@@ -675,7 +687,7 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py scripts/citation_factor_model.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py scripts/citation_factor_model.py scripts/source_url_marker_audit.py`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.

@@ -1,7 +1,7 @@
 {
   "id": "jibanananda-031",
   "poet_id": "jibanananda-das",
-  "phase_id": "dataset-archive",
+  "phase_id": "posthumous-manuscript",
   "title_bn": "আজ",
   "body_bn": "অন্ধ সাগরের বেগে উৎসারিত রাত্রির মতন\nআলোড়ন মানুষের প্রিয়তর দিক নির্ণয়ের\nপথ আজ প্রতিহত; তবুও কোথাও\nনির্মল সন্ততি দেশ সময়ের নব নব তীর-\nপেতে পায়ে হয়তো বা মানব হৃদয়;মহাপতনের দিনে আজ অবহিত হয়ে নিতে হয়।\nযদিও অধীর লক্ষ্যে অন্ধকারে মানুষ চলেছে\nধ্বংস আশা বেদনায়বন্য মরালের মত চেতনায় নীল কুয়াশায়,-\nকুহেলি সরিয়ে তবু মানুষের কাহিনীর পথে\nভাস্বরতা এসে পড়ে মাঝে মাঝে-\nস্বচ্ছ ক্রান্তিবলয়ের মতন জগতে।মনে হয় মহানিশীথের স্তন্যপায়ী\nমানুষ তবুও শিশুসূর্যের সন্তান,\nস্থিরতর বিষয়ী সে,-\nযদিও হৃদয়ে রক্তে আজো ভুল অকূলের গান।",
   "tags": [
@@ -9,10 +9,10 @@
     "নদী",
     "আকাশ"
   ],
-  "source_edition": "সংকলন অজানা",
-  "source_year": null,
+  "source_edition": "আলোপৃথিবী",
+  "source_year": 1981,
   "source_name_bn": "বাংলা কবিতা",
-  "source_url": "https://www.bangla-kobita.com/jibanananda/aaj/",
+  "source_url": "https://www.bangla-kobita.com/jibananandadas/aaj/",
   "sort_order": 31,
   "verified": false
 }
