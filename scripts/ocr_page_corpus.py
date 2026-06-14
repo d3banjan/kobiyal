@@ -330,6 +330,30 @@ def structural_features(text: str, raw_ocr: str) -> dict[str, Any]:
     }
 
 
+def looks_like_contents_page(text: str) -> bool:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if len(lines) < 5:
+        return False
+
+    entry_like = 0
+    trailing_page_refs = 0
+    digit_tokens = 0
+    for line in lines:
+        tokens = re.findall(r"[০-৯0-9]{1,3}", line)
+        if not tokens or not re.search(r"[\u0980-\u09FF]", line):
+            continue
+        digit_tokens += len(tokens)
+        compact = re.sub(r"\s+", " ", line)
+        if len(compact) <= 54:
+            entry_like += 1
+        if re.search(r"[\u0980-\u09FF][^\n]{0,48}[০-৯0-9]{1,3}\s*$", compact):
+            trailing_page_refs += 1
+
+    if digit_tokens < 5 or entry_like < 4:
+        return False
+    return trailing_page_refs >= 3 or entry_like >= max(5, len(lines) // 3)
+
+
 def classify_page(features: dict[str, Any], text: str, candidates: list[dict[str, Any]]) -> str:
     line_count = features["line_count"]
     char_count = features["char_count"]
@@ -342,6 +366,8 @@ def classify_page(features: dict[str, Any], text: str, candidates: list[dict[str
     if re.search(r"প্রকাশক|মুদ্রক|প্রথম\s*মুদ্রণ|প্রথম\s*সংস্করণ|প্রচ্ছদ", normalized):
         return "publisher_page"
     if re.search(r"^[\"'‘’“”।]*(সূচ|সুচ)", normalized):
+        return "front_matter"
+    if looks_like_contents_page(text):
         return "front_matter"
     if re.search(r"উৎসর্গ|ভূমিকা|রচনাকাল", normalized) and long_line_count < 8:
         return "front_matter"

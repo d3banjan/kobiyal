@@ -77,13 +77,16 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   Optional Docker wrapper for Bengali Tesseract OCR. It writes OCR output into the same cache shape as the host runner.
 
 - `scripts/classify_pages.py`
-  Reclassifies page records from structural features only. Pages that begin with a contents marker (`সূচ...` or OCR-damaged `সুচ...`) are treated as front matter even when they have many long table-of-contents lines.
+  Reclassifies page records from structural features only. Pages that begin with a contents marker (`সূচ...` or OCR-damaged `সুচ...`) are treated as front matter even when they have many long table-of-contents lines. Pages with many short Bengali title/page-number rows are also treated as front matter, so contents digits cannot poison poem-page sequence repair.
 
 - `scripts/logical_sections.py`
   Retags logical collection sections inside shared physical scan files. For example, `2015.300502.Jibnananda-Dasher.pdf` contains a later `ঝরা পালক` section; rows keep `physical_book_id` for cached images/layout, while `book_id` becomes the collection identity used for matching and citations.
 
 - `scripts/repair_page_sequence.py`
   Repairs printed page numbers using OCR candidates, optional TSV layout candidates, supported scan-to-printed-page offsets, monotonic sequence constraints, and page-type confidence. Offset support prevents a contents-page number from poisoning later poem pages.
+  When OCR creates a sparse false offset, such as reading `১২/১৪/১৬` as
+  `৯২/৯৪/৯৬`, a dominant-offset rule keeps the coherent book sequence and
+  rejects the weaker parallel offset.
   It also allows a short trusted tail after two visible sequential anchors; this
   handles cases where the final poem page in a section has no readable printed
   page number but directly follows visible pages.
@@ -298,9 +301,9 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 
 Current cumulative site-facing metadata state:
 
-- 279 of 389 Jibanananda records have printed book citations.
-- 270 of 373 public/non-duplicate Jibanananda records have printed book citations.
-- 103 public/non-duplicate Jibanananda records still lack printed book citations.
+- 282 of 389 Jibanananda records have printed book citations.
+- 273 of 373 public/non-duplicate Jibanananda records have printed book citations.
+- 100 public/non-duplicate Jibanananda records still lack printed book citations.
 - 82 public/non-duplicate records still have `সংকলন অজানা` as the collection.
 - 89 public/non-duplicate records still lack `source_year`.
 - Public counts exclude exact or partial duplicate import rows, including the
@@ -312,9 +315,8 @@ Current cumulative site-facing metadata state:
 Remaining `সংকলন অজানা` poems stay in the metadata backlog until a manual or stronger automated pass resolves them.
 
 The enhanced gap report now separates known-source failures. In the current
-sidecar run, 14 known-source gaps cite editions not mapped to a current OCR book
-corpus (`আলোপৃথিবী`, `শ্রেষ্ঠ কবিতা`, `অগ্রন্থিত কবিতা`, or `অপ্রকাশিত
-কবিতা`). Seven known-source gaps do target scanned collections, but six have
+sidecar run, 11 known-source gaps cite editions not mapped to a current OCR book
+corpus (`আলোপৃথিবী`, `অগ্রন্থিত কবিতা`, or `অপ্রকাশিত কবিতা`). Seven known-source gaps do target scanned collections, but six have
 only weak same-source OCR support and one has token-only support; none has title
 or exact-line evidence strong enough for automatic page citation.
 
@@ -324,8 +326,19 @@ markers were removed from the poem body text. This pass intentionally did not
 add printed-page citations, because the markers identify collection status but
 do not prove a book page. The same audit surfaced one unresolved conflict:
 `তবু` is currently filed under `শ্রেষ্ঠ কবিতা`, while the imported body ends
-with a `সাতটি তারার তিমির কাব্যগ্রন্থ` marker. It remains unchanged until
-printed-source evidence resolves the conflict.
+with a `সাতটি তারার তিমির কাব্যগ্রন্থ` marker. That marker is not used to
+rewrite the poem's source edition without printed-source evidence; it remains a
+separate original-collection/text-cleanup review item.
+
+A follow-up auxiliary pass generated a scratch `শ্রেষ্ঠ কবিতা` corpus from the
+approved project downloads using `pdftotext` only, then repaired its printed
+page sequence after the contents-page and dominant-offset fixes. Three
+same-source accepted candidates were applied: `তবু` on printed pages 112-114,
+`পৃথিবীতে` on page 114, and `লোকেন বোসের জর্নাল` on pages 119-120. The full
+citation audit was run against a combined current corpus plus the scratch
+`srestha-kabita` rows; all three new citations were supported. The generated
+JSONL corpus remains ignored and should be regenerated when the OCR sidecars are
+rebuilt.
 
 A manual evidence pass over the strongest remaining line-anchor candidates added
 `ভিখিরী` to the `বনলতা সেন` appendix on printed pages 171-172 and `হাঁস` to
@@ -470,7 +483,7 @@ diagnostic threshold it produced only weak title matches and one missing-page
 sequence row. No poem JSON should be updated from the current TOC report.
 
 The main metadata gap report now separates source-year and composition-date
-debt from page-citation debt. The current report has 103 missing printed-page
+debt from page-citation debt. The current report has 100 missing printed-page
 citations, 89 missing source years, and 373 missing composition dates. Since the
 strict composition-date audit found no authorial date/place signatures in the
 currently cited OCR spans, composition dates should not be filled until stronger

@@ -20,6 +20,30 @@ def normalize(text: str) -> str:
     return text
 
 
+def looks_like_contents_page(text: str) -> bool:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if len(lines) < 5:
+        return False
+
+    entry_like = 0
+    trailing_page_refs = 0
+    digit_tokens = 0
+    for line in lines:
+        tokens = re.findall(r"[০-৯0-9]{1,3}", line)
+        if not tokens or not re.search(r"[\u0980-\u09FF]", line):
+            continue
+        digit_tokens += len(tokens)
+        compact = re.sub(r"\s+", " ", line)
+        if len(compact) <= 54:
+            entry_like += 1
+        if re.search(r"[\u0980-\u09FF][^\n]{0,48}[০-৯0-9]{1,3}\s*$", compact):
+            trailing_page_refs += 1
+
+    if digit_tokens < 5 or entry_like < 4:
+        return False
+    return trailing_page_refs >= 3 or entry_like >= max(5, len(lines) // 3)
+
+
 def classify(record: dict[str, Any]) -> str:
     features = record.get("layout_features") or {}
     text = normalize(
@@ -42,6 +66,15 @@ def classify(record: dict[str, Any]) -> str:
     if re.search(r"প্রকাশক|মুদ্রক|প্রথমমুদ্রণ|প্রথমসংস্করণ|প্রচ্ছদ", text):
         return "publisher_page"
     if re.search(r"^[\"'‘’“”।]*(সূচ|সুচ)", text):
+        return "front_matter"
+    if looks_like_contents_page(
+        "\n".join(
+            [
+                record.get("raw_ocr") or "",
+                record.get("raw_pdftotext") or "",
+            ]
+        )
+    ):
         return "front_matter"
     if re.search(r"উৎসর্গ|ভূমিকা|রচনাকাল", text) and long_lines < 8:
         return "front_matter"

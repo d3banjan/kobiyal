@@ -156,6 +156,16 @@ def supported_offsets(
     supported = {offset for offset, scans in offsets.items() if len(scans) >= 3}
     if not supported:
         return None
+    if len(supported) > 1:
+        ranked = sorted(
+            supported,
+            key=lambda offset: (len(offsets[offset]), max(offsets[offset]) - min(offsets[offset]), -abs(offset)),
+            reverse=True,
+        )
+        best = ranked[0]
+        second_count = len(offsets[ranked[1]])
+        if len(offsets[best]) >= max(3, second_count * 2):
+            return {best}
     return supported
 
 

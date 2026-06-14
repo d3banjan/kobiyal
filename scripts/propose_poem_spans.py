@@ -31,6 +31,7 @@ COLLECTION_TO_BOOK_ID = {
     "বেলা অবেলা কালবেলা": "bela-abela-kalabela",
     "মহাপৃথিবী": "mahaprithibi",
     "রূপসী বাংলা": "rupasi-bangla",
+    "শ্রেষ্ঠ কবিতা": "srestha-kabita",
 }
 
 COLLECTION_TO_ALIAS_BOOK_IDS = {

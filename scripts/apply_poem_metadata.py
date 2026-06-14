@@ -51,6 +51,11 @@ BASE_BOOK_META = {
         "publication_year": 1961,
         "phase_id": "posthumous-manuscript",
     },
+    "srestha-kabita": {
+        "title_bn": "শ্রেষ্ঠ কবিতা",
+        "publication_year": 1954,
+        "phase_id": "posthumous-manuscript",
+    },
 }
 
 BOOK_ALIASES = {

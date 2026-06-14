@@ -14,5 +14,21 @@
   "source_name_bn": "বাংলা কবিতা",
   "source_url": "https://www.bangla-kobita.com/jibanananda/prithibite/",
   "sort_order": 209,
-  "verified": false
+  "verified": false,
+  "book_sources": [
+    {
+      "role": "primary",
+      "title_bn": "শ্রেষ্ঠ কবিতা",
+      "publisher_bn": null,
+      "edition_bn": null,
+      "publication_year": 1954,
+      "isbn": null,
+      "purchase_url": null,
+      "page_start": 114,
+      "page_end": 114,
+      "page_label_bn": null,
+      "page_basis": "printed_page",
+      "note_bn": "OCR ও পৃষ্ঠা-ক্রম মিলিয়ে প্রস্তাবিত মুদ্রিত পৃষ্ঠা; পাঠ-প্রুফরিডিং আলাদা ধাপ।"
+    }
+  ]
 }
