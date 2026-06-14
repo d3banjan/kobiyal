@@ -77,13 +77,24 @@ def find_source_marker(text: str) -> dict[str, Any] | None:
     }
 
 
+def status_for_marker(poem: dict[str, Any], marker: dict[str, Any] | None) -> str:
+    current_source = poem.get("source_edition")
+    if marker is None:
+        return "no_explicit_marker"
+    if current_source == UNKNOWN_COLLECTION:
+        return "applies_to_unknown"
+    if current_source == marker["source_edition"]:
+        return "already_matching"
+    return "conflicting_existing"
+
+
 def audit_poems(args: argparse.Namespace) -> list[dict[str, Any]]:
     rows = []
     for path in sorted(Path(args.poems_dir).glob("*.json")):
         poem = read_json(path)
         if poem.get("poet_id") != "jibanananda-das":
             continue
-        if poem.get("source_edition") != UNKNOWN_COLLECTION:
+        if not args.include_known and poem.get("source_edition") != UNKNOWN_COLLECTION:
             continue
         raw_url = str(poem.get("source_url") or "")
         canonical_url = normalize_url(raw_url)
@@ -111,11 +122,9 @@ def audit_poems(args: argparse.Namespace) -> list[dict[str, Any]]:
             continue
 
         marker = find_source_marker(page_text)
-        if marker is None:
-            row["status"] = "no_explicit_marker"
-        else:
+        row["status"] = status_for_marker(poem, marker)
+        if marker is not None:
             row.update(marker)
-            row["status"] = "applies_to_unknown"
         rows.append(row)
         if args.sleep:
             time.sleep(args.sleep)
@@ -171,7 +180,7 @@ def markdown_report(payload: dict[str, Any]) -> str:
         ]
     )
     for row in payload["rows"]:
-        if row.get("status") != "applies_to_unknown":
+        if row.get("status") not in {"applies_to_unknown", "conflicting_existing"}:
             continue
         lines.append(
             "| "
@@ -199,6 +208,7 @@ def main() -> int:
     parser.add_argument("--sleep", type=float, default=0.05)
     parser.add_argument("--user-agent", default="Mozilla/5.0")
     parser.add_argument("--apply", action="store_true")
+    parser.add_argument("--include-known", action="store_true", help="Also audit already-classified rows for conflicts.")
     args = parser.parse_args()
 
     rows = audit_poems(args)
@@ -207,6 +217,8 @@ def main() -> int:
         "summary": {
             "row_count": len(rows),
             "applies_to_unknown_count": sum(1 for row in rows if row.get("status") == "applies_to_unknown"),
+            "already_matching_count": sum(1 for row in rows if row.get("status") == "already_matching"),
+            "conflicting_existing_count": sum(1 for row in rows if row.get("status") == "conflicting_existing"),
             "no_explicit_marker_count": sum(1 for row in rows if row.get("status") == "no_explicit_marker"),
             "fetch_error_count": sum(1 for row in rows if row.get("status") == "fetch_error"),
             "changed_count": len(changed),

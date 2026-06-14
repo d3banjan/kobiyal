@@ -214,7 +214,13 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   is the handoff list for adding missing scans or performing direct printed-book
   review. It also surfaces explicit embedded source-marker conflicts, so a
   source note imported into the poem body cannot stay hidden behind a generic
-  weak-candidate row.
+  weak-candidate row. The report now also emits a combined
+  `source_corpus_backlog` section. That backlog joins missing corpora for
+  already-cited poems from `citation_consistency_audit.py`, missing scans for
+  uncited known-source poems such as `আলোপৃথিবী`, scanned-source rows that need
+  better extraction or manual page review, and remaining unknown-source rows.
+  This is the preferred acquisition/review queue before adding more printed-page
+  citations.
 
 - `scripts/citation_factor_model.py`
   Builds a review-only posterior-style factor ledger for the unresolved
@@ -244,7 +250,11 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   canonical redirected source URL when the page text contains an exact label
   like `কাব্যগ্রন্থ - আলোপৃথিবী`. It never writes `book_sources` or page
   numbers. Rows without an exact marker remain unclassified even if OCR
-  candidates have title or token overlap in scanned books.
+  candidates have title or token overlap in scanned books. With
+  `--include-known`, the same audit also checks already-classified source URLs
+  and reports `already_matching` or `conflicting_existing` rows, which keeps
+  secondary-source evidence in the posterior ledger without turning it into a
+  printed-page citation gate.
 
 - `scripts/phrase_window_audit.py`
   Builds a review-only exact phrase-window report for remaining poems by

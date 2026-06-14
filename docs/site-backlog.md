@@ -11,3 +11,16 @@ Notes:
 - Scope this to desktop layout only.
 - Preserve current section-click behavior.
 - Check sticky positioning and scroll-spy behavior after the change.
+
+## Current metadata/OCR state
+
+- No immediate publish requested.
+- 102 public `Jibanananda` poems still lack printed-page citations.
+- 66 poems still have unknown collection (`সংকলন অজানা`).
+- Source corpus backlog: **105 records across 11 groups**.
+- Priority blockers:
+  - `aloprithibi`: 21 uncited known-source poems.
+  - `srestha-kabita`: 3 existing citations need corpus/default audit coverage.
+  - Archival buckets: `agranthita` 5, `aprakashita` 1.
+  - 9 scanned-source rows need better extraction / manual review.
+- Current verification status: `report_metadata_gaps` passed, `citation_factor_model` passed, `bun run build` passed.

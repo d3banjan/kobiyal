@@ -17,6 +17,7 @@ from typing import Any
 
 import propose_poem_spans as spans
 import embedded_source_audit
+import apply_poem_metadata as apply_meta
 
 
 UNKNOWN_COLLECTION = "সংকলন অজানা"
@@ -24,6 +25,10 @@ DEFAULT_REVIEW_EXCLUSIONS = "src/data/metadata-review-exclusions.json"
 DEFAULT_CANDIDATES = "metadata_reports/poem-span-candidates.current.regen.jsonl"
 DEFAULT_PAGE_CORPUS = "metadata_reports/page-corpus.full.repaired.layout.jsonl"
 DEFAULT_TOC_AUDIT = "metadata_reports/toc-index-audit.current.json"
+DEFAULT_CITATION_AUDIT = "metadata_reports/citation-consistency-audit.current.json"
+SOURCE_BOOK_ID_HINTS = {
+    "আলোপৃথিবী": "aloprithibi",
+}
 TITLE_DATE_RE = re.compile(
     r"(?:[\u09E6-\u09EF0-9]{3,4}|বৈশাখ|জ্যৈষ্ঠ|জৈষ্ঠ|আষাঢ়|আষাঢ়|শ্রাবণ|ভাদ্র|আশ্বিন|কার্তিক|অগ্রহায়ণ|অগ্রহায়ণ|পৌষ|মাঘ|ফাল্গুন|চৈত্র)"
 )
@@ -397,6 +402,151 @@ def source_coverage_blockers(missing: list[dict[str, Any]]) -> list[dict[str, An
     )
 
 
+def book_title_from_id(book_id: str | None) -> str | None:
+    if not book_id:
+        return None
+    canonical = apply_meta.BOOK_ALIASES.get(book_id, book_id)
+    meta = apply_meta.BASE_BOOK_META.get(canonical)
+    if meta:
+        return str(meta.get("title_bn") or "")
+    for title, mapped_book_id in spans.COLLECTION_TO_BOOK_ID.items():
+        if mapped_book_id == canonical:
+            return title
+    return None
+
+
+def source_book_id_hint(source_edition: str | None) -> str | None:
+    if not source_edition:
+        return None
+    return spans.COLLECTION_TO_BOOK_ID.get(source_edition) or SOURCE_BOOK_ID_HINTS.get(source_edition)
+
+
+def source_corpus_backlog(
+    missing: list[dict[str, Any]],
+    citation_audit: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    """Group remaining scan/corpus blockers across missing and existing citations."""
+
+    rows: list[dict[str, Any]] = []
+
+    existing_groups: dict[str, dict[str, Any]] = {}
+    for item in (citation_audit or {}).get("citations") or []:
+        if item.get("status") != "missing_book_corpus":
+            continue
+        book_id = str(item.get("source_book_id") or "")
+        row = existing_groups.setdefault(
+            book_id,
+            {
+                "kind": "missing_corpus_for_existing_citations",
+                "action": "add_corpus_or_regenerate_auxiliary_corpus",
+                "source_edition": item.get("source_edition") or item.get("source_title_bn") or book_title_from_id(book_id),
+                "book_id": book_id,
+                "count": 0,
+                "items": [],
+            },
+        )
+        row["count"] += 1
+        row["items"].append(
+            {
+                "filename": item.get("filename"),
+                "poem_id": item.get("poem_id"),
+                "title_bn": item.get("title_bn"),
+                "page_start": (item.get("citation") or {}).get("page_start"),
+                "page_end": (item.get("citation") or {}).get("page_end"),
+            }
+        )
+    rows.extend(existing_groups.values())
+
+    unscanned_groups: dict[str, dict[str, Any]] = {}
+    weak_groups: dict[tuple[str, str], dict[str, Any]] = {}
+    unknown_items = []
+    for item in missing:
+        edition = str(item.get("source_edition") or "")
+        if edition == UNKNOWN_COLLECTION:
+            if len(unknown_items) < 12:
+                unknown_items.append(
+                    {
+                        "filename": item.get("filename"),
+                        "poem_id": item.get("poem_id"),
+                        "title_bn": item.get("title_bn"),
+                        "source_url": item.get("source_url"),
+                    }
+                )
+            continue
+
+        review = item.get("source_scan_review") or {}
+        status = str(review.get("status") or "")
+        if status in {"unscanned_source_edition", "no_source_scan_pages"}:
+            row = unscanned_groups.setdefault(
+                edition,
+                {
+                    "kind": "missing_source_corpus_for_uncited_poems",
+                    "action": "add_scan_or_direct_print_review",
+                    "source_edition": edition,
+                    "book_id": source_book_id_hint(edition),
+                    "status": status,
+                    "count": 0,
+                    "items": [],
+                },
+            )
+            row["count"] += 1
+            row["items"].append(
+                {
+                    "filename": item.get("filename"),
+                    "poem_id": item.get("poem_id"),
+                    "title_bn": item.get("title_bn"),
+                    "source_url": item.get("source_url"),
+                }
+            )
+        elif status in {"source_scan_weak", "source_scan_no_support"}:
+            key = (edition, status)
+            row = weak_groups.setdefault(
+                key,
+                {
+                    "kind": "scanned_source_needs_better_extraction",
+                    "action": "improve_text_extraction_or_manual_page_review",
+                    "source_edition": edition,
+                    "book_id": source_book_id_hint(edition),
+                    "status": status,
+                    "count": 0,
+                    "items": [],
+                },
+            )
+            row["count"] += 1
+            row["items"].append(
+                {
+                    "filename": item.get("filename"),
+                    "poem_id": item.get("poem_id"),
+                    "title_bn": item.get("title_bn"),
+                    "source_url": item.get("source_url"),
+                    "source_scan": source_scan_summary(review),
+                }
+            )
+
+    rows.extend(unscanned_groups.values())
+    rows.extend(weak_groups.values())
+    unknown_count = sum(1 for item in missing if item.get("source_edition") == UNKNOWN_COLLECTION)
+    if unknown_count:
+        rows.append(
+            {
+                "kind": "unknown_source_collection",
+                "action": "identify_collection_before_page_citation",
+                "source_edition": UNKNOWN_COLLECTION,
+                "book_id": None,
+                "count": unknown_count,
+                "items": unknown_items,
+            }
+        )
+
+    priority = {
+        "missing_corpus_for_existing_citations": 0,
+        "missing_source_corpus_for_uncited_poems": 1,
+        "scanned_source_needs_better_extraction": 2,
+        "unknown_source_collection": 3,
+    }
+    return sorted(rows, key=lambda row: (priority.get(str(row["kind"]), 99), -int(row["count"]), row.get("source_edition") or ""))
+
+
 def matches_toc_review_exclusion(match: dict[str, Any], exclusion: dict[str, Any]) -> bool:
     candidate = match.get("best_candidate") or {}
     expected_book = exclusion.get("candidate_book_id")
@@ -564,6 +714,7 @@ def build_report(
     review_exclusions: dict[str, list[dict[str, Any]]],
     pages_by_book: dict[str, list[dict[str, Any]]],
     toc_matches_by_file: dict[str, dict[str, Any]],
+    citation_audit: dict[str, Any] | None,
     include_logical_aliases: bool,
     source_scan_min_line_chars: int,
 ) -> dict[str, Any]:
@@ -626,6 +777,13 @@ def build_report(
     primary_book_year_missing = primary_printed_book_year_blockers(poems)
     title_date_rows = title_date_candidates(poems)
     composition_date_missing = composition_date_blockers(poems)
+    corpus_backlog = source_corpus_backlog(missing, citation_audit)
+    corpus_backlog_action_counts: Counter[str] = Counter()
+    corpus_backlog_action_group_counts: Counter[str] = Counter()
+    for item in corpus_backlog:
+        action = str(item["action"])
+        corpus_backlog_action_counts[action] += int(item["count"])
+        corpus_backlog_action_group_counts[action] += 1
     return {
         "summary": {
             "public_poem_count": len(poems),
@@ -655,12 +813,17 @@ def build_report(
             ),
             "source_coverage_blocker_count": sum(int(item["count"]) for item in blockers),
             "source_coverage_blocker_groups": len(blockers),
+            "source_corpus_backlog_count": sum(int(item["count"]) for item in corpus_backlog),
+            "source_corpus_backlog_groups": len(corpus_backlog),
+            "source_corpus_backlog_action_counts": dict(corpus_backlog_action_counts.most_common()),
+            "source_corpus_backlog_action_group_counts": dict(corpus_backlog_action_group_counts.most_common()),
             "toc_index_candidate_count": len(toc_blockers),
             "toc_index_reviewed_exclusion_count": len(toc_reviewed_exclusions),
             "toc_index_status_counts": dict(Counter(str(item.get("status") or "") for item in toc_blockers).most_common()),
             "title_date_candidate_count": len(title_date_rows),
             "title_date_source_year_gap_count": sum(1 for item in title_date_rows if item.get("source_year") is None),
         },
+        "source_corpus_backlog": corpus_backlog,
         "source_coverage_blockers": blockers,
         "toc_index_blockers": toc_blockers,
         "toc_index_reviewed_exclusions": toc_reviewed_exclusions,
@@ -688,6 +851,7 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         f"- Public poems missing source year: {summary['missing_source_year_count']}",
         f"- Public poems missing primary printed book year: {summary['missing_primary_printed_book_year_count']}",
         f"- Public poems missing composition date: {summary['missing_composition_date_count']}",
+        f"- Source corpus backlog records: {summary['source_corpus_backlog_count']} in {summary['source_corpus_backlog_groups']} groups",
         f"- TOC index candidates requiring review: {summary['toc_index_candidate_count']}",
         f"- Reviewed TOC exclusions: {summary['toc_index_reviewed_exclusion_count']}",
         f"- Title date candidates requiring printed-source review: {summary['title_date_candidate_count']}",
@@ -719,6 +883,45 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
     )
     for edition, count in summary["missing_by_source_edition"].items():
         lines.append(f"- {edition}: {count}")
+
+    corpus_backlog = report.get("source_corpus_backlog") or []
+    lines.extend(
+        [
+            "",
+            "## Source Corpus Backlog",
+            "",
+            "This combines missing corpora for already-cited poems, missing scans for uncited known-source poems, weak scanned-source evidence, and unknown-source rows. It is the acquisition/review queue before more page citations can be added safely.",
+            "",
+        ]
+    )
+    if corpus_backlog:
+        lines.extend(
+            [
+                "| kind | action | source edition | book id | count | sample titles |",
+                "|---|---|---|---|---:|---|",
+            ]
+        )
+        for row in corpus_backlog:
+            titles = " · ".join(str(item.get("title_bn") or "") for item in (row.get("items") or [])[:8])
+            remaining = int(row.get("count") or 0) - min(int(row.get("count") or 0), 8)
+            if remaining > 0:
+                titles = f"{titles} · +{remaining} more"
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        str(row.get("kind") or ""),
+                        str(row.get("action") or ""),
+                        str(row.get("source_edition") or ""),
+                        str(row.get("book_id") or ""),
+                        str(row.get("count") or 0),
+                        titles.replace("|", "\\|"),
+                    ]
+                )
+                + " |"
+            )
+    else:
+        lines.append("- None")
 
     toc_blockers = report.get("toc_index_blockers") or []
     lines.extend(
@@ -1004,6 +1207,11 @@ def main() -> int:
         default=DEFAULT_TOC_AUDIT,
         help="Optional TOC index audit JSON to surface title/page blockers. Use an empty string to disable.",
     )
+    parser.add_argument(
+        "--citation-audit",
+        default=DEFAULT_CITATION_AUDIT,
+        help="Optional citation consistency audit JSON to include missing existing-source corpora. Use an empty string to disable.",
+    )
     parser.add_argument("--ocr-substitutions", default=None)
     parser.add_argument("--include-logical-aliases", action="store_true")
     parser.add_argument("--include-untrusted-pages", action="store_true")
@@ -1035,6 +1243,7 @@ def main() -> int:
             filename = row.get("filename")
             if filename:
                 toc_matches_by_file[str(filename)] = row
+    citation_audit = read_json(Path(args.citation_audit)) if args.citation_audit and Path(args.citation_audit).exists() else None
     review_exclusions = load_review_exclusions(Path(args.review_exclusions))
 
     report = build_report(
@@ -1043,6 +1252,7 @@ def main() -> int:
         review_exclusions,
         pages_by_book,
         toc_matches_by_file,
+        citation_audit,
         include_logical_aliases=args.include_logical_aliases,
         source_scan_min_line_chars=args.source_scan_min_line_chars,
     )

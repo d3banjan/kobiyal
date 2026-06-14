@@ -422,6 +422,10 @@ const banglaDigits = new Map([
   ["9", "৯"]
 ]);
 
+const titleCorrections = new Map([
+  ["অইখানে সারা দিন", "ঐখানে সারা দিন"]
+]);
+
 function assertSafeSelection(selection) {
   if (excludedPoets.has(selection.poet_bn)) {
     throw new Error(`Excluded poet selected: ${selection.poet_bn}`);
@@ -462,7 +466,8 @@ function stripTitleSourceHints(value) {
 }
 
 function cleanTitle(value) {
-  return stripTitleSourceHints(value).replace(/\s{2,}/g, " ");
+  const title = stripTitleSourceHints(value).replace(/\s{2,}/g, " ");
+  return titleCorrections.get(title) ?? title;
 }
 
 function normalizeTitleKey(value) {
