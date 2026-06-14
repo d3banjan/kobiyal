@@ -710,6 +710,7 @@ more likely to be punctuation than stanza separators.
 ## Test plan
 
 - `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py scripts/citation_factor_model.py scripts/source_acquisition_manifest.py scripts/source_url_marker_audit.py`
+- `python3 scripts/source_acquisition_manifest.py --verify-manifest metadata_reports/source-acquisition-manifest.current.json`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.

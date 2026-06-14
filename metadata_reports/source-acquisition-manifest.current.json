@@ -4030,16 +4030,17 @@
               "source_edition": "রূপসী বাংলা",
               "reason": null,
               "candidate_book_ids": [
-                "rupasi-bangla"
+                "rupasi-bangla",
+                "rupasi-bangla-copy"
               ],
               "best_page": {
-                "book_id": "rupasi-bangla",
-                "printed_page": 64,
-                "page_type": "normal_poem_page",
+                "book_id": "rupasi-bangla-copy",
+                "printed_page": 164,
+                "page_type": "poem_or_text_page",
                 "title_match": false,
                 "first_line_match": false,
                 "line_match_count": 0,
-                "body_coverage": 0.2292
+                "body_coverage": 0.3438
               }
             },
             "review_exclusion": {
@@ -4101,16 +4102,17 @@
               "source_edition": "রূপসী বাংলা",
               "reason": null,
               "candidate_book_ids": [
-                "rupasi-bangla"
+                "rupasi-bangla",
+                "rupasi-bangla-copy"
               ],
               "best_page": {
-                "book_id": "rupasi-bangla",
-                "printed_page": 73,
-                "page_type": "normal_poem_page",
+                "book_id": "rupasi-bangla-copy",
+                "printed_page": 164,
+                "page_type": "poem_or_text_page",
                 "title_match": false,
                 "first_line_match": false,
                 "line_match_count": 0,
-                "body_coverage": 0.1899
+                "body_coverage": 0.2911
               }
             },
             "review_exclusion": {
@@ -4171,16 +4173,17 @@
               "source_edition": "রূপসী বাংলা",
               "reason": null,
               "candidate_book_ids": [
-                "rupasi-bangla"
+                "rupasi-bangla",
+                "rupasi-bangla-copy"
               ],
               "best_page": {
-                "book_id": "rupasi-bangla",
-                "printed_page": 73,
+                "book_id": "rupasi-bangla-copy",
+                "printed_page": 158,
                 "page_type": "normal_poem_page",
                 "title_match": false,
                 "first_line_match": false,
                 "line_match_count": 0,
-                "body_coverage": 0.1189
+                "body_coverage": 0.1784
               }
             },
             "review_exclusion": {
@@ -4227,16 +4230,17 @@
               "source_edition": "রূপসী বাংলা",
               "reason": null,
               "candidate_book_ids": [
-                "rupasi-bangla"
+                "rupasi-bangla",
+                "rupasi-bangla-copy"
               ],
               "best_page": {
-                "book_id": "rupasi-bangla",
-                "printed_page": 64,
+                "book_id": "rupasi-bangla-copy",
+                "printed_page": 166,
                 "page_type": "normal_poem_page",
                 "title_match": false,
                 "first_line_match": false,
                 "line_match_count": 0,
-                "body_coverage": 0.2295
+                "body_coverage": 0.3115
               }
             },
             "review_exclusion": {
@@ -4282,16 +4286,17 @@
               "source_edition": "রূপসী বাংলা",
               "reason": null,
               "candidate_book_ids": [
-                "rupasi-bangla"
+                "rupasi-bangla",
+                "rupasi-bangla-copy"
               ],
               "best_page": {
-                "book_id": "rupasi-bangla",
-                "printed_page": 73,
+                "book_id": "rupasi-bangla-copy",
+                "printed_page": 167,
                 "page_type": "normal_poem_page",
                 "title_match": false,
                 "first_line_match": false,
                 "line_match_count": 0,
-                "body_coverage": 0.2105
+                "body_coverage": 0.2807
               }
             },
             "review_exclusion": {
@@ -4476,7 +4481,8 @@
               "source_edition": "বেলা অবেলা কালবেলা",
               "reason": null,
               "candidate_book_ids": [
-                "bela-abela-kalabela"
+                "bela-abela-kalabela",
+                "bela-abela-kalabela-copy"
               ],
               "best_page": {
                 "book_id": "bela-abela-kalabela",
@@ -4539,16 +4545,18 @@
               "source_edition": "মহাপৃথিবী",
               "reason": null,
               "candidate_book_ids": [
-                "mahaprithibi"
+                "mahaprithibi",
+                "mahaprithibi-appendix-copy",
+                "mahaprithibi-copy"
               ],
               "best_page": {
-                "book_id": "mahaprithibi",
-                "printed_page": 80,
-                "page_type": "poem_or_text_page",
+                "book_id": "mahaprithibi-copy",
+                "printed_page": 119,
+                "page_type": "normal_poem_page",
                 "title_match": false,
                 "first_line_match": false,
                 "line_match_count": 0,
-                "body_coverage": 0.1972
+                "body_coverage": 0.2254
               }
             },
             "review_exclusion": {

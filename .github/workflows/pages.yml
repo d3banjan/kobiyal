@@ -31,6 +31,7 @@ jobs:
           grep -q "বেলা অবেলা কালবেলা" dist/poems/jibanananda-070/index.html
           grep -q $'\u09eb\u09ea-\u09eb\u09eb' dist/poems/jibanananda-070/index.html
           ! grep -q "#বেলা অবেলা কালবেলা" dist/poems/jibanananda-070/index.html
+          python3 scripts/source_acquisition_manifest.py --verify-manifest metadata_reports/source-acquisition-manifest.current.json
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:

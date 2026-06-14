@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -38,6 +39,39 @@ def read_json(path: Path) -> dict[str, Any]:
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def duplicate_ids(path: Path) -> set[str]:
+    if not path.exists():
+        return set()
+    return set(re.findall(r'"(jibanananda-[^"]+)"', path.read_text(encoding="utf-8")))
+
+
+def public_jibanananda_poems(poems_dir: Path, duplicates: set[str]) -> dict[str, dict[str, Any]]:
+    poems = {}
+    for path in sorted(poems_dir.glob("*.json")):
+        poem = read_json(path)
+        if poem.get("poet_id") != "jibanananda-das":
+            continue
+        if poem.get("id") in duplicates:
+            continue
+        poems[path.name] = poem
+    return poems
+
+
+def primary_printed_sources(poem: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        source
+        for source in poem.get("book_sources") or []
+        if source.get("role") == "primary"
+        and source.get("page_basis") == "printed_page"
+        and isinstance(source.get("page_start"), int)
+        and isinstance(source.get("page_end"), int)
+    ]
+
+
+def has_primary_printed_pages(poem: dict[str, Any]) -> bool:
+    return bool(primary_printed_sources(poem))
 
 
 def factor_rows_by_file(path: Path | None) -> dict[str, dict[str, Any]]:
@@ -326,13 +360,153 @@ def markdown_report(manifest: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def manifest_group_items(manifest: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for key, source_groups in (manifest.get("missing_page_citation_groups") or {}).items():
+        items = []
+        for source_group in source_groups or []:
+            group_items = source_group.get("items") or []
+            expected_count = source_group.get("count")
+            if expected_count != len(group_items):
+                raise ValueError(
+                    f"{key} source group {source_group.get('source_edition')} count "
+                    f"{expected_count} != {len(group_items)}"
+                )
+            items.extend(group_items)
+        grouped[key] = items
+    return grouped
+
+
+def flatten_existing_corpus_items(manifest: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = []
+    for source_group in manifest.get("existing_citations_missing_corpus") or []:
+        group_items = source_group.get("items") or []
+        expected_count = source_group.get("count")
+        if expected_count != len(group_items):
+            raise ValueError(
+                f"existing corpus group {source_group.get('source_edition')} count "
+                f"{expected_count} != {len(group_items)}"
+            )
+        rows.extend(group_items)
+    return rows
+
+
+def verify_manifest(manifest_path: Path, poems_dir: Path, duplicates_source: Path) -> dict[str, Any]:
+    manifest = read_json(manifest_path)
+    summary = manifest.get("summary") or {}
+    grouped_items = manifest_group_items(manifest)
+    missing_items = [item for items in grouped_items.values() for item in items]
+    existing_items = flatten_existing_corpus_items(manifest)
+
+    action_counts = summary.get("action_counts") or {}
+    for key, items in grouped_items.items():
+        if int(action_counts.get(key, -1)) != len(items):
+            raise ValueError(f"action_counts[{key}] != grouped item count {len(items)}")
+    if int(action_counts.get("add_corpus_or_regenerate_auxiliary_corpus", -1)) != len(existing_items):
+        raise ValueError("existing-corpus action count does not match existing citation rows")
+
+    if int(summary.get("input_missing_printed_page_count", -1)) != len(missing_items):
+        raise ValueError("summary missing printed-page count does not match manifest rows")
+    if int(summary.get("existing_citations_missing_corpus_count", -1)) != len(existing_items):
+        raise ValueError("summary existing-corpus count does not match manifest rows")
+
+    source_group_counts = summary.get("source_group_counts") or {}
+    for key, source_groups in (manifest.get("missing_page_citation_groups") or {}).items():
+        if int(source_group_counts.get(key, -1)) != len(source_groups or []):
+            raise ValueError(f"source_group_counts[{key}] does not match manifest groups")
+
+    filenames = [str(item.get("filename") or "") for item in missing_items]
+    duplicates = [name for name, count in Counter(filenames).items() if count > 1]
+    if duplicates:
+        raise ValueError(f"duplicate missing-page manifest rows: {', '.join(sorted(duplicates))}")
+
+    poems = public_jibanananda_poems(poems_dir, duplicate_ids(duplicates_source))
+    missing_from_poems = {
+        filename
+        for filename, poem in poems.items()
+        if not has_primary_printed_pages(poem)
+    }
+    manifest_missing = set(filenames)
+    if manifest_missing != missing_from_poems:
+        missing_in_manifest = sorted(missing_from_poems - manifest_missing)
+        extra_in_manifest = sorted(manifest_missing - missing_from_poems)
+        raise ValueError(
+            "manifest rows do not match public poems lacking primary printed pages: "
+            f"missing={missing_in_manifest[:12]} extra={extra_in_manifest[:12]}"
+        )
+
+    unknown_items = grouped_items.get("identify_collection_before_page_citation") or []
+    unknown_from_poems = {
+        filename
+        for filename in missing_from_poems
+        if poems[filename].get("source_edition") == UNKNOWN_COLLECTION
+    }
+    if {str(item.get("filename") or "") for item in unknown_items} != unknown_from_poems:
+        raise ValueError("unknown-source manifest rows do not match poem JSON")
+
+    known_missing_count = len(missing_from_poems) - len(unknown_from_poems)
+    known_action_count = sum(
+        len(grouped_items.get(key) or [])
+        for key in (
+            "add_scan_or_direct_print_review",
+            "improve_text_extraction_or_manual_page_review",
+            "keep_excluded_until_new_scan_or_print_review",
+        )
+    )
+    if known_action_count != known_missing_count:
+        raise ValueError("known-source action rows do not account for known-source missing-page poems")
+
+    for item in missing_items:
+        filename = str(item.get("filename") or "")
+        poem = poems[filename]
+        for key in ("poem_id", "title_bn", "source_edition", "source_year", "source_url"):
+            if item.get(key) != poem.get("id" if key == "poem_id" else key):
+                raise ValueError(f"{filename} manifest {key} does not match poem JSON")
+
+    for item in existing_items:
+        filename = str(item.get("filename") or "")
+        poem = poems.get(filename)
+        if poem is None:
+            raise ValueError(f"existing-corpus row points to non-public poem: {filename}")
+        source_matches = [
+            source
+            for source in primary_printed_sources(poem)
+            if source.get("title_bn") == item.get("source_edition")
+            and source.get("page_start") == item.get("page_start")
+            and source.get("page_end") == item.get("page_end")
+        ]
+        if not source_matches:
+            raise ValueError(f"existing-corpus row does not match primary source pages: {filename}")
+
+    result = {
+        "verified": True,
+        "public_jibanananda_poem_count": len(poems),
+        "missing_printed_page_count": len(missing_items),
+        "unknown_collection_missing_count": len(unknown_items),
+        "known_source_missing_page_count": known_missing_count,
+        "existing_citations_missing_corpus_count": len(existing_items),
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return result
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Export source/corpus acquisition manifest.")
     parser.add_argument("--gap-report", default="metadata_reports/metadata-gap-review.current.json")
     parser.add_argument("--factor-model", default="metadata_reports/citation-factor-model.current.json")
     parser.add_argument("--output", default="metadata_reports/source-acquisition-manifest.current.json")
     parser.add_argument("--markdown-output", default="metadata_reports/source-acquisition-manifest.current.md")
+    parser.add_argument(
+        "--verify-manifest",
+        help="Verify an existing manifest against current poem JSON instead of generating one.",
+    )
+    parser.add_argument("--poems-dir", default="src/data/poems")
+    parser.add_argument("--duplicates-source", default="src/lib/content.ts")
     args = parser.parse_args()
+
+    if args.verify_manifest:
+        verify_manifest(Path(args.verify_manifest), Path(args.poems_dir), Path(args.duplicates_source))
+        return 0
 
     gap_report = read_json(Path(args.gap_report))
     factors = factor_rows_by_file(Path(args.factor_model) if args.factor_model else None)
