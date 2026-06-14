@@ -117,7 +117,9 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   same collection. Existing printed primary page ranges are protected by
   default; replacing a page range requires the explicit
   `--allow-existing-page-overwrite` flag after review against the printed
-  source.
+  source. The default apply scope skips duplicate-hidden poem imports listed in
+  `src/lib/content.ts`; use `--include-duplicates` only for a deliberate
+  duplicate-cleanup pass.
 
 - `scripts/report_metadata_gaps.py`
   Builds a review-only Markdown/JSON inventory of public Jibanananda records
@@ -385,6 +387,12 @@ follow-up run also compared TOC entries with each poem's first substantial body
 lines. At the normal threshold it still found no additional rows; at a lower
 diagnostic threshold it produced only weak title matches and one missing-page
 sequence row. No poem JSON should be updated from the current TOC report.
+
+The apply script dry-run now uses the same duplicate-hidden scope as the public
+site by default. With all review gates enabled against the current regenerated
+span candidates, it reports `changed: []`; the only previously writable row was
+already a hidden duplicate import. This is negative evidence for further
+automatic public metadata writes from the current sidecars.
 
 The citation consistency audit distinguishes absent scan coverage from
 potentially wrong citations. In the current run, 14 rows are

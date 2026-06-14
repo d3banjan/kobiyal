@@ -67,6 +67,7 @@ for alias, canonical in BOOK_ALIASES.items():
     BOOK_META[alias] = BASE_BOOK_META[canonical]
 
 UNKNOWN_COLLECTION = "সংকলন অজানা"
+DEFAULT_DUPLICATES_SOURCE = "src/lib/content.ts"
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -85,6 +86,12 @@ def read_json(path: Path) -> dict[str, Any]:
 
 def write_json(path: Path, data: dict[str, Any]) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def duplicate_ids(path: Path) -> set[str]:
+    if not path.exists():
+        return set()
+    return set(re.findall(r'"(jibanananda-[^"]+)"', path.read_text(encoding="utf-8")))
 
 
 def book_source(row: dict[str, Any], meta: dict[str, Any]) -> dict[str, Any]:
@@ -863,6 +870,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Apply gated poem metadata from span candidates.")
     parser.add_argument("--candidates", default="metadata_reports/poem-span-candidates.full.layout.normal.jsonl")
     parser.add_argument("--poems-dir", default="src/data/poems")
+    parser.add_argument("--duplicates-source", default=DEFAULT_DUPLICATES_SOURCE)
+    parser.add_argument(
+        "--include-duplicates",
+        action="store_true",
+        help="Also apply to duplicate-hidden poem imports listed in the duplicates source.",
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
         "--allow-legacy-candidates",
@@ -968,6 +981,7 @@ def main() -> int:
 
     poems_dir = Path(args.poems_dir)
     rows = read_jsonl(Path(args.candidates))
+    duplicates = duplicate_ids(Path(args.duplicates_source))
     summary: dict[str, int] = {}
     changed: list[str] = []
 
@@ -981,6 +995,9 @@ def main() -> int:
             continue
 
         poem = read_json(path)
+        if not args.include_duplicates and poem.get("id") in duplicates:
+            summary["duplicate_hidden"] = summary.get("duplicate_hidden", 0) + 1
+            continue
         eligible, reason = is_eligible(
             row,
             poem,
