@@ -302,7 +302,7 @@ A second pass improved printed page repair from 577/728 fixed page records to 61
 Current cumulative site-facing metadata state:
 
 - 282 of 389 Jibanananda records have printed book citations.
-- 273 of 373 public/non-duplicate Jibanananda records have printed book citations.
+- 269 of 369 public/non-duplicate Jibanananda records have printed book citations.
 - 100 public/non-duplicate Jibanananda records still lack printed book citations.
 - 82 public/non-duplicate records still have `সংকলন অজানা` as the collection.
 - 89 public/non-duplicate records still lack `source_year`.
@@ -377,6 +377,15 @@ lists. Its imported body is a composite `ছেলে`/`মেয়ে` dialogue m
 poem fragments, while the clean `রূপসী বাংলা` poem
 `আকাশে সাতটি তারা যখন উঠেছে ফুটে` (`jibanananda-030`) remains public with the
 printed page 15 citation.
+
+A later duplicate-data pass hid four more near-identical public imports:
+`কোথাও দেখি নি` (`jibanananda-103`), `বিড়াল` (`jibanananda-235`),
+`যতোদিন পৃথিবীতে` (`jibanananda-282`), and `সে কামনা নিয়ে`
+(`jibanananda-360`). Their canonical public counterparts remain
+`কোথাও দেখিনি আহা এমন বিজন ঘাস` (`jibanananda-104`), `বেড়াল`
+(`jibanananda-241`), `যতদিন পৃথিবীতে` (`jibanananda-278`), and
+`যে কামনা নিয়ে` (`jibanananda-285`). The hidden rows stay in the JSON corpus
+for audit comparisons, but no longer create duplicate public poem pages.
 
 A trailing page-sequence pass added a printed citation for `তোমাকে`
 (`jibanananda-158`). In the `বনলতা সেন` সংযোজন section, visible page anchors
