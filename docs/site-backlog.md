@@ -14,16 +14,23 @@ Notes:
 
 ## Current metadata/OCR state
 
-- No immediate publish requested.
+- Current request is to commit and push the current state; GitHub Pages deploy is
+  expected from the main-branch push.
 - 102 public `Jibanananda` poems still lack printed-page citations.
+- 73 public `Jibanananda` poems still lack `source_year`.
+- 102 public `Jibanananda` poems still lack primary printed-book year.
+- 369 public `Jibanananda` poems still lack composition date.
 - 66 poems still have unknown collection (`সংকলন অজানা`).
 - Source corpus backlog: **105 records across 12 groups**.
 - Full machine-readable acquisition queue:
   `metadata_reports/source-acquisition-manifest.current.json` with a companion
   Markdown summary at `metadata_reports/source-acquisition-manifest.current.md`.
+  The manifest validation and rendered printed-page attribution checks are now in CI.
 - Priority blockers:
   - `aloprithibi`: 21 uncited known-source poems.
   - `srestha-kabita`: 3 existing citations need corpus/default audit coverage.
   - Archival buckets: `agranthita` 5, `aprakashita` 1.
   - 9 scanned-source rows are reviewed holds until a better scan, corpus, or direct printed-book review is available.
+- Next work is source-corpus acquisition and direct printed-book review before any
+  further citation automation.
 - Current verification status: `report_metadata_gaps` passed, `citation_factor_model` passed, `bun run build` passed.

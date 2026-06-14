@@ -644,6 +644,10 @@ composition-date audit found no authorial date/place signatures in the
 currently cited OCR spans, composition dates should not be filled until stronger
 printed-source evidence is added or manually reviewed.
 
+The printed-page attribution verification layer now checks rendered output so
+published page claims can be visually checked against candidate evidence before
+the next citation automation pass.
+
 The apply script dry-run now uses the same duplicate-hidden scope as the public
 site by default. With all review gates enabled against the current regenerated
 span candidates, it reports `changed: []`; the only previously writable row was
@@ -709,8 +713,9 @@ more likely to be punctuation than stanza separators.
 
 ## Test plan
 
-- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py scripts/citation_factor_model.py scripts/source_acquisition_manifest.py scripts/source_url_marker_audit.py`
+- `uv run python -m py_compile scripts/ocr_page_corpus.py scripts/classify_pages.py scripts/repair_page_sequence.py scripts/propose_poem_spans.py scripts/extract_page_layout.py scripts/apply_poem_metadata.py scripts/ocr_lexicon_audit.py scripts/phrase_window_audit.py scripts/toc_index_audit.py scripts/fuzzy_line_audit.py scripts/ordered_region_audit.py scripts/citation_consistency_audit.py scripts/citation_repair_audit.py scripts/composition_date_audit.py scripts/report_metadata_gaps.py scripts/citation_factor_model.py scripts/source_acquisition_manifest.py scripts/source_url_marker_audit.py scripts/verify_rendered_book_pages.py`
 - `python3 scripts/source_acquisition_manifest.py --verify-manifest metadata_reports/source-acquisition-manifest.current.json`
+- `python3 scripts/verify_rendered_book_pages.py` after `bun run build`
 - `scripts/*.py --help` should print CLI usage without requiring OCR execution.
 - Smoke run:
   - Generate a small page corpus for 2-3 pages from one book.
@@ -724,3 +729,5 @@ more likely to be punctuation than stanza separators.
 - Human-reviewed text correction and stanza recovery.
 - Affiliate/publisher purchase-link population.
 - Full metadata sprint for collection mapping, composition dates, duplicate titles, conflicting source markers, and proofing status.
+- Source-corpus acquisition and direct printed-book review are planned as the next
+  step before expanding automated printed-page citation writes.
