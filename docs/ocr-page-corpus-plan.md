@@ -199,8 +199,11 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   local region with the longest contiguous exact and OCR-class character runs.
   Exact contiguous runs count fully; class-only contiguous runs add half credit.
   It reports both the longest consecutive run of matched poem lines and a
-  source-aware ordered run of local OCR regions. A strong fuzzy review now
-  requires the ordered region run to meet the configured threshold
+  source-aware ordered run of local OCR regions. The vector prefilter keeps the
+  top `--vector-top-regions-per-line` local placements per representative line
+  for the ordered-region check, while still counting each poem line only once
+  for page score. A strong fuzzy review now requires the ordered region run to
+  meet the configured threshold
   (`--min-ordered-region-run`, default `3`); same-page consecutive matches must
   remain in the same extraction source and within `--max-ordered-region-gap`
   normalized OCR lines. Candidate windows are capped to short printed-page
@@ -427,9 +430,11 @@ inside a bounded, source-local OCR line window, with a parallel
 OCR-equivalence-class channel. The follow-up line score measures the longest
 contiguous substring inside that same window, and the candidate status gate
 requires consecutive poem lines to advance through nearby OCR windows in source
-order. Repeated OCR confusions can improve a weak partial match without letting
-unrelated tokens from different page regions or extraction streams combine into
-a citation.
+order. The vector prefilter preserves multiple nearby local placements per
+representative line for that ordered-run calculation; it does not collapse the
+page into a single bag-of-shingles decision. Repeated OCR confusions can improve
+a weak partial match without letting unrelated tokens from different page
+regions or extraction streams combine into a citation.
 
 The ordered-region audit confirms the same result from a stricter angle. Its
 default gate found zero candidates. A permissive diagnostic run found three weak

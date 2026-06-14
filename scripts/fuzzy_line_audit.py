@@ -635,6 +635,7 @@ def page_candidate_pool(
         if not windows:
             continue
         line_hits = []
+        region_placements = []
         for line in line_embeddings:
             ranked_regions = []
             for window_index, score in vector_region_scores(line, page):
@@ -650,7 +651,8 @@ def page_candidate_pool(
                 ),
                 reverse=True,
             )
-            best_score, best_window_index, best_window = ranked_regions[:vector_top_regions_per_line][0]
+            top_regions = ranked_regions[: max(1, vector_top_regions_per_line)]
+            best_score, best_window_index, best_window = top_regions[0]
             line_hits.append(
                 {
                     "line_index": int(line["line_index"]),
@@ -661,11 +663,22 @@ def page_candidate_pool(
                     "page_line_end": int(best_window.get("line_end") or 0),
                 }
             )
+            for score, window_index, window in top_regions:
+                region_placements.append(
+                    {
+                        "line_index": int(line["line_index"]),
+                        "score": float(score),
+                        "window_index": int(window_index),
+                        "page_region_source": str(window.get("source") or ""),
+                        "page_line_start": int(window.get("line_start") or 0),
+                        "page_line_end": int(window.get("line_end") or 0),
+                    }
+                )
         if len(line_hits) < required_hits:
             continue
         line_indexes = sorted({hit["line_index"] for hit in line_hits})
         hit_scores = sorted((float(hit["score"]) for hit in line_hits), reverse=True)
-        ordered_region_run = longest_ordered_vector_region_run(line_hits, max_ordered_region_gap)
+        ordered_region_run = longest_ordered_vector_region_run(region_placements, max_ordered_region_gap)
         line_run = longest_consecutive_run(line_indexes)
         page_score = sum(hit_scores[:required_hits]) / max(1, required_hits)
         scored_pages.append(
@@ -678,6 +691,7 @@ def page_candidate_pool(
                     **page,
                     "_vector_score": round(page_score, 4),
                     "_vector_line_hits": len(line_hits),
+                    "_vector_region_placements": len(region_placements),
                     "_vector_longest_line_run": line_run,
                     "_vector_ordered_region_run": ordered_region_run,
                 },
@@ -1187,6 +1201,7 @@ def main() -> int:
                     "page_type": page.get("page_type"),
                     "vector_score": page.get("_vector_score"),
                     "vector_line_hits": page.get("_vector_line_hits"),
+                    "vector_region_placements": page.get("_vector_region_placements"),
                     "vector_longest_line_run": page.get("_vector_longest_line_run"),
                     "vector_ordered_region_run": page.get("_vector_ordered_region_run"),
                     "matches": matches,

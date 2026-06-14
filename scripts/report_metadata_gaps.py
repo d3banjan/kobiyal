@@ -23,6 +23,10 @@ UNKNOWN_COLLECTION = "সংকলন অজানা"
 DEFAULT_REVIEW_EXCLUSIONS = "src/data/metadata-review-exclusions.json"
 DEFAULT_CANDIDATES = "metadata_reports/poem-span-candidates.current.regen.jsonl"
 DEFAULT_PAGE_CORPUS = "metadata_reports/page-corpus.full.repaired.layout.jsonl"
+DEFAULT_TOC_AUDIT = "metadata_reports/toc-index-audit.current.json"
+TITLE_DATE_RE = re.compile(
+    r"(?:[\u09E6-\u09EF0-9]{3,4}|বৈশাখ|জ্যৈষ্ঠ|জৈষ্ঠ|আষাঢ়|আষাঢ়|শ্রাবণ|ভাদ্র|আশ্বিন|কার্তিক|অগ্রহায়ণ|অগ্রহায়ণ|পৌষ|মাঘ|ফাল্গুন|চৈত্র)"
+)
 TRUSTED_PAGE_TYPES = {
     "normal_poem_page",
     "poem_or_text_page",
@@ -378,6 +382,31 @@ def source_coverage_blockers(missing: list[dict[str, Any]]) -> list[dict[str, An
     )
 
 
+def toc_index_blockers(toc_matches_by_file: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    rows = []
+    for filename, match in sorted(toc_matches_by_file.items()):
+        candidate = match.get("best_candidate") or {}
+        rows.append(
+            {
+                "filename": filename,
+                "poem_id": match.get("poem_id"),
+                "title_bn": match.get("title_bn"),
+                "source_edition": match.get("source_edition"),
+                "status": match.get("status"),
+                "candidate_book_id": candidate.get("candidate_book_id"),
+                "candidate_collection_bn": candidate.get("candidate_collection_bn"),
+                "printed_page": candidate.get("printed_page"),
+                "candidate_scan_page": candidate.get("candidate_scan_page"),
+                "entry_title": candidate.get("entry_title"),
+                "match_basis": candidate.get("match_basis"),
+                "title_score": candidate.get("title_score"),
+                "toc_line": candidate.get("toc_line"),
+                "duplicate_title_context": match.get("duplicate_title_context") or [],
+            }
+        )
+    return rows
+
+
 def source_year_blockers(poems: list[tuple[str, dict[str, Any]]]) -> list[dict[str, Any]]:
     grouped: dict[str, dict[str, Any]] = {}
     for filename, poem in poems:
@@ -402,6 +431,28 @@ def source_year_blockers(poems: list[tuple[str, dict[str, Any]]]) -> list[dict[s
             }
         )
     return sorted(grouped.values(), key=lambda row: (-int(row["count"]), row["source_edition"]))
+
+
+def title_date_candidates(poems: list[tuple[str, dict[str, Any]]]) -> list[dict[str, Any]]:
+    rows = []
+    for filename, poem in poems:
+        title = str(poem.get("title_bn") or "")
+        matches = TITLE_DATE_RE.findall(title)
+        if not matches:
+            continue
+        rows.append(
+            {
+                "filename": filename,
+                "poem_id": poem.get("id"),
+                "title_bn": title,
+                "source_edition": poem.get("source_edition"),
+                "source_year": poem.get("source_year"),
+                "composition_date_bn": poem.get("composition_date_bn"),
+                "title_date_fragments": matches,
+                "source_url": poem.get("source_url"),
+            }
+        )
+    return rows
 
 
 def composition_date_blockers(poems: list[tuple[str, dict[str, Any]]]) -> list[dict[str, Any]]:
@@ -436,6 +487,7 @@ def build_report(
     candidates_by_file: dict[str, dict[str, Any]],
     review_exclusions: dict[str, list[dict[str, Any]]],
     pages_by_book: dict[str, list[dict[str, Any]]],
+    toc_matches_by_file: dict[str, dict[str, Any]],
     include_logical_aliases: bool,
     source_scan_min_line_chars: int,
 ) -> dict[str, Any]:
@@ -477,6 +529,7 @@ def build_report(
                 ),
                 "review_exclusion": review_exclusion,
                 "embedded_source_conflict": marker_conflict,
+                "toc_index_candidate": toc_matches_by_file.get(filename),
             }
         )
 
@@ -490,7 +543,9 @@ def build_report(
         )
     )
     blockers = source_coverage_blockers(missing)
+    toc_blockers = toc_index_blockers(toc_matches_by_file)
     source_year_missing = source_year_blockers(poems)
+    title_date_rows = title_date_candidates(poems)
     composition_date_missing = composition_date_blockers(poems)
     return {
         "summary": {
@@ -518,9 +573,15 @@ def build_report(
             ),
             "source_coverage_blocker_count": sum(int(item["count"]) for item in blockers),
             "source_coverage_blocker_groups": len(blockers),
+            "toc_index_candidate_count": len(toc_blockers),
+            "toc_index_status_counts": dict(Counter(str(item.get("status") or "") for item in toc_blockers).most_common()),
+            "title_date_candidate_count": len(title_date_rows),
+            "title_date_source_year_gap_count": sum(1 for item in title_date_rows if item.get("source_year") is None),
         },
         "source_coverage_blockers": blockers,
+        "toc_index_blockers": toc_blockers,
         "source_year_blockers": source_year_missing,
+        "title_date_candidates": title_date_rows,
         "composition_date_blockers": composition_date_missing,
         "embedded_source_conflicts": marker_conflicts,
         "missing": missing,
@@ -541,6 +602,8 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
         f"- Missing citations with unknown collection: {summary['unknown_collection_missing_count']}",
         f"- Public poems missing source year: {summary['missing_source_year_count']}",
         f"- Public poems missing composition date: {summary['missing_composition_date_count']}",
+        f"- TOC index candidates requiring review: {summary['toc_index_candidate_count']}",
+        f"- Title date candidates requiring printed-source review: {summary['title_date_candidate_count']}",
         f"- Reviewed exclusions: {summary['reviewed_exclusion_count']}",
         f"- Embedded source marker conflicts: {summary['embedded_source_conflict_count']}",
         "",
@@ -570,6 +633,43 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
     for edition, count in summary["missing_by_source_edition"].items():
         lines.append(f"- {edition}: {count}")
 
+    toc_blockers = report.get("toc_index_blockers") or []
+    lines.extend(
+        [
+            "",
+            "## TOC Index Blockers",
+            "",
+            "TOC title/page hits remain review-only. Duplicate-title rows cannot receive page citations without body-text support.",
+            "",
+        ]
+    )
+    if toc_blockers:
+        lines.extend(["| file | title | status | candidate | duplicate context |", "|---|---|---|---|---|"])
+        for item in toc_blockers:
+            duplicate_context = " · ".join(
+                f"{ctx.get('poem_id')} {ctx.get('source_edition') or ''}".strip()
+                for ctx in item.get("duplicate_title_context") or []
+            )
+            candidate = (
+                f"{item.get('candidate_book_id')}; p.{item.get('printed_page')}; "
+                f"{item.get('entry_title')}; score {item.get('title_score')}"
+            )
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        str(item.get("filename") or ""),
+                        str(item.get("title_bn") or ""),
+                        f"`{item.get('status') or ''}`",
+                        candidate.replace("|", "\\|"),
+                        duplicate_context.replace("|", "\\|"),
+                    ]
+                )
+                + " |"
+            )
+    else:
+        lines.append("- None")
+
     year_blockers = report.get("source_year_blockers") or []
     lines.extend(
         [
@@ -592,6 +692,38 @@ def markdown_report(report: dict[str, Any], max_rows: int) -> str:
                         str(blocker.get("source_edition") or ""),
                         str(blocker.get("count") or 0),
                         titles.replace("|", "\\|"),
+                    ]
+                )
+                + " |"
+            )
+    else:
+        lines.append("- None")
+
+    title_dates = report.get("title_date_candidates") or []
+    lines.extend(
+        [
+            "",
+            "## Title Date Candidates",
+            "",
+            "Date-like text in a title is only a review cue; it is not enough to fill source year or composition date without printed-source support.",
+            "",
+        ]
+    )
+    if title_dates:
+        lines.extend(["| file | title | current source | fragments | source URL |", "|---|---|---|---|---|"])
+        for item in title_dates:
+            source_year = item.get("source_year") if item.get("source_year") is not None else ""
+            source = f"{item.get('source_edition') or ''} {source_year}".strip()
+            fragments = ", ".join(str(fragment) for fragment in item.get("title_date_fragments") or [])
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        str(item.get("filename") or ""),
+                        str(item.get("title_bn") or ""),
+                        source,
+                        fragments,
+                        str(item.get("source_url") or ""),
                     ]
                 )
                 + " |"
@@ -749,6 +881,11 @@ def main() -> int:
         default=DEFAULT_PAGE_CORPUS,
         help="Repaired page corpus used for source-scan status. Use an empty string to disable.",
     )
+    parser.add_argument(
+        "--toc-audit",
+        default=DEFAULT_TOC_AUDIT,
+        help="Optional TOC index audit JSON to surface title/page blockers. Use an empty string to disable.",
+    )
     parser.add_argument("--ocr-substitutions", default=None)
     parser.add_argument("--include-logical-aliases", action="store_true")
     parser.add_argument("--include-untrusted-pages", action="store_true")
@@ -774,6 +911,12 @@ def main() -> int:
             filename = row.get("filename")
             if filename:
                 candidates_by_file[str(filename)] = row
+    toc_matches_by_file: dict[str, dict[str, Any]] = {}
+    if args.toc_audit and Path(args.toc_audit).exists():
+        for row in read_json(Path(args.toc_audit)).get("matches") or []:
+            filename = row.get("filename")
+            if filename:
+                toc_matches_by_file[str(filename)] = row
     review_exclusions = load_review_exclusions(Path(args.review_exclusions))
 
     report = build_report(
@@ -781,6 +924,7 @@ def main() -> int:
         candidates_by_file,
         review_exclusions,
         pages_by_book,
+        toc_matches_by_file,
         include_logical_aliases=args.include_logical_aliases,
         source_scan_min_line_chars=args.source_scan_min_line_chars,
     )
