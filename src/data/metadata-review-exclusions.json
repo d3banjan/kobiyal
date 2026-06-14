@@ -231,6 +231,50 @@
       "review_bucket": "reviewed_false_candidate",
       "reason": "body_token_overlap_wrong_poem",
       "note_bn": "রূপসী বাংলা কপি পৃষ্ঠা ১৫৮-তে দেখা OCR পাঠ 'মাঠের আঁধার পথে শিশু...' অংশ দিয়ে শুরু; 'সোনালী ডানার শঙ্খচিল' শিরোনাম, কলকাতা/বৌবাজার-প্রারম্ভ, বা ধারাবাহিক শরীর মেলে না। source-scan review-ও no-support, তাই এই candidate বাদ।"
+    },
+    {
+      "filename": "jibanananda-002.json",
+      "poem_id": "jibanananda-002",
+      "title_bn": "ঐখানে সারা দিন",
+      "candidate_book_id": null,
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_insufficient_scan_evidence",
+      "reason": "not_found_in_current_scan_corpus",
+      "note_bn": "বর্তমান রূপসী বাংলা পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page কেবল দুর্বল token overlap; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।"
+    },
+    {
+      "filename": "jibanananda-119.json",
+      "poem_id": "jibanananda-119",
+      "title_bn": "ঘরের ভিতরে দীপ জ্বলে ওঠে সন্ধ্যায়",
+      "candidate_book_id": null,
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_insufficient_scan_evidence",
+      "reason": "not_found_in_current_scan_corpus",
+      "note_bn": "বর্তমান রূপসী বাংলা পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page কেবল দুর্বল token overlap; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।"
+    },
+    {
+      "filename": "jibanananda-008.json",
+      "poem_id": "jibanananda-008",
+      "title_bn": "অনিবার",
+      "candidate_book_id": null,
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_insufficient_scan_evidence",
+      "reason": "not_found_in_current_scan_corpus",
+      "note_bn": "বর্তমান মহাপৃথিবী পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page কেবল দুর্বল token overlap; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।"
+    },
+    {
+      "filename": "jibanananda-007.json",
+      "poem_id": "jibanananda-007",
+      "title_bn": "অনন্ত জীবন যদি পাই আমি",
+      "candidate_book_id": null,
+      "candidate_page_start": null,
+      "candidate_page_end": null,
+      "review_bucket": "reviewed_insufficient_scan_evidence",
+      "reason": "not_found_in_current_scan_corpus",
+      "note_bn": "বর্তমান সাতটি তারার তিমির পেজ কর্পাসে শিরোনাম, প্রথম পঙ্‌ক্তি, বা স্বতন্ত্র ধারাবাহিক পঙ্‌ক্তি পাওয়া যায়নি। source-scan best page no-support; মুদ্রিত পৃষ্ঠা না দেখে পৃষ্ঠা-উদ্ধৃতি দেওয়া যাবে না।"
     }
   ]
 }
