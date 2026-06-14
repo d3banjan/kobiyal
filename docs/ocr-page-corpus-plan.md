@@ -90,6 +90,10 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   It also allows a short trusted tail after two visible sequential anchors; this
   handles cases where the final poem page in a section has no readable printed
   page number but directly follows visible pages.
+  It also allows a short leading run before the first visible sequential
+  anchors, but only when the leading window contains a trusted text/poem page.
+  This covers unnumbered opening poems such as `রূপসী বাংলা` page 9 without
+  turning blank-only front matter into citation pages.
 
 - `scripts/propose_poem_spans.py`
   Proposes poem-to-page spans using the repaired page corpus and current poem JSON. It emits sidecar candidates only. Accepted candidates require deterministic title/line anchors and a repaired printed page range; a match without printed book page numbers remains a manual-review candidate because the website citation must name printed pages rather than PDF scan pages. The current algorithm is deterministic:
@@ -239,10 +243,11 @@ The initial corpus keeps `corrected_text_bn: null` and `correction_status: "raw"
   corpus. It checks whether the cited printed page exists in the exact source
   scan or a logical alias, then looks for title, opening-line, exact-line, and
   body-token evidence on that cited page range. It is review-only and does not
-  mutate poem JSON. The current run checks 270 existing citations: 234 are
-  supported by title/opening/exact-line evidence, 26 are supported only by broad
-  token coverage, 7 cite pages outside the current OCR corpus range for that
-  book, and 3 are weak current citations that need manual source review.
+  mutate poem JSON. The current committed sidecar run checks 269 existing
+  citations: 231 are supported by title/opening/exact-line evidence, 25 are
+  supported only by broad token coverage, 7 cite pages outside the current OCR
+  corpus range for that book, 3 cite pages missing from the current sidecar
+  corpus, and 3 are weak current citations that need manual source review.
 
 - `scripts/citation_repair_audit.py`
   Builds a stricter review-only report for repairing existing printed-page
@@ -527,12 +532,21 @@ new gate rejected stale sidecar rows whose printed pages no longer exist in the
 current corpus, including `তোমাকে` page 172.
 
 The citation consistency audit distinguishes absent scan coverage from
-potentially wrong citations. In the current run, 7 rows are
+potentially wrong citations. In the current committed-sidecar run, 7 rows are
 `outside_corpus_range`: their cited printed pages sit outside the repaired OCR
 page range for the named book, so the audit cannot prove or disprove them from
 the current sidecars. Only 3 existing citations have in-range OCR rows but weak
 title/line/token evidence. These should be manually checked against printed
 sources before any metadata rewrite.
+
+A scratch regeneration of `repair_page_sequence.py` with the leading-sequence
+guard and current layout sidecar inferred only `রূপসী বাংলা` scan pages 13-14
+as printed pages 9-10. Against that scratch corpus, `সেইদিন এই মাঠ` page 9
+became `supported_token_only` instead of `outside_corpus_range`. The same
+regeneration restored the `বনলতা সেন` appendix tail page 172, making `তোমাকে`
+`supported` and raising `ভিখিরী` from weak evidence to high token coverage.
+Those results are evidence for the next OCR sidecar rebuild; the ignored JSONL
+sidecars were not committed.
 
 The poem-body quality report also records leading dash structure across all
 Jibanananda poem JSON files. A single leading ASCII hyphen is treated by the site

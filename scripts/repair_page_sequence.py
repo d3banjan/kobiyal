@@ -21,6 +21,7 @@ TRUSTED_PAGE_TYPES = {
     "poem_or_text_page",
     "poem_start_or_short_page",
 }
+SEQUENCE_EXTENSION_PAGE_TYPES = TRUSTED_PAGE_TYPES | {"blank_or_near_blank"}
 
 
 def bangla_number(value: int | None) -> str | None:
@@ -239,6 +240,40 @@ def fill_trailing_sequence_extensions(rows: list[dict[str, Any]], anchors: list[
         row["sequence_confidence"] = 0.55
 
 
+def fill_leading_sequence_extensions(rows: list[dict[str, Any]], anchors: list[tuple[int, int]], max_pages: int = 2) -> None:
+    """Infer a short unnumbered opening run before the first visible anchor."""
+
+    if len(anchors) < 2:
+        return
+    first_idx, first_page = anchors[0]
+    next_idx, next_page = anchors[1]
+    scan_delta = next_idx - first_idx
+    page_delta = next_page - first_page
+    if scan_delta <= 0 or page_delta != scan_delta:
+        return
+
+    leading_indices = list(range(first_idx - 1, max(-1, first_idx - 1 - max_pages), -1))
+    if not any(rows[idx].get("page_type") in TRUSTED_PAGE_TYPES for idx in leading_indices):
+        return
+
+    for idx in leading_indices:
+        row = rows[idx]
+        if row.get("page_type") not in SEQUENCE_EXTENSION_PAGE_TYPES:
+            break
+        if row.get("printed_page_fixed") is not None:
+            break
+        if best_visible_candidate(row) is not None:
+            break
+
+        inferred = first_page - (first_idx - idx)
+        if inferred < 1:
+            break
+        row["printed_page_fixed"] = inferred
+        row["printed_page_label_bn"] = bangla_number(inferred)
+        row["printed_page_basis"] = "leading_sequence_inferred"
+        row["sequence_confidence"] = 0.55
+
+
 def repair_book(rows: list[dict[str, Any]]) -> None:
     rows.sort(key=lambda row: int(row.get("scan_page") or 0))
     raw_candidates: list[tuple[int, dict[str, Any]]] = []
@@ -321,6 +356,7 @@ def repair_book(rows: list[dict[str, Any]]) -> None:
                 row["printed_page_basis"] = "sequence_inferred"
                 row["sequence_confidence"] = 0.65
 
+    fill_leading_sequence_extensions(rows, anchors)
     fill_trailing_sequence_extensions(rows, anchors)
 
 
